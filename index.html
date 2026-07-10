@@ -1,0 +1,5051 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>總務處全能管理系統</title>
+  <!-- Google Fonts: Inter and Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- SheetJS 導入以支援 Excel 的匯出與匯入功能 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    /* CSS 全局變數與設計系統 */
+    :root {
+      --primary: #d84f8b;
+      --primary-dark: #b83272;
+      --primary-light: #fdf2f7;
+      --accent: #12a6a8;
+      --accent-light: #e7f6f6;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      
+      --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 100%);
+      --sidebar-bg: rgba(255, 255, 255, 0.85);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-main: #2d1a3c;
+      --text-muted: #6e5f78;
+      --border: #eedce6;
+      --shadow-sm: 0 2px 8px rgba(216, 79, 139, 0.05);
+      --shadow-md: 0 10px 25px rgba(121, 45, 83, 0.08);
+      --shadow-lg: 0 20px 40px rgba(121, 45, 83, 0.12);
+      
+      --font-main: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* 捲軸美化 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(216, 79, 139, 0.2);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(216, 79, 139, 0.4);
+    }
+
+    /* 主版面配置 */
+    .app-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: var(--sidebar-bg);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      min-height: 0;
+      margin-bottom: 16px;
+    }
+
+    .brand-section {
+      margin-bottom: 30px;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .brand-icon {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(216, 79, 139, 0.3);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #792a54;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding-left: 52px;
+    }
+
+    /* 側欄數據儀表 */
+    .mini-stats {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .mini-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .mini-stat-item:last-child {
+      margin-bottom: 0;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .mini-stat-label {
+      color: var(--text-muted);
+    }
+
+    .mini-stat-value {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .mini-stat-value.highlight {
+      color: var(--primary-dark);
+    }
+
+    /* 導覽選單 */
+    .nav-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 0;
+      padding-right: 4px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition);
+    }
+
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+      transition: var(--transition);
+    }
+
+    .nav-btn:hover {
+      background: rgba(216, 79, 139, 0.05);
+      color: var(--primary);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(216, 79, 139, 0.2);
+    }
+
+    /* 側欄底部動作 */
+    .sidebar-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(216, 79, 139, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(216, 79, 139, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-color: var(--primary);
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .btn-danger-outline:hover {
+      color: var(--danger);
+      background: var(--danger-light);
+      border-color: var(--danger);
+    }
+
+    /* 右側主內容區 */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 頂部標頭 */
+    .top-header {
+      height: 70px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      flex-shrink: 0;
+    }
+
+    .view-title-area h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #652b48;
+    }
+
+    /* 表單過濾器列 */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-input {
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      outline: none;
+      font-size: 13px;
+      width: 150px;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(216, 79, 139, 0.1);
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* 視圖內容載體 */
+    .view-container {
+      flex-grow: 1;
+      padding: 32px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .view-pane {
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .view-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 1. 表格視圖 (Table View) */
+    /* ------------------------------------------------------------- */
+    .table-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table th {
+      background: rgba(253, 242, 247, 0.7);
+      font-weight: 700;
+      color: var(--primary-dark);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .data-table th:hover {
+      background: rgba(216, 79, 139, 0.1);
+    }
+
+    .data-table tbody tr {
+      transition: var(--transition);
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* 標籤徽章 (Badges) */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .badge-todo { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-progress { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .badge-done { background: var(--success-light); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .badge-label {
+      background: rgba(18, 166, 168, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(18, 166, 168, 0.3);
+    }
+
+    .badge-weight {
+      background: rgba(216, 79, 139, 0.1);
+      color: var(--primary-dark);
+      border: 1px solid rgba(216, 79, 139, 0.2);
+      font-family: monospace;
+    }
+
+    .badge-milestone {
+      background: #f3e8ff;
+      color: #8b5cf6;
+      border: 1px solid #ddd6fe;
+    }
+
+    .action-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .action-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      background: var(--primary-light);
+    }
+
+    .action-btn.delete:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 2. 看板視圖 (Board View) */
+    /* ------------------------------------------------------------- */
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      height: calc(100vh - 170px);
+      align-items: start;
+    }
+
+    .board-column {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .board-column.drag-over {
+      background: rgba(216, 79, 139, 0.05);
+      border-color: var(--primary);
+      border-style: dashed;
+    }
+
+    .board-column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .board-column-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .board-column-count {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .board-cards-area {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      flex-grow: 1;
+      min-height: 200px;
+    }
+
+    .task-card {
+      background: white;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      padding: 16px;
+      cursor: grab;
+      transition: box-shadow 0.2s, transform 0.2s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .task-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .task-card:active {
+      cursor: grabbing;
+    }
+
+    .task-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+
+    .task-card-metadata {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 12px;
+    }
+
+    .task-card-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .task-card-date {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .task-card-assignee {
+      font-weight: 600;
+      color: #652b48;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 3. 時間軸視圖 (Timeline View) */
+    /* ------------------------------------------------------------- */
+    .timeline-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .timeline-header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .timeline-nav {
+      display: flex;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .timeline-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 130px repeat(31, 50px);
+      position: relative;
+    }
+
+    .timeline-cell {
+      border-right: 1px solid #f1f5f9;
+      border-bottom: 1px solid #f1f5f9;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: white;
+    }
+
+    .timeline-cell.header {
+      background: #faf8fc;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      height: 60px;
+      flex-direction: column;
+      justify-content: center;
+      color: var(--primary-dark);
+    }
+
+    .timeline-cell.header.today {
+      background: var(--primary-light);
+      position: relative;
+    }
+
+    .timeline-cell.header.today::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .timeline-row-label {
+      grid-column: 1;
+      background: #faf8fc !important;
+      border-right: 2px solid var(--border) !important;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-left: 16px;
+      justify-content: flex-start !important;
+      position: sticky;
+      left: 0;
+      z-index: 2;
+    }
+
+    .timeline-row-content {
+      grid-column: 2 / -1;
+      position: relative;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      min-height: 80px;
+      padding: 10px 0;
+    }
+
+    .timeline-bar {
+      position: absolute;
+      height: 30px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(216, 79, 139, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .timeline-bar:hover {
+      transform: scaleY(1.05);
+      box-shadow: 0 4px 10px rgba(216, 79, 139, 0.4);
+      z-index: 5;
+    }
+
+    .timeline-bar.todo { background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 3px 6px rgba(245, 158, 11, 0.2); }
+    .timeline-bar.progress { background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); box-shadow: 0 3px 6px rgba(59, 130, 246, 0.2); }
+    .timeline-bar.done { background: linear-gradient(90deg, #34d399 0%, #10b981 100%); box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2); opacity: 0.85; }
+
+    /* ------------------------------------------------------------- */
+    /* 4. 里程碑視圖 (Milestone View) */
+    /* ------------------------------------------------------------- */
+    .milestone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .milestone-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .milestone-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 12px;
+    }
+
+    .milestone-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #652b48;
+    }
+
+    .milestone-tasks-count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .progress-label-wrap {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .progress-percentage {
+      color: var(--primary-dark);
+    }
+
+    .progress-track {
+      background: rgba(0, 0, 0, 0.05);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .milestone-tasks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .milestone-task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #faf8fc;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      border-left: 3px solid var(--border);
+    }
+
+    .milestone-task-item.todo { border-left-color: var(--warning); }
+    .milestone-task-item.progress { border-left-color: #3b82f6; }
+    .milestone-task-item.done { border-left-color: var(--success); text-decoration: line-through; opacity: 0.7; }
+
+    .milestone-task-title {
+      font-weight: 500;
+      color: var(--text-main);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 180px;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 5. 統計視圖 (Insights View) */
+    /* ------------------------------------------------------------- */
+    .insights-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      padding: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .insights-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .chart-controls {
+      display: flex;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      margin: 0;
+    }
+
+    .chart-control-btn {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .chart-control-btn.active {
+      background: white;
+      color: var(--primary-dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .chart-row {
+      display: grid;
+      grid-template-columns: 100px 1fr 60px;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .chart-label {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-bar-outer {
+      background: rgba(0, 0, 0, 0.04);
+      height: 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 12px;
+      width: 0%;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+    }
+
+    .chart-bar-text {
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .chart-value {
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 16px;
+      text-align: right;
+    }
+
+    .insights-legend {
+      border-top: 1px dashed var(--border);
+      padding-top: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .insights-legend h4 {
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 6. 任務行事曆視圖 (Calendar View) */
+    /* ------------------------------------------------------------- */
+    .calendar-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      padding: 24px;
+      min-height: calc(100vh - 170px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-header-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .calendar-month-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+      flex-grow: 1;
+    }
+
+    .calendar-weekday-header {
+      text-align: center;
+      font-weight: 700;
+      color: var(--primary-dark);
+      padding: 10px 0;
+      background: rgba(253, 242, 247, 0.5);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .calendar-weekday-header:nth-child(1),
+    .calendar-weekday-header:nth-child(7) {
+      color: var(--primary);
+    }
+
+    .calendar-day-cell {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-height: 100px;
+      background: white;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .calendar-day-cell:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .calendar-day-cell.other-month {
+      background: rgba(0, 0, 0, 0.02);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .calendar-day-cell.today-cell {
+      border: 2px solid var(--accent);
+      background: var(--accent-light);
+    }
+
+    .calendar-day-number {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .calendar-day-cell.today-cell .calendar-day-number {
+      color: var(--accent);
+    }
+
+    .calendar-task-strip {
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      color: white;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .calendar-task-strip:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+      filter: brightness(1.05);
+    }
+
+    .calendar-task-strip.todo { background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); }
+    .calendar-task-strip.progress { background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); }
+    .calendar-task-strip.done { background: linear-gradient(90deg, #34d399 0%, #10b981 100%); opacity: 0.8; text-decoration: line-through; }
+
+    .calendar-week-container {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .calendar-week-column {
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 380px;
+    }
+
+    .calendar-week-column.today-col {
+      border: 2px solid var(--accent);
+      background: var(--accent-light);
+    }
+
+    .calendar-week-day-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+      color: var(--text-main);
+    }
+
+    .calendar-week-column.today-col .calendar-week-day-title {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .calendar-day-view-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      max-width: 600px;
+      margin: 20px auto 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 7. 鑰匙與磁扣借還視圖 (Key Log View) */
+    /* ------------------------------------------------------------- */
+    .key-log-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .signature-pad-wrapper {
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      background: white;
+      padding: 8px;
+      margin-top: 6px;
+    }
+
+    .signature-canvas {
+      width: 100%;
+      height: 130px;
+      background: #fafafc;
+      border-radius: 6px;
+      cursor: crosshair;
+      touch-action: none;
+      display: block;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .signature-thumbnail {
+      max-height: 28px;
+      max-width: 80px;
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      display: block;
+    }
+
+    /* 設定頁籤標籤 */
+    .settings-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .settings-tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .settings-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .settings-tab-content {
+      display: none;
+    }
+
+    .settings-tab-content.active {
+      display: block;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* 彈出視窗與對話框 (Modal Dialogs) */
+    /* ------------------------------------------------------------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(60, 24, 45, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      width: 500px;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(216, 79, 139, 0.1);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background: #faf8fc;
+    }
+
+    /* 管理配置對話框樣式 */
+    .config-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      background: #faf8fc;
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      font-size: 13px;
+      border: 1px solid var(--border);
+    }
+
+    .config-list-item button {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* 歡慶完成煙火特效 */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      display: none;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #ffd300;
+      opacity: 0.8;
+      top: -10px;
+      border-radius: 50%;
+      animation: fall 2.5s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(105vh) rotate(350deg);
+        opacity: 0;
+      }
+    }
+
+    /* 逾期跨日未歸還特別樣式 */
+    .badge-danger {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+      }
+      70% {
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+      }
+    }
+    
+    .row-overdue {
+      background-color: #fef2f2 !important; /* var(--danger-light) */
+    }
+    .row-overdue:hover {
+      background-color: #fee2e2 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- 側邊導覽列 -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        
+        <!-- 品牌標誌 -->
+        <div class="brand-section">
+          <div class="brand-title-wrap">
+            <div class="brand-icon">總</div>
+            <h1 class="brand-title">總務處行政管理</h1>
+          </div>
+          <div class="brand-subtitle">GitHub Projects 核心模擬</div>
+        </div>
+
+        <!-- 數據摘要 -->
+        <div class="mini-stats">
+          <div class="mini-stat-item">
+            <span class="mini-stat-label">任務總數</span>
+            <span class="mini-stat-value" id="stats-total-tasks">0</span>
+          </div>
+          <div class="mini-stat-item">
+            <span class="mini-stat-label">已完成任務</span>
+            <span class="mini-stat-value" id="stats-done-tasks">0</span>
+          </div>
+          <div class="mini-stat-item">
+            <span class="mini-stat-label">已完成進度</span>
+            <span class="mini-stat-value highlight" id="stats-completion-rate">0%</span>
+          </div>
+          <div class="mini-stat-item">
+            <span class="mini-stat-label">累積貢獻點數</span>
+            <span class="mini-stat-value highlight" id="stats-total-points">0 點</span>
+          </div>
+        </div>
+
+        <!-- 導覽選單 -->
+        <nav class="nav-menu">
+          <button class="nav-btn active" data-view="table">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+            📋 所有任務 (表格)
+          </button>
+          <button class="nav-btn" data-view="board">
+            <svg viewBox="0 0 24 24"><path d="M4 4h4v16H4zm7 0h4v16h-4zm7 0h4v16h-4z"/></svg>
+            🗂️ 看板視圖 (狀態)
+          </button>
+          <button class="nav-btn" data-view="timeline">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            📅 時間軸視圖 (人員)
+          </button>
+          <button class="nav-btn" data-view="calendar">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+            📅 任務行事曆 (日程)
+          </button>
+          <button class="nav-btn" data-view="key-log">
+            <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+            🔑 鑰匙與磁扣借還
+          </button>
+          <button class="nav-btn" data-view="venue-reserve">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+            🏫 場地預約
+          </button>
+          <button class="nav-btn" data-view="staff-roster">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7zm0 0"/></svg>
+            📅 人員排班
+          </button>
+          <button class="nav-btn" data-view="milestone">
+            <svg viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>
+            🎯 里程碑視圖 (計畫)
+          </button>
+          <button class="nav-btn" data-view="insights">
+            <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+            📊 績效統計 ( Insights)
+          </button>
+        </nav>
+      </div>
+
+      <!-- 側欄底部按鈕 -->
+      <div class="sidebar-footer">
+        <button class="btn btn-primary" id="btn-add-task">+ 新增任務</button>
+        <button class="btn btn-secondary" id="btn-open-settings">⚙️ 管理系統選項</button>
+        <button class="btn btn-danger-outline" id="btn-reset-data">重設預設資料</button>
+      </div>
+    </aside>
+
+    <!-- 右側主內容區 -->
+    <main class="main-content">
+      
+      <!-- 頂部標頭 -->
+      <header class="top-header">
+        <div class="view-title-area" style="display:flex; align-items:center; gap: 12px;">
+          <h2 id="current-view-title">所有任務 (表格)</h2>
+          <span id="api-status-badge" class="badge">讀取狀態中...</span>
+        </div>
+        
+        <!-- Excel 及過濾工具列 -->
+        <div class="filter-bar">
+          
+          <!-- Excel 操作區 -->
+          <div style="display: flex; gap: 6px; margin-right: 12px; border-right: 1px solid var(--border); padding-right: 12px;">
+            <button class="btn btn-secondary" onclick="exportToExcel()" style="padding: 6px 12px; font-size:12px;" title="匯出目前篩選任務至 Excel">📤 匯出 Excel</button>
+            <button class="btn btn-secondary" onclick="downloadExcelTemplate()" style="padding: 6px 12px; font-size:12px;" title="下載可用於批次編輯與匯入的範本">📋 下載匯入範本</button>
+            <label class="btn btn-secondary" style="padding: 6px 12px; font-size:12px; cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 4px;" title="上傳 Excel 檔案批次匯入任務">
+              📥 匯入 Excel 
+              <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display:none;" onchange="importFromExcel(event)">
+            </label>
+          </div>
+
+          <input type="text" class="search-input" id="search-keyword" placeholder="搜尋任務名稱...">
+          
+          <select class="filter-select" id="filter-assignee">
+            <option value="">所有負責人</option>
+          </select>
+          
+          <select class="filter-select" id="filter-label">
+            <option value="">所有標籤</option>
+          </select>
+
+          <select class="filter-select" id="filter-milestone">
+            <option value="">所有里程碑</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- 視圖內容區 -->
+      <div class="view-container">
+        
+        <!-- 1. 表格視圖 (Table) -->
+        <section class="view-pane active" id="pane-table">
+          <div class="table-card">
+            <table class="data-table" id="tasks-table">
+              <thead>
+                <tr>
+                  <th onclick="sortBy('title')">任務名稱 ⇅</th>
+                  <th onclick="sortBy('status')">狀態 ⇅</th>
+                  <th onclick="sortBy('assignee')">負責人 ⇅</th>
+                  <th onclick="sortBy('startDate')">開始日期 ⇅</th>
+                  <th onclick="sortBy('dueDate')">截止日期 ⇅</th>
+                  <th onclick="sortBy('label')">標籤 (權重) ⇅</th>
+                  <th onclick="sortBy('milestone')">里程碑 ⇅</th>
+                  <th style="width: 100px;">操作</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- 動態載入 -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 2. 看板視圖 (Board) -->
+        <section class="view-pane" id="pane-board">
+          <div class="board-grid">
+            
+            <!-- 待辦事項 -->
+            <div class="board-column" id="col-todo" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'To Do')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+              <div class="board-column-header">
+                <span class="board-column-title">
+                  <span style="color:var(--warning)">●</span> 待辦 To Do
+                </span>
+                <span class="board-column-count" id="count-todo">0</span>
+              </div>
+              <div class="board-cards-area" id="cards-todo">
+                <!-- 動態載入 -->
+              </div>
+            </div>
+
+            <!-- 進行中 -->
+            <div class="board-column" id="col-progress" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'In Progress')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+              <div class="board-column-header">
+                <span class="board-column-title">
+                  <span style="color:#3b82f6">●</span> 進行中 In Progress
+                </span>
+                <span class="board-column-count" id="count-progress">0</span>
+              </div>
+              <div class="board-cards-area" id="cards-progress">
+                <!-- 動態載入 -->
+              </div>
+            </div>
+
+            <!-- 已完成 -->
+            <div class="board-column" id="col-done" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'Done')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+              <div class="board-column-header">
+                <span class="board-column-title">
+                  <span style="color:var(--success)">●</span> 已完成 Done
+                </span>
+                <span class="board-column-count" id="count-done">0</span>
+              </div>
+              <div class="board-cards-area" id="cards-done">
+                <!-- 動態載入 -->
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 3. 時間軸視圖 (Timeline) -->
+        <section class="view-pane" id="pane-timeline">
+          <div class="timeline-card">
+            <div class="timeline-header-info">
+              <span id="timeline-current-month" style="font-weight: 700; font-size: 16px;">2026 年 7 月</span>
+              <div class="timeline-nav">
+                <button class="btn btn-secondary" onclick="changeTimelineMonth(-1)" style="padding: 6px 12px; font-size:12px;">◀ 上個月</button>
+                <button class="btn btn-secondary" onclick="changeTimelineMonth(1)" style="padding: 6px 12px; font-size:12px;">下個月 ▶</button>
+              </div>
+            </div>
+            <div class="timeline-wrapper">
+              <div class="timeline-grid" id="timeline-grid-container">
+                <!-- 動態渲染時間軸表頭與網格 -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. 任務行事曆 (Calendar) -->
+        <section class="view-pane" id="pane-calendar">
+          <div class="calendar-card">
+            
+            <div class="calendar-header-controls">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <span id="calendar-view-indicator" style="font-weight: 700; font-size: 18px; color: #652b48;">2026 年 7 月</span>
+                
+                <div class="timeline-nav" style="margin:0;">
+                  <button class="btn btn-secondary" onclick="navigateCalendar(-1)" style="padding: 6px 12px; font-size:12px;">◀ 上一個</button>
+                  <button class="btn btn-secondary" onclick="navigateCalendar(0)" style="padding: 6px 12px; font-size:12px;">今天</button>
+                  <button class="btn btn-secondary" onclick="navigateCalendar(1)" style="padding: 6px 12px; font-size:12px;">下一個 ▶</button>
+                </div>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:12px;">
+                <select class="filter-select" id="calendar-filter-assignee" style="border-color:var(--primary); font-weight:500; height: 34px;">
+                  <option value="">所有負責人</option>
+                </select>
+                
+                <select class="filter-select" id="calendar-filter-label" style="border-color:var(--primary); font-weight:500; height: 34px;">
+                  <option value="">所有種類</option>
+                </select>
+
+                <div class="chart-controls" style="margin:0; height: 34px; align-items: center; display: flex;">
+                  <button class="chart-control-btn active" id="cal-mode-month" onclick="changeCalendarViewMode('month')" style="height: 26px; line-height: 1;">月檢視</button>
+                  <button class="chart-control-btn" id="cal-mode-week" onclick="changeCalendarViewMode('week')" style="height: 26px; line-height: 1;">週檢視</button>
+                  <button class="chart-control-btn" id="cal-mode-day" onclick="changeCalendarViewMode('day')" style="height: 26px; line-height: 1;">日檢視</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="calendar-main-container" style="flex-grow:1; display:flex; flex-direction:column;">
+              <!-- 動態渲染月/週/日視圖 -->
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. 鑰匙與磁扣借還登記 (Key Log View) -->
+        <section class="view-pane" id="pane-key-log">
+          <!-- 逾期未歸還警告橫幅 -->
+          <div id="key-overdue-banner" style="display:none; background: var(--danger-light); border: 1px solid var(--danger); border-radius: var(--radius-sm); padding: 12px 20px; margin-bottom: 20px; color: var(--danger); font-weight: 700; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">⚠️</span>
+            <span>注意：目前有 <span id="overdue-count-text" style="font-size:18px; text-decoration:underline;">0</span> 筆鑰匙/磁扣借用已【逾期跨日未歸還】，請同仁儘速聯絡借用人辦理歸還！</span>
+          </div>
+          
+          <div class="key-log-layout">
+            
+            <!-- 左側登記表單 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🔑 快速借出登記</h3>
+              <form id="key-borrow-form" onsubmit="event.preventDefault();">
+                
+                <div class="form-group">
+                  <label class="form-label" for="key-borrower">使用人姓名 *</label>
+                  <input type="text" class="form-control" id="key-borrower" placeholder="請填寫您的姓名 (自簽)" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="key-item-select">選擇鑰匙 / 磁扣 *</label>
+                  <select class="form-control" id="key-item-select" required>
+                    <option value="">請選擇...</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="key-staff">辦理人員</label>
+                  <select class="form-control" id="key-staff">
+                    <!-- 同人名下拉 -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">簽名簽收 (手寫簽章) *</label>
+                  <div class="signature-pad-wrapper">
+                    <canvas id="signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
+                    <div class="signature-actions">
+                      <span style="font-size:11px; color:var(--text-muted);">請在灰色區域書寫簽名</span>
+                      <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearSignature()">清除重簽</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="submitKeyBorrow()">登記借出</button>
+              </form>
+            </div>
+
+            <!-- 右側歷史紀錄列表 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 簽收登記簿 (借還歷史紀錄)</h3>
+              <div style="overflow-x:auto;">
+                <table class="data-table" style="font-size:13px;" id="key-logs-table">
+                  <thead>
+                    <tr>
+                      <th>借取日期</th>
+                      <th>歸還日期</th>
+                      <th>使用人</th>
+                      <th>鑰匙/磁扣</th>
+                      <th>簽收</th>
+                      <th>辦理人</th>
+                      <th>狀態</th>
+                      <th style="width:80px;">功能</th>
+                    </tr>
+                  </thead>
+                  <tbody id="key-logs-body">
+                    <!-- 動態載入 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 8. 場地預約 (Venue Reservation View) -->
+        <section class="view-pane" id="pane-venue-reserve">
+          <div class="key-log-layout">
+            
+            <!-- 左側預約表單 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🏫 新增場地預約</h3>
+              <form id="venue-reserve-form" onsubmit="event.preventDefault();">
+                
+                <div class="form-group">
+                  <label class="form-label" for="reserve-venue-select">選擇場地 *</label>
+                  <select class="form-control" id="reserve-venue-select" required>
+                    <!-- 動態載入場地庫存 -->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="reserve-requester">預約人姓名 *</label>
+                  <input type="text" class="form-control" id="reserve-requester" placeholder="請填寫預約人姓名" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="reserve-date">預約日期 *</label>
+                  <input type="date" class="form-control" id="reserve-date" required>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label" for="reserve-start-period">開始節次 *</label>
+                    <select class="form-control" id="reserve-start-period" required>
+                      <option value="早修">早修</option>
+                      <option value="第一節" selected>第一節</option>
+                      <option value="第二節">第二節</option>
+                      <option value="第三節">第三節</option>
+                      <option value="第四節">第四節</option>
+                      <option value="午休">午休</option>
+                      <option value="第五節">第五節</option>
+                      <option value="第六節">第六節</option>
+                      <option value="第七節">第七節</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="reserve-end-period">結束節次 *</label>
+                    <select class="form-control" id="reserve-end-period" required>
+                      <option value="早修">早修</option>
+                      <option value="第一節" selected>第一節</option>
+                      <option value="第二節">第二節</option>
+                      <option value="第三節">第三節</option>
+                      <option value="第四節">第四節</option>
+                      <option value="午休">午休</option>
+                      <option value="第五節">第五節</option>
+                      <option value="第六節">第六節</option>
+                      <option value="第七節">第七節</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top:14px; background:#faf8fc; padding:12px; border-radius:8px; border:1px solid var(--border);">
+                  <label class="form-label" style="color:var(--primary-dark); font-weight:700; margin-bottom:10px;">🛠️ 附屬設備與需求勾選</label>
+                  
+                  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                      <input type="checkbox" id="reserve-useAV"> 使用視聽設備
+                    </label>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                      <input type="checkbox" id="reserve-borrowKey"> 借取鑰匙
+                    </label>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                      <input type="checkbox" id="reserve-useAC"> 開啟冷氣
+                    </label>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
+                      <input type="checkbox" id="reserve-arrangeChairs"> 排桌椅
+                    </label>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitVenueReservation()">送出預約登記</button>
+              </form>
+            </div>
+
+            <!-- 右側預約紀錄列表 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 場地預約登記簿</h3>
+              <div style="overflow-x:auto;">
+                <table class="data-table" style="font-size:13px;" id="venue-reservations-table">
+                  <thead>
+                    <tr>
+                      <th>預約日期</th>
+                      <th>預約場地</th>
+                      <th>預約時間</th>
+                      <th>預約人</th>
+                      <th>影音</th>
+                      <th>鑰匙</th>
+                      <th>冷氣</th>
+                      <th>桌椅</th>
+                      <th style="width:80px;">功能</th>
+                    </tr>
+                  </thead>
+                  <tbody id="venue-reservations-body">
+                    <!-- 動態載入 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 9. 人員排班 (Staff Roster View) -->
+        <section class="view-pane" id="pane-staff-roster">
+          <!-- 子頁籤切換按鈕 -->
+          <div class="settings-tabs" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
+            <button class="settings-tab-btn active" id="roster-tab-btn-duty" onclick="switchRosterTab('duty')" style="padding: 10px 16px; font-weight:700;">🏢 事務值班排班表</button>
+            <button class="settings-tab-btn" id="roster-tab-btn-delivery" onclick="switchRosterTab('delivery')" style="padding: 10px 16px; font-weight:700;">🛵 外送外勤排班表</button>
+          </div>
+
+          <!-- 子頁籤一：事務值班排班 -->
+          <div class="roster-tab-content" id="roster-content-duty" style="display:block;">
+            <div class="key-log-layout">
+              <!-- 左側排班表單 -->
+              <div class="table-card" style="padding:20px;">
+                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🏢 新增事務值班</h3>
+                <form id="duty-roster-form" onsubmit="event.preventDefault();">
+                  <div class="form-group">
+                    <label class="form-label" for="duty-date">值班日期 *</label>
+                    <input type="date" class="form-control" id="duty-date" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="duty-staff-select">值班同仁 *</label>
+                    <select class="form-control" id="duty-staff-select" required>
+                      <!-- 動態載入同仁名單 -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="duty-shift-select">值班時段/類型 *</label>
+                    <select class="form-control" id="duty-shift-select" required>
+                      <option value="全天值班">全天值班</option>
+                      <option value="上午值班">上午值班</option>
+                      <option value="下午值班">下午值班</option>
+                    </select>
+                  </div>
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitDutyRoster()">安排值班</button>
+                </form>
+              </div>
+
+              <!-- 右側值班清單與日數統計 -->
+              <div style="display:flex; flex-direction:column; gap:20px;">
+                <!-- 月份篩選與統計卡片 -->
+                <div class="table-card" style="padding:20px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                    <h4 style="color:var(--primary-dark); font-size:14px; margin:0;">📊 值班日數統計</h4>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <label for="duty-filter-month" style="font-size:12px; font-weight:700;">統計月份:</label>
+                      <input type="month" id="duty-filter-month" class="form-control" style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDutyRoster()">
+                    </div>
+                  </div>
+                  <div id="duty-stats-container" style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <!-- 動態載入值班日數統計 -->
+                  </div>
+                </div>
+
+                <!-- 歷史值班表 -->
+                <div class="table-card" style="padding:20px; flex-grow:1;">
+                  <h3 style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 月值班人員表</h3>
+                  <div style="overflow-x:auto;">
+                    <table class="data-table" style="font-size:13px;" id="duty-roster-table">
+                      <thead>
+                        <tr>
+                          <th>值班日期</th>
+                          <th>值班同仁</th>
+                          <th>值班時段/類型</th>
+                          <th style="width:80px;">功能</th>
+                        </tr>
+                      </thead>
+                      <tbody id="duty-roster-body">
+                        <!-- 動態載入 -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 子頁籤二：外送外勤排班 -->
+          <div class="roster-tab-content" id="roster-content-delivery" style="display:none;">
+            <div class="key-log-layout">
+              <!-- 左側外送表單 -->
+              <div class="table-card" style="padding:20px;">
+                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🛵 新增外送外勤安排</h3>
+                <form id="delivery-roster-form" onsubmit="event.preventDefault();">
+                  <div class="form-group">
+                    <label class="form-label" for="delivery-date">外送日期 *</label>
+                    <input type="date" class="form-control" id="delivery-date" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="delivery-staff-select">外送同仁 *</label>
+                    <select class="form-control" id="delivery-staff-select" required>
+                      <!-- 動態載入同仁名單 -->
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="delivery-purpose">外送事由/地點 *</label>
+                    <input type="text" class="form-control" id="delivery-purpose" placeholder="例如：送公文至教育局" required>
+                  </div>
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitDeliveryRoster()">安排外送</button>
+                </form>
+              </div>
+
+              <!-- 右側外送清單與日數統計 -->
+              <div style="display:flex; flex-direction:column; gap:20px;">
+                <!-- 月份篩選與統計卡片 -->
+                <div class="table-card" style="padding:20px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                    <h4 style="color:var(--primary-dark); font-size:14px; margin:0;">📊 外送日數統計</h4>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <label for="delivery-filter-month" style="font-size:12px; font-weight:700;">統計月份:</label>
+                      <input type="month" id="delivery-filter-month" class="form-control" style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDeliveryRoster()">
+                    </div>
+                  </div>
+                  <div id="delivery-stats-container" style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <!-- 動態載入外送日數統計 -->
+                  </div>
+                </div>
+
+                <!-- 歷史外送表 -->
+                <div class="table-card" style="padding:20px; flex-grow:1;">
+                  <h3 style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 外送外出人員表</h3>
+                  <div style="overflow-x:auto;">
+                    <table class="data-table" style="font-size:13px;" id="delivery-roster-table">
+                      <thead>
+                        <tr>
+                          <th>外送日期</th>
+                          <th>外送同仁</th>
+                          <th>外送事由/地點</th>
+                          <th style="width:80px;">功能</th>
+                        </tr>
+                      </thead>
+                      <tbody id="delivery-roster-body">
+                        <!-- 動態載入 -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. 里程碑視圖 (Milestone) -->
+        <section class="view-pane" id="pane-milestone">
+          <div class="milestone-grid" id="milestones-container">
+            <!-- 動態載入里程碑進度條與任務 -->
+          </div>
+        </section>
+
+        <!-- 7. 統計視圖 (Insights) -->
+        <section class="view-pane" id="pane-insights">
+          <div class="insights-card">
+            <div class="insights-header">
+              <h3 style="color:#652b48">累積工作量貢獻統計</h3>
+              <div class="chart-controls">
+                <button class="chart-control-btn active" id="chart-mode-done" onclick="toggleChartMode('done')">已完成貢獻點數 (Done Only)</button>
+                <button class="chart-control-btn" id="chart-mode-all" onclick="toggleChartMode('all')">總分配點數 (All Tasks)</button>
+              </div>
+            </div>
+            
+            <div class="chart-container" id="insights-chart-container">
+              <!-- 動態生成長條圖 -->
+            </div>
+
+            <div class="insights-legend">
+              <h4>💡 累積工作貢獻值計算邏輯說明：</h4>
+              <p>1. 本統計自動累加每位總務同仁名下任務對應的 Label 權重。</p>
+              <p>2. 權重分級：<strong>輕便任務</strong> = 1 點、<strong>中型任務</strong> = 3 點、<strong>大型任務</strong> = 5 點。</p>
+              <p>3. 點數會隨著任務狀態在看板上被拖曳至 <strong>Done (已完成)</strong> 後，自動計算並計入人員貢獻值中，提供主任月底進行客觀績效考核的量化指標。</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ------------------------------------------------------------- -->
+  <!-- 任務編輯對話框 (Edit/New Task Modal) -->
+  <!-- ------------------------------------------------------------- -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">新增任務</h3>
+        <button class="modal-close" onclick="closeTaskModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="task-form">
+          <input type="hidden" id="task-id">
+          
+          <div class="form-group">
+            <label class="form-label" for="form-title">任務名稱 *</label>
+            <input type="text" class="form-control" id="form-title" placeholder="請輸入任務名稱..." required>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="form-assignee">負責人</label>
+              <select class="form-control" id="form-assignee">
+                <!-- 動態選項 -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="form-status">狀態</label>
+              <select class="form-control" id="form-status">
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="form-start-date">開始日期</label>
+              <input type="date" class="form-control" id="form-start-date" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="form-due-date">截止日期</label>
+              <input type="date" class="form-control" id="form-due-date" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="form-label">任務標籤 (權重)</label>
+              <select class="form-control" id="form-label">
+                <!-- 動態選項 -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="form-milestone">里程碑 (年度計畫)</label>
+              <select class="form-control" id="form-milestone">
+                <!-- 動態選項 -->
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeTaskModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveTask()">確認儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------- -->
+  <!-- 系統選項管理對話框 (Settings Modal) - 增加鑰匙管理 Tab -->
+  <!-- ------------------------------------------------------------- -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-box" style="width: 580px;">
+      <div class="modal-header">
+        <h3>管理系統配置選項</h3>
+        <button class="modal-close" onclick="closeSettingsModal()">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- 分頁頁籤 -->
+        <div class="settings-tabs">
+          <button class="settings-tab-btn active" id="tab-btn-general" onclick="switchSettingsTab('general')">⚙️ 一般選項配置</button>
+          <button class="settings-tab-btn" id="tab-btn-keys" onclick="switchSettingsTab('keys')">🔑 鑰匙與磁扣庫存管理</button>
+          <button class="settings-tab-btn" id="tab-btn-venues" onclick="switchSettingsTab('venues')">🏫 場地項目管理</button>
+        </div>
+
+        <!-- 頁籤一：一般配置 -->
+        <div class="settings-tab-content active" id="tab-content-general">
+          <!-- 1. 負責人名單 -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">👥 總務處同仁名單</h4>
+            <div id="settings-assignees-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-assignee-name" placeholder="輸入同仁姓名 (例如：黃組員)">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addAssigneeSetting()">新增</button>
+            </div>
+          </div>
+
+          <!-- 2. 標籤與權重 -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏷️ 任務標籤與權重設定</h4>
+            <div id="settings-labels-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-label-name" placeholder="標籤名稱 (例如：採購)">
+              <select class="form-control" id="new-label-weight" style="width: 100px;">
+                <option value="1">權重: 1</option>
+                <option value="3">權重: 3</option>
+                <option value="5">權重: 5</option>
+              </select>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addLabelSetting()">新增</button>
+            </div>
+          </div>
+
+          <!-- 3. 里程碑管理 -->
+          <div>
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🎯 里程碑 (年度大型計畫)</h4>
+            <div id="settings-milestones-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-milestone-name" placeholder="里程碑計畫 (例如：暑期耐震補強)">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addMilestoneSetting()">新增</button>
+            </div>
+          </div>
+
+          <!-- 4. Google Sheet 雲端 API 設定 -->
+          <div style="margin-top: 20px; border-top:1px dashed var(--border); padding-top:16px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📊 Google Sheet 雲端試算表 API 網址</h4>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="form-control" id="settings-gsheet-url" placeholder="貼上您的 Google Apps Script 網頁應用程式網址 (例如：https://script.google.com/macros/s/.../exec)">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+              貼上並儲存後，系統將會**直接對您的 Google Sheet 雲端試算表進行讀寫同步**。清空並儲存則會切換回本地資料庫/LocalStorage 模式。
+            </div>
+          </div>
+        </div>
+
+        <!-- 頁籤二：鑰匙與磁扣管理 -->
+        <div class="settings-tab-content" id="tab-content-keys">
+          <div style="margin-bottom: 16px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🔑 目前庫存清單</h4>
+            <div id="settings-keys-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;">
+              <!-- 動態載入鑰匙庫存 -->
+            </div>
+          </div>
+          <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px;">
+            <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增鑰匙 / 磁扣項目</h5>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="form-control" id="new-key-name" placeholder="種類編號/名稱 (例如：五年八班教室鑰匙)">
+              <select class="form-control" id="new-key-type" style="width: 100px;">
+                <option value="鑰匙">鑰匙</option>
+                <option value="磁扣">磁扣</option>
+              </select>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addKeyInventorySetting()">新增</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 頁籤三：場地項目管理 -->
+        <div class="settings-tab-content" id="tab-content-venues">
+          <div style="margin-bottom: 16px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏫 目前可預約場地清單</h4>
+            <div id="settings-venues-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;">
+              <!-- 動態載入場地項目 -->
+            </div>
+          </div>
+          <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px;">
+            <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增場地項目</h5>
+            <div style="display:flex; gap:8px;">
+              <input type="text" class="form-control" id="new-venue-name" placeholder="場地名稱 (例如：多功能教室)">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addVenueInventorySetting()">新增</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeSettingsModal()">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 簽名大圖檢視 Modal -->
+  <div class="modal-overlay" id="signature-preview-modal" onclick="closeSignaturePreview()">
+    <div class="modal-box" style="width: 440px; text-align: center; padding: 24px;" onclick="event.stopPropagation();">
+      <h3 style="color:var(--primary-dark); margin-bottom:14px;">電子簽章檢視</h3>
+      <img id="signature-big-image" style="max-width: 100%; border: 1px solid var(--border); border-radius:8px; background:#fff; padding:10px;" src="">
+      <div style="margin-top: 14px;">
+        <button class="btn btn-primary" onclick="closeSignaturePreview()">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 煙火載體 -->
+  <div class="confetti-container" id="confetti-box"></div>
+
+  <!-- ------------------------------------------------------------- -->
+  <!-- 核心資料邏輯與介面互動 JavaScript -->
+  <!-- ------------------------------------------------------------- -->
+  <script>
+    // 預設單機模式下備用的初始資料集
+    const DEFAULT_ASSIGNEES = ["陳組長", "林幹事", "張助理"];
+    
+    const DEFAULT_LABELS = [
+      { name: "修繕", weight: 5 },
+      { name: "採購", weight: 3 },
+      { name: "行政", weight: 1 },
+      { name: "安全", weight: 3 }
+    ];
+    
+    const DEFAULT_MILESTONES = [
+      "115學年度暑期校園修繕",
+      "辦公設備汰舊換新",
+      "退休同仁感恩餐會",
+      "例行行政庶務"
+    ];
+
+    const DEFAULT_TASKS = [
+      {
+        id: "task-1",
+        title: "活動中心舞台燈光電路修繕",
+        status: "In Progress",
+        assignee: "陳組長",
+        startDate: "2026-07-05",
+        dueDate: "2026-07-15",
+        label: "修繕",
+        weight: 5,
+        milestone: "115學年度暑期校園修繕"
+      },
+      {
+        id: "task-2",
+        title: "採購總務處人體工學辦公椅 5 張",
+        status: "To Do",
+        assignee: "林幹事",
+        startDate: "2026-07-12",
+        dueDate: "2026-07-20",
+        label: "採購",
+        weight: 3,
+        milestone: "辦公設備汰舊換新"
+      },
+      {
+        id: "task-3",
+        title: "年度退休同仁感恩餐會場地佈置與主持協調",
+        status: "Done",
+        assignee: "張助理",
+        startDate: "2026-07-04",
+        dueDate: "2026-07-08",
+        label: "行政",
+        weight: 3,
+        milestone: "退休同仁感恩餐會"
+      }
+    ];
+
+    // 全局變數
+    let assignees = [];
+    let labels = [];
+    let milestones = [];
+    let tasks = [];
+    
+    // 鑰匙與磁扣相關變數
+    let keyInventory = [];
+    let keyLogs = [];
+
+    // 場地預約相關變數
+    let venueInventory = [];
+    let venueReservations = [];
+
+    // 人員排班相關變數
+    let dutyRoster = [];
+    let deliveryRoster = [];
+    let activeRosterTab = 'duty';
+    let googleSheetApiUrl = '';
+    let isGoogleSheetMode = false;
+
+    let isApiMode = false; // 是否連線至後端
+    let activeView = 'table';
+    let currentSortField = 'dueDate';
+    let currentSortOrder = 'asc';
+    let currentChartMode = 'done';
+    
+    // 時間軸當前渲染年月
+    let timelineYear = 2026;
+    let timelineMonth = 7;
+
+    // 行事曆當前渲染狀態
+    let calendarCurrentDate = new Date(2026, 6, 10); // 預設 2026 年 7 月 10 日
+    let calendarViewMode = 'month'; // 'month', 'week', 'day'
+
+    // 簽名畫布狀態變數
+    let isDrawing = false;
+    let sigCanvas, sigCtx;
+
+    // 初始化載入
+    window.addEventListener('DOMContentLoaded', async () => {
+      await initDatabase();
+      initUI();
+      initSignatureCanvas();
+      renderActiveView();
+      updateGlobalStats();
+    });
+
+    // -------------------------------------------------------------
+    // 獲取與渲染視圖核心控制
+    // -------------------------------------------------------------
+    function getFilteredTasks() {
+      const keyword = document.getElementById('search-keyword').value.toLowerCase().trim();
+      const assignee = document.getElementById('filter-assignee').value;
+      const label = document.getElementById('filter-label').value;
+      const milestone = document.getElementById('filter-milestone').value;
+
+      return tasks.filter(task => {
+        const matchesKeyword = keyword === "" || (task.title && task.title.toLowerCase().includes(keyword));
+        const matchesAssignee = assignee === "" || task.assignee === assignee;
+        const matchesLabel = label === "" || task.label === label;
+        const matchesMilestone = milestone === "" || task.milestone === milestone;
+        return matchesKeyword && matchesAssignee && matchesLabel && matchesMilestone;
+      });
+    }
+
+    function renderActiveView() {
+      // 隱藏所有 view panes
+      document.querySelectorAll('.view-pane').forEach(pane => {
+        pane.classList.remove('active');
+      });
+
+      // 顯示當前選中的 view pane
+      const activePane = document.getElementById(`pane-${activeView}`);
+      if (activePane) {
+        activePane.classList.add('active');
+      }
+
+      // 獲取經過過濾的任務列表
+      const filtered = getFilteredTasks();
+
+      // 根據不同視圖進行渲染
+      switch(activeView) {
+        case 'table':
+          renderTableView(filtered);
+          break;
+        case 'board':
+          renderBoardView(filtered);
+          break;
+        case 'timeline':
+          renderTimelineView(filtered);
+          break;
+        case 'calendar':
+          renderCalendarView();
+          break;
+        case 'key-log':
+          renderKeyLogView();
+          break;
+        case 'venue-reserve':
+          renderVenueReserveView();
+          break;
+        case 'staff-roster':
+          renderStaffRosterView();
+          break;
+        case 'milestone':
+          renderMilestoneView(filtered);
+          break;
+        case 'insights':
+          renderInsightsView(filtered);
+          break;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 資料庫存取 (後端 API 連線與 LocalStorage 雙模機制)
+    // -------------------------------------------------------------
+    async function initDatabase() {
+      googleSheetApiUrl = localStorage.getItem('ga_googleSheetApiUrl') || '';
+      if (googleSheetApiUrl) {
+        try {
+          const pAssignees = fetch(googleSheetApiUrl + '?type=assignees').then(r => r.json());
+          const pLabels = fetch(googleSheetApiUrl + '?type=labels').then(r => r.json());
+          const pMilestones = fetch(googleSheetApiUrl + '?type=milestones').then(r => r.json());
+          const pTasks = fetch(googleSheetApiUrl + '?type=tasks').then(r => r.json());
+          const pKeyInventory = fetch(googleSheetApiUrl + '?type=keyInventory').then(r => r.json());
+          const pKeyLogs = fetch(googleSheetApiUrl + '?type=keyLogs').then(r => r.json());
+          const pVenueInventory = fetch(googleSheetApiUrl + '?type=venueInventory').then(r => r.json());
+          const pVenueReservations = fetch(googleSheetApiUrl + '?type=venueReservations').then(r => r.json());
+          const pDutyRoster = fetch(googleSheetApiUrl + '?type=dutyRoster').then(r => r.json());
+          const pDeliveryRoster = fetch(googleSheetApiUrl + '?type=deliveryRoster').then(r => r.json());
+
+          const results = await Promise.all([
+            pAssignees, pLabels, pMilestones, pTasks, pKeyInventory, pKeyLogs,
+            pVenueInventory, pVenueReservations, pDutyRoster, pDeliveryRoster
+          ]);
+
+          assignees = results[0] || [];
+          labels = results[1] || [];
+          milestones = results[2] || [];
+          tasks = results[3] || [];
+          keyInventory = results[4] || [];
+          keyLogs = results[5] || [];
+          venueInventory = results[6] || [];
+          venueReservations = results[7] || [];
+          dutyRoster = results[8] || [];
+          deliveryRoster = results[9] || [];
+
+          isGoogleSheetMode = true;
+          isApiMode = false;
+
+          // 偵測是否為全新空白試算表，若是則引導用戶初始化
+          if (assignees.length === 0 && tasks.length === 0) {
+            if (confirm("📢 偵測到您的 Google 雲端試算表目前是空的！\n\n是否要自動將網頁現有的暫存資料（包括預設任務、鑰匙、場地、排班等）上傳並初始化至您的 Google Sheets？")) {
+              loadFromLocalStorage();
+              await Promise.all([
+                syncGoogleSheet('assignees'),
+                syncGoogleSheet('labels'),
+                syncGoogleSheet('milestones'),
+                syncGoogleSheet('tasks'),
+                syncGoogleSheet('keyInventory'),
+                syncGoogleSheet('keyLogs'),
+                syncGoogleSheet('venueInventory'),
+                syncGoogleSheet('venueReservations'),
+                syncGoogleSheet('dutyRoster'),
+                syncGoogleSheet('deliveryRoster')
+              ]);
+              alert("🎉 雲端試算表初始化完成！所有資料已寫入您的 Google Sheets，未來將自動在雲端同步。");
+            }
+          }
+
+          updateApiStatusBadge(true, '● 雲端模式 (Google 試算表同步)');
+          return;
+        } catch (e) {
+          console.error("無法連線 Google Sheet 試算表，改為本機 LocalStorage 模式：", e);
+          alert("⚠️ 無法連線至您的 Google Sheet 試算表，系統已暫時自動切換至本機暫存模式！");
+          isGoogleSheetMode = false;
+        }
+      }
+
+      try {
+        const configRes = await fetch('/api/config');
+        if (configRes.ok) {
+          const config = await configRes.json();
+          assignees = config.assignees;
+          labels = config.labels;
+          milestones = config.milestones;
+          isApiMode = true;
+        }
+      } catch (e) {
+        console.log("無法連接後端伺服器 API，改為 LocalStorage 單機儲存模式。", e);
+        isApiMode = false;
+      }
+
+      if (isApiMode) {
+        try {
+          const tasksRes = await fetch('/api/tasks');
+          tasks = await tasksRes.json();
+          
+          // 獲取鑰匙與磁扣資料
+          const keysRes = await fetch('/api/keys');
+          const keysData = await keysRes.json();
+          keyInventory = keysData.inventory;
+          keyLogs = keysData.logs;
+
+          // 獲取場地與預約資料
+          const venueRes = await fetch('/api/venues');
+          const venueData = await venueRes.json();
+          venueInventory = venueData.inventory;
+          venueReservations = venueData.reservations;
+
+          // 獲取排班與外勤資料
+          const rosterRes = await fetch('/api/roster');
+          const rosterData = await rosterRes.json();
+          dutyRoster = rosterData.duty;
+          deliveryRoster = rosterData.delivery;
+
+          updateApiStatusBadge(true);
+        } catch (e) {
+          isApiMode = false;
+          updateApiStatusBadge(false);
+          loadFromLocalStorage();
+        }
+      } else {
+        updateApiStatusBadge(false);
+        loadFromLocalStorage();
+      }
+    }
+
+    function loadFromLocalStorage() {
+      const savedAssignees = localStorage.getItem('ga_assignees');
+      assignees = savedAssignees ? JSON.parse(savedAssignees) : [...DEFAULT_ASSIGNEES];
+      if (!savedAssignees) localStorage.setItem('ga_assignees', JSON.stringify(assignees));
+
+      const savedLabels = localStorage.getItem('ga_labels');
+      labels = savedLabels ? JSON.parse(savedLabels) : [...DEFAULT_LABELS];
+      if (!savedLabels) localStorage.setItem('ga_labels', JSON.stringify(labels));
+
+      const savedMilestones = localStorage.getItem('ga_milestones');
+      milestones = savedMilestones ? JSON.parse(savedMilestones) : [...DEFAULT_MILESTONES];
+      if (!savedMilestones) localStorage.setItem('ga_milestones', JSON.stringify(milestones));
+
+      const savedTasks = localStorage.getItem('ga_tasks');
+      tasks = savedTasks ? JSON.parse(savedTasks) : [...DEFAULT_TASKS];
+      if (!savedTasks) localStorage.setItem('ga_tasks', JSON.stringify(tasks));
+
+      // 鑰匙資料庫 LocalStorage
+      const savedKeyInventory = localStorage.getItem('ga_keyInventory');
+      keyInventory = savedKeyInventory ? JSON.parse(savedKeyInventory) : [
+        { id: "kf-1", name: "五年十班教室鑰匙", type: "鑰匙", status: "Available" },
+        { id: "kf-2", name: "行政大樓磁扣 #12", type: "磁扣", status: "Available" },
+        { id: "kf-3", name: "體育器材室鑰匙", type: "鑰匙", status: "Available" }
+      ];
+      if (!savedKeyInventory) localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+
+      const savedKeyLogs = localStorage.getItem('ga_keyLogs');
+      keyLogs = savedKeyLogs ? JSON.parse(savedKeyLogs) : [];
+      if (!savedKeyLogs) localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
+
+      // 場地資料庫 LocalStorage
+      const savedVenueInventory = localStorage.getItem('ga_venueInventory');
+      venueInventory = savedVenueInventory ? JSON.parse(savedVenueInventory) : ["雅舍", "活動中心", "4樓會議室"];
+      if (!savedVenueInventory) localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
+
+      const savedVenueReservations = localStorage.getItem('ga_venueReservations');
+      venueReservations = savedVenueReservations ? JSON.parse(savedVenueReservations) : [];
+      if (!savedVenueReservations) localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
+
+      // 排班與外勤資料庫 LocalStorage
+      const savedDutyRoster = localStorage.getItem('ga_dutyRoster');
+      dutyRoster = savedDutyRoster ? JSON.parse(savedDutyRoster) : [];
+      if (!savedDutyRoster) localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
+
+      const savedDeliveryRoster = localStorage.getItem('ga_deliveryRoster');
+      deliveryRoster = savedDeliveryRoster ? JSON.parse(savedDeliveryRoster) : [];
+      if (!savedDeliveryRoster) localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+    }
+
+    function updateApiStatusBadge(online, textOverride = '') {
+      const badge = document.getElementById('api-status-badge');
+      if (online) {
+        badge.innerText = textOverride || '● 連線模式 (雲端儲存)';
+        badge.className = 'badge badge-done';
+        badge.style.backgroundColor = 'var(--success-light)';
+        badge.style.color = 'var(--success)';
+      } else {
+        badge.innerText = textOverride || '▲ 單機模式 (瀏覽器儲存)';
+        badge.className = 'badge badge-todo';
+        badge.style.backgroundColor = 'var(--warning-light)';
+        badge.style.color = 'var(--warning)';
+      }
+    }
+
+    async function syncGoogleSheet(type) {
+      if (!isGoogleSheetMode || !googleSheetApiUrl) return;
+      let list = [];
+      if (type === 'assignees') list = assignees.map(a => ({ name: a }));
+      else if (type === 'labels') list = labels;
+      else if (type === 'milestones') list = milestones.map(m => ({ name: m }));
+      else if (type === 'tasks') list = tasks;
+      else if (type === 'keyInventory') list = keyInventory;
+      else if (type === 'keyLogs') list = keyLogs;
+      else if (type === 'venueInventory') list = venueInventory.map(v => ({ name: v }));
+      else if (type === 'venueReservations') list = venueReservations;
+      else if (type === 'dutyRoster') list = dutyRoster;
+      else if (type === 'deliveryRoster') list = deliveryRoster;
+
+      try {
+        await fetch(googleSheetApiUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+          body: JSON.stringify({ type, list })
+        });
+      } catch (e) {
+        console.error("同步 Google Sheet 失敗:", e);
+      }
+    }
+
+    function saveGoogleSheetUrlSetting() {
+      const url = document.getElementById('settings-gsheet-url').value.trim();
+      localStorage.setItem('ga_googleSheetApiUrl', url);
+      alert("✅ Google Sheet 雲端網址已儲存！系統將自動重新整理以啟用連線。");
+      location.reload();
+    }
+
+    async function saveConfigToBackend() {
+      if (isGoogleSheetMode) {
+        await syncGoogleSheet('assignees');
+        await syncGoogleSheet('labels');
+        await syncGoogleSheet('milestones');
+      } else if (isApiMode) {
+        try {
+          await fetch('/api/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ assignees, labels, milestones })
+          });
+        } catch (e) {
+          console.error("儲存後端配置檔失敗:", e);
+        }
+      } else {
+        localStorage.setItem('ga_assignees', JSON.stringify(assignees));
+        localStorage.setItem('ga_labels', JSON.stringify(labels));
+        localStorage.setItem('ga_milestones', JSON.stringify(milestones));
+        localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+        localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
+        localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
+        localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
+        localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
+        localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+      }
+    }
+
+    async function resetToDefault() {
+      if (confirm("確定要將系統資料重設為初始模擬資料嗎？這將覆蓋您目前所有的任務。")) {
+        if (isApiMode) {
+          try {
+            await fetch('/api/config', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json; charset=utf-8' },
+              body: JSON.stringify({ assignees: DEFAULT_ASSIGNEES, labels: DEFAULT_LABELS, milestones: DEFAULT_MILESTONES })
+            });
+            await fetch('/api/tasks/bulk', {});
+            location.reload();
+            return;
+          } catch (e) {
+            alert("後端重設資料失敗！");
+          }
+        }
+        
+        localStorage.removeItem('ga_tasks');
+        localStorage.removeItem('ga_assignees');
+        localStorage.removeItem('ga_labels');
+        localStorage.removeItem('ga_milestones');
+        localStorage.removeItem('ga_keyInventory');
+        localStorage.removeItem('ga_keyLogs');
+        localStorage.removeItem('ga_venueInventory');
+        localStorage.removeItem('ga_venueReservations');
+        localStorage.removeItem('ga_dutyRoster');
+        localStorage.removeItem('ga_deliveryRoster');
+        await initDatabase();
+        initUI();
+        renderActiveView();
+        updateGlobalStats();
+        triggerConfetti(30);
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 介面初始化 (選單綁定與下拉選單填入)
+    // -------------------------------------------------------------
+    function initUI() {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+          const targetBtn = e.currentTarget;
+          targetBtn.classList.add('active');
+          
+          activeView = targetBtn.dataset.view;
+          
+          let viewTitle = "";
+          switch(activeView) {
+            case 'table': viewTitle = "所有任務 (表格)"; break;
+            case 'board': viewTitle = "看板視圖 (狀態)"; break;
+            case 'timeline': viewTitle = "時間軸視圖 (人員)"; break;
+            case 'calendar': viewTitle = "任務行事曆 (日程)"; break;
+            case 'key-log': viewTitle = "鑰匙與磁扣借還登記"; break;
+            case 'venue-reserve': viewTitle = "🏫 場地預約管理"; break;
+            case 'staff-roster': viewTitle = "📅 事務人員排班"; break;
+            case 'milestone': viewTitle = "里程碑視圖 (計畫)"; break;
+            case 'insights': viewTitle = "績效統計 (Insights)"; break;
+          }
+          document.getElementById('current-view-title').innerText = viewTitle;
+          
+          renderActiveView();
+        });
+      });
+
+      document.getElementById('btn-add-task').addEventListener('click', () => openTaskModal());
+      document.getElementById('btn-open-settings').addEventListener('click', () => openSettingsModal());
+      document.getElementById('btn-reset-data').addEventListener('click', resetToDefault);
+
+      // 綁定過濾欄位事件
+      document.getElementById('search-keyword').addEventListener('input', renderActiveView);
+      document.getElementById('filter-assignee').addEventListener('change', renderActiveView);
+      document.getElementById('filter-label').addEventListener('change', renderActiveView);
+      document.getElementById('filter-milestone').addEventListener('change', renderActiveView);
+
+      // 行事曆專用篩選下拉選單事件
+      document.getElementById('calendar-filter-assignee').addEventListener('change', renderActiveView);
+      document.getElementById('calendar-filter-label').addEventListener('change', renderActiveView);
+
+      populateFilterOptions();
+    }
+
+    function populateFilterOptions() {
+      const assigneeFilter = document.getElementById('filter-assignee');
+      const labelFilter = document.getElementById('filter-label');
+      const milestoneFilter = document.getElementById('filter-milestone');
+
+      const calAssigneeFilter = document.getElementById('calendar-filter-assignee');
+      const calLabelFilter = document.getElementById('calendar-filter-label');
+
+      const selectedAssignee = assigneeFilter.value;
+      const selectedLabel = labelFilter.value;
+      const selectedMilestone = milestoneFilter.value;
+
+      const selectedCalAssignee = calAssigneeFilter.value;
+      const selectedCalLabel = calLabelFilter.value;
+
+      // 1. 全局負責人
+      assigneeFilter.innerHTML = '<option value="">所有負責人</option>';
+      calAssigneeFilter.innerHTML = '<option value="">所有負責人</option>';
+      assignees.forEach(a => {
+        assigneeFilter.innerHTML += `<option value="${a}">${a}</option>`;
+        calAssigneeFilter.innerHTML += `<option value="${a}">${a}</option>`;
+      });
+
+      // 2. 全局種類 (標籤)
+      labelFilter.innerHTML = '<option value="">所有標籤</option>';
+      calLabelFilter.innerHTML = '<option value="">所有種類</option>';
+      labels.forEach(l => {
+        labelFilter.innerHTML += `<option value="${l.name}">${l.name}</option>`;
+        calLabelFilter.innerHTML += `<option value="${l.name}">${l.name}</option>`;
+      });
+
+      // 3. 里程碑
+      milestoneFilter.innerHTML = '<option value="">所有里程碑</option>';
+      milestones.forEach(m => {
+        milestoneFilter.innerHTML += `<option value="${m}">${m}</option>`;
+      });
+
+      assigneeFilter.value = selectedAssignee;
+      labelFilter.value = selectedLabel;
+      milestoneFilter.value = selectedMilestone;
+
+      calAssigneeFilter.value = selectedCalAssignee;
+      calLabelFilter.value = selectedCalLabel;
+
+      // 同步編輯 Modal 的下拉選單
+      const formAssignee = document.getElementById('form-assignee');
+      const formLabel = document.getElementById('form-label');
+      const formMilestone = document.getElementById('form-milestone');
+
+      formAssignee.innerHTML = '<option value="">未分派</option>';
+      assignees.forEach(a => {
+        formAssignee.innerHTML += `<option value="${a}">${a}</option>`;
+      });
+
+      formLabel.innerHTML = '';
+      labels.forEach(l => {
+        formLabel.innerHTML += `<option value="${l.name}">${l.name} (權重: ${l.weight})</option>`;
+      });
+
+      formMilestone.innerHTML = '<option value="">無里程碑</option>';
+      milestones.forEach(m => {
+        formMilestone.innerHTML += `<option value="${m}">${m}</option>`;
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 手寫電子簽章 (Canvas 拖曳繪製邏輯)
+    // -------------------------------------------------------------
+    function initSignatureCanvas() {
+      sigCanvas = document.getElementById('signature-canvas');
+      sigCtx = sigCanvas.getContext('2d');
+      sigCtx.strokeStyle = '#3b2440'; // 深粉紫線條顏色
+      sigCtx.lineWidth = 3;
+      sigCtx.lineCap = 'round';
+      sigCtx.lineJoin = 'round';
+
+      // 滑鼠事件
+      sigCanvas.addEventListener('mousedown', startSigDrawing);
+      sigCanvas.addEventListener('mousemove', drawSig);
+      sigCanvas.addEventListener('mouseup', stopSigDrawing);
+      sigCanvas.addEventListener('mouseout', stopSigDrawing);
+
+      // 行動觸控事件
+      sigCanvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = sigCanvas.getBoundingClientRect();
+        sigCtx.beginPath();
+        sigCtx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        isDrawing = true;
+      });
+
+      sigCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const touch = e.touches[0];
+        const rect = sigCanvas.getBoundingClientRect();
+        sigCtx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        sigCtx.stroke();
+      });
+
+      sigCanvas.addEventListener('touchend', stopSigDrawing);
+
+      // 初次繪製灰色底字
+      resetSignatureCanvasBackground();
+    }
+
+    function resetSignatureCanvasBackground() {
+      sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+      sigCtx.fillStyle = 'rgba(110, 95, 120, 0.15)';
+      sigCtx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+      sigCtx.textAlign = 'center';
+      sigCtx.textBaseline = 'middle';
+      sigCtx.fillText('請在此灰色方框內簽收簽名', sigCanvas.width / 2, sigCanvas.height / 2);
+    }
+
+    let hasCanvasBeenDrawnOn = false;
+
+    function startSigDrawing(e) {
+      isDrawing = true;
+      const rect = sigCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // 如果第一次下筆，清除灰色底字
+      if (!hasCanvasBeenDrawnOn) {
+        sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+        hasCanvasBeenDrawnOn = true;
+      }
+      
+      sigCtx.beginPath();
+      sigCtx.moveTo(x, y);
+    }
+
+    function drawSig(e) {
+      if (!isDrawing) return;
+      const rect = sigCanvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      sigCtx.lineTo(x, y);
+      sigCtx.stroke();
+    }
+
+    function stopSigDrawing() {
+      isDrawing = false;
+    }
+
+    function clearSignature() {
+      resetSignatureCanvasBackground();
+      hasCanvasBeenDrawnOn = false;
+    }
+
+    // -------------------------------------------------------------
+    // 全局統計更新
+    // -------------------------------------------------------------
+    function updateGlobalStats() {
+      const total = tasks.length;
+      const done = tasks.filter(t => t.status === 'Done').length;
+      const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+      
+      let totalPoints = 0;
+      tasks.forEach(t => {
+        if (t.status === 'Done') {
+          totalPoints += Number(t.weight || 0);
+        }
+      });
+
+      document.getElementById('stats-total-tasks').innerText = total;
+      document.getElementById('stats-done-tasks').innerText = done;
+      document.getElementById('stats-completion-rate').innerText = `${rate}%`;
+      document.getElementById('stats-total-points').innerText = `${totalPoints} 點`;
+    }
+
+    // -------------------------------------------------------------
+    // 1. 表格視圖渲染 (Table View)
+    // -------------------------------------------------------------
+    function renderTableView(filteredTasks) {
+      filteredTasks.sort((a, b) => {
+        let valA = a[currentSortField] || "";
+        let valB = b[currentSortField] || "";
+        
+        if (typeof valA === 'string') {
+          return currentSortOrder === 'asc' 
+            ? valA.localeCompare(valB, 'zh-TW') 
+            : valB.localeCompare(valA, 'zh-TW');
+        }
+        return currentSortOrder === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+      });
+
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      if (filteredTasks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">無符合篩選條件的任務。</td></tr>`;
+        return;
+      }
+
+      filteredTasks.forEach(task => {
+        let statusBadgeClass = 'badge-todo';
+        if (task.status === 'In Progress') statusBadgeClass = 'badge-progress';
+        if (task.status === 'Done') statusBadgeClass = 'badge-done';
+
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(task.title)}</td>
+            <td><span class="badge ${statusBadgeClass}">${task.status}</span></td>
+            <td>
+              <div class="task-card-assignee">
+                <span class="assignee-avatar">${task.assignee ? task.assignee.charAt(0) : '?'}</span>
+                <span>${escapeHTML(task.assignee || '未指派')}</span>
+              </div>
+            </td>
+            <td>${task.startDate || '-'}</td>
+            <td>${task.dueDate || '-'}</td>
+            <td>
+              <span class="badge badge-label">${escapeHTML(task.label || '無')}</span>
+              <span class="badge badge-weight">${task.weight ? '權重:' + task.weight : '無'}</span>
+            </td>
+            <td><span class="badge badge-milestone">${escapeHTML(task.milestone || '無')}</span></td>
+            <td>
+              <div class="action-btn-group">
+                <button class="action-btn" title="編輯任務" onclick="openTaskModal('${task.id}')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </button>
+                <button class="action-btn delete" title="刪除任務" onclick="deleteTask('${task.id}')">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function sortBy(field) {
+      if (currentSortField === field) {
+        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortField = field;
+        currentSortOrder = 'asc';
+      }
+      renderActiveView();
+    }
+
+    // -------------------------------------------------------------
+    // 2. 看板視圖渲染 (Board View)
+    // -------------------------------------------------------------
+    function renderBoardView(filteredTasks) {
+      const cardsTodo = document.getElementById('cards-todo');
+      const cardsProgress = document.getElementById('cards-progress');
+      const cardsDone = document.getElementById('cards-done');
+
+      cardsTodo.innerHTML = '';
+      cardsProgress.innerHTML = '';
+      cardsDone.innerHTML = '';
+
+      let countTodo = 0, countProgress = 0, countDone = 0;
+
+      filteredTasks.forEach(task => {
+        const cardHTML = `
+          <div class="task-card" draggable="true" ondragstart="handleDragStart(event, '${task.id}')">
+            <div class="task-card-title">${escapeHTML(task.title)}</div>
+            <div class="task-card-metadata">
+              <div class="task-card-meta-row">
+                <span class="task-card-assignee">
+                  <span class="assignee-avatar">${task.assignee ? task.assignee.charAt(0) : '?'}</span>
+                  ${escapeHTML(task.assignee || '未指派')}
+                </span>
+                <span class="task-card-date">📅 ${task.dueDate ? task.dueDate.substring(5) : '無截止日'}</span>
+              </div>
+            </div>
+            <div class="task-card-footer">
+              <span class="badge badge-label" style="font-size:10px; padding:2px 6px;">${escapeHTML(task.label || '無')}</span>
+              <span class="badge badge-weight" style="font-size:10px; padding:2px 6px;">權重:${task.weight}</span>
+              ${task.milestone ? `<span class="badge badge-milestone" style="font-size:10px; padding:2px 6px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHTML(task.milestone)}</span>` : ''}
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:6px; margin-top:10px; border-top: 1px solid #f1f5f9; padding-top:8px;">
+              <button class="action-btn" style="width:24px; height:24px; padding:2px;" onclick="openTaskModal('${task.id}')">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              </button>
+            </div>
+          </div>
+        `;
+
+        if (task.status === 'To Do') {
+          cardsTodo.innerHTML += cardHTML;
+          countTodo++;
+        } else if (task.status === 'In Progress') {
+          cardsProgress.innerHTML += cardHTML;
+          countProgress++;
+        } else if (task.status === 'Done') {
+          cardsDone.innerHTML += cardHTML;
+          countDone++;
+        }
+      });
+
+      document.getElementById('count-todo').innerText = countTodo;
+      document.getElementById('count-progress').innerText = countProgress;
+      document.getElementById('count-done').innerText = countDone;
+    }
+
+    // -------------------------------------------------------------
+    // 3. 時間軸視圖渲染 (Timeline View)
+    // -------------------------------------------------------------
+    function renderTimelineView(filteredTasks) {
+      const container = document.getElementById('timeline-grid-container');
+      container.innerHTML = '';
+
+      const daysInMonth = new Date(timelineYear, timelineMonth, 0).getDate();
+      document.getElementById('timeline-current-month').innerText = `${timelineYear} 年 ${timelineMonth} 月`;
+
+      container.style.gridTemplateColumns = `130px repeat(${daysInMonth}, 50px)`;
+
+      container.innerHTML += `<div class="timeline-cell header" style="position:sticky; left:0; z-index:3; border-right:2px solid var(--border);">人員 / 日期</div>`;
+      
+      const today = new Date();
+      const isCurrentMonthYear = today.getFullYear() === timelineYear && (today.getMonth() + 1) === timelineMonth;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const isToday = isCurrentMonthYear && today.getDate() === day;
+        container.innerHTML += `
+          <div class="timeline-cell header ${isToday ? 'today' : ''}">
+            <div style="font-size:10px;">${timelineMonth}/${day < 10 ? '0' + day : day}</div>
+            <div style="font-weight:700;">${day}</div>
+          </div>
+        `;
+      }
+
+      const renderAssignees = assignees.length > 0 ? assignees : ["未分派"];
+      
+      renderAssignees.forEach(assignee => {
+        container.innerHTML += `
+          <div class="timeline-cell timeline-row-label">
+            <span class="assignee-avatar" style="margin-right:8px;">${assignee.charAt(0)}</span>
+            ${escapeHTML(assignee)}
+          </div>
+        `;
+
+        const rowId = `timeline-row-${assignee.replace(/\s+/g, '')}`;
+        container.innerHTML += `
+          <div class="timeline-row-content" id="${rowId}"></div>
+        `;
+
+        const assigneeTasks = filteredTasks.filter(t => (t.assignee || "未分派") === assignee);
+        const rowContainer = document.getElementById(rowId);
+        const tracks = [];
+        
+        assigneeTasks.forEach(task => {
+          if (!task.startDate || !task.dueDate) return;
+
+          const taskStart = new Date(task.startDate);
+          const taskDue = new Date(task.dueDate);
+          
+          const startLimit = new Date(timelineYear, timelineMonth - 1, 1);
+          const endLimit = new Date(timelineYear, timelineMonth, 0);
+
+          if (taskDue < startLimit || taskStart > endLimit) return;
+
+          const displayStart = taskStart < startLimit ? 1 : taskStart.getDate();
+          const displayEnd = taskDue > endLimit ? daysInMonth : taskDue.getDate();
+
+          let placed = false;
+          for (let i = 0; i < tracks.length; i++) {
+            const overlap = tracks[i].some(t => {
+              const tStart = Math.max(1, new Date(t.startDate).getDate());
+              const tDue = Math.min(daysInMonth, new Date(t.dueDate).getDate());
+              return !(displayEnd < tStart || displayStart > tDue);
+            });
+
+            if (!overlap) {
+              tracks[i].push(task);
+              placed = true;
+              renderTaskBar(rowContainer, task, displayStart, displayEnd, i);
+              break;
+            }
+          }
+
+          if (!placed) {
+            tracks.push([task]);
+            renderTaskBar(rowContainer, task, displayStart, displayEnd, tracks.length - 1);
+          }
+        });
+
+        const trackCount = Math.max(1, tracks.length);
+        rowContainer.style.height = `${(trackCount * 36) + 12}px`;
+      });
+    }
+
+    function renderTaskBar(parent, task, startDay, endDay, trackIndex) {
+      const leftOffset = (startDay - 1) * 50;
+      const width = (endDay - startDay + 1) * 50 - 6;
+      const topOffset = 10 + (trackIndex * 36);
+
+      let statusClass = 'todo';
+      if (task.status === 'In Progress') statusClass = 'progress';
+      if (task.status === 'Done') statusClass = 'done';
+
+      const bar = document.createElement('div');
+      bar.className = `timeline-bar ${statusClass}`;
+      bar.style.left = `${leftOffset + 3}px`;
+      bar.style.width = `${width}px`;
+      bar.style.top = `${topOffset}px`;
+      bar.title = `${task.title} (${task.startDate} ~ ${task.dueDate})`;
+      bar.innerHTML = `<span style="overflow:hidden; text-overflow:ellipsis;">${escapeHTML(task.title)}</span>`;
+      
+      bar.addEventListener('click', () => openTaskModal(task.id));
+      parent.appendChild(bar);
+    }
+
+    function changeTimelineMonth(offset) {
+      timelineMonth += offset;
+      if (timelineMonth > 12) {
+        timelineMonth = 1;
+        timelineYear++;
+      } else if (timelineMonth < 1) {
+        timelineMonth = 12;
+        timelineYear--;
+      }
+      renderActiveView();
+    }
+
+    // -------------------------------------------------------------
+    // 4. 任務行事曆視圖渲染 (Calendar View)
+    // -------------------------------------------------------------
+    function renderCalendarView() {
+      const container = document.getElementById('calendar-main-container');
+      container.innerHTML = '';
+
+      const calAssignee = document.getElementById('calendar-filter-assignee').value;
+      const calLabel = document.getElementById('calendar-filter-label').value;
+
+      const calendarTasks = tasks.filter(task => {
+        const matchesAssignee = calAssignee === "" || task.assignee === calAssignee;
+        const matchesLabel = calLabel === "" || task.label === calLabel;
+        return matchesAssignee && matchesLabel;
+      });
+
+      const year = calendarCurrentDate.getFullYear();
+      const month = calendarCurrentDate.getMonth() + 1;
+
+      if (calendarViewMode === 'month') {
+        renderCalendarMonth(container, year, month, calendarTasks);
+      } else if (calendarViewMode === 'week') {
+        renderCalendarWeek(container, calendarTasks);
+      } else if (calendarViewMode === 'day') {
+        renderCalendarDay(container, calendarTasks);
+      }
+    }
+
+    function renderCalendarMonth(container, year, month, filteredTasks) {
+      document.getElementById('calendar-view-indicator').innerText = `${year} 年 ${month} 月`;
+
+      const grid = document.createElement('div');
+      grid.className = 'calendar-month-grid';
+
+      const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+      weekdays.forEach(wd => {
+        const h = document.createElement('div');
+        h.className = 'calendar-weekday-header';
+        h.innerText = wd;
+        grid.appendChild(h);
+      });
+
+      const firstDay = new Date(year, month - 1, 1).getDay();
+      const totalDays = new Date(year, month, 0).getDate();
+      const prevTotalDays = new Date(year, month - 1, 0).getDate();
+
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell other-month';
+        cell.innerHTML = `<div class="calendar-day-number">${prevTotalDays - i}</div>`;
+        grid.appendChild(cell);
+      }
+
+      const today = new Date();
+      for (let day = 1; day <= totalDays; day++) {
+        const dateStr = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+        const isToday = today.getFullYear() === year && (today.getMonth() + 1) === month && today.getDate() === day;
+
+        const cell = document.createElement('div');
+        cell.className = `calendar-day-cell ${isToday ? 'today-cell' : ''}`;
+        
+        cell.addEventListener('click', () => {
+          openTaskModalWithDates(dateStr, dateStr);
+        });
+
+        const dayNumWrap = document.createElement('div');
+        dayNumWrap.className = 'calendar-day-number';
+        dayNumWrap.innerText = day;
+        cell.appendChild(dayNumWrap);
+
+        const dayTasks = filteredTasks.filter(t => {
+          if (!t.startDate || !t.dueDate) return false;
+          return t.startDate <= dateStr && dateStr <= t.dueDate;
+        });
+
+        dayTasks.forEach(task => {
+          const strip = document.createElement('div');
+          let st = 'todo';
+          if (task.status === 'In Progress') st = 'progress';
+          if (task.status === 'Done') st = 'done';
+
+          strip.className = `calendar-task-strip ${st}`;
+          strip.innerText = task.title;
+          strip.title = `${task.title} (${task.assignee || '未指派'} | 權重:${task.weight})`;
+
+          strip.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openTaskModal(task.id);
+          });
+
+          cell.appendChild(strip);
+        });
+
+        grid.appendChild(cell);
+      }
+
+      const totalCells = firstDay + totalDays;
+      const nextMonthCells = totalCells <= 35 ? 35 - totalCells : 42 - totalCells;
+      for (let day = 1; day <= nextMonthCells; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell other-month';
+        cell.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+        grid.appendChild(cell);
+      }
+
+      container.appendChild(grid);
+    }
+
+    function renderCalendarWeek(container, filteredTasks) {
+      const currentDayOfWeek = calendarCurrentDate.getDay();
+      const sunday = new Date(calendarCurrentDate);
+      sunday.setDate(calendarCurrentDate.getDate() - currentDayOfWeek);
+
+      const saturday = new Date(sunday);
+      saturday.setDate(sunday.getDate() + 6);
+
+      const sundayStr = `${sunday.getFullYear()}/${sunday.getMonth() + 1}/${sunday.getDate()}`;
+      const saturdayStr = `${saturday.getFullYear()}/${saturday.getMonth() + 1}/${saturday.getDate()}`;
+      document.getElementById('calendar-view-indicator').innerText = `${sundayStr} ~ ${saturdayStr}`;
+
+      const weekWrapper = document.createElement('div');
+      weekWrapper.className = 'calendar-week-container';
+
+      const weekdays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+      const today = new Date();
+
+      for (let i = 0; i < 7; i++) {
+        const targetDate = new Date(sunday);
+        targetDate.setDate(sunday.getDate() + i);
+
+        const y = targetDate.getFullYear();
+        const m = targetDate.getMonth() + 1;
+        const d = targetDate.getDate();
+        const dateStr = `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`;
+
+        const isToday = today.getFullYear() === y && (today.getMonth() + 1) === m && today.getDate() === d;
+
+        const col = document.createElement('div');
+        col.className = `calendar-week-column ${isToday ? 'today-col' : ''}`;
+
+        const title = document.createElement('div');
+        title.className = 'calendar-week-day-title';
+        title.innerText = `${m}/${d} (${weekdays[i]})`;
+        col.appendChild(title);
+
+        const dayTasks = filteredTasks.filter(t => {
+          if (!t.startDate || !t.dueDate) return false;
+          return t.startDate <= dateStr && dateStr <= t.dueDate;
+        });
+
+        if (dayTasks.length === 0) {
+          col.innerHTML += `<div style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:20px;">無工作</div>`;
+        } else {
+          dayTasks.forEach(task => {
+            let stBadge = 'badge-todo';
+            if (task.status === 'In Progress') stBadge = 'badge-progress';
+            if (task.status === 'Done') stBadge = 'badge-done';
+
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.style.padding = '10px';
+            card.style.fontSize = '12px';
+            card.style.cursor = 'pointer';
+            
+            card.innerHTML = `
+              <div style="font-weight:700; margin-bottom:6px; line-height:1.3;">${escapeHTML(task.title)}</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted);">
+                <span>👤 ${escapeHTML(task.assignee || '未指派')}</span>
+                <span class="badge ${stBadge}" style="font-size:9px; padding:1px 6px;">${task.status}</span>
+              </div>
+            `;
+            
+            card.addEventListener('click', () => openTaskModal(task.id));
+            col.appendChild(card);
+          });
+        }
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn btn-secondary';
+        addBtn.style.padding = '6px';
+        addBtn.style.fontSize = '11px';
+        addBtn.style.marginTop = 'auto';
+        addBtn.innerText = '+ 新增任務';
+        addBtn.onclick = () => openTaskModalWithDates(dateStr, dateStr);
+        col.appendChild(addBtn);
+
+        weekWrapper.appendChild(col);
+      }
+
+      container.appendChild(weekWrapper);
+    }
+
+    function renderCalendarDay(container, filteredTasks) {
+      const y = calendarCurrentDate.getFullYear();
+      const m = calendarCurrentDate.getMonth() + 1;
+      const d = calendarCurrentDate.getDate();
+      const dateStr = `${y}-${m < 10 ? '0' + m : m}-${d < 10 ? '0' + d : d}`;
+
+      document.getElementById('calendar-view-indicator').innerText = `${y} 年 ${m} 月 ${d} 日`;
+
+      const card = document.createElement('div');
+      card.className = 'calendar-day-view-card';
+
+      const dayTasks = filteredTasks.filter(t => {
+        if (!t.startDate || !t.dueDate) return false;
+        return t.startDate <= dateStr && dateStr <= t.dueDate;
+      });
+
+      let tasksHTML = '';
+      if (dayTasks.length === 0) {
+        tasksHTML = `<div style="text-align:center; color:var(--text-muted); padding:30px 0;">此日期目前沒有預定的總務工作。</div>`;
+      } else {
+        dayTasks.forEach(task => {
+          let stBadge = 'badge-todo';
+          if (task.status === 'In Progress') stBadge = 'badge-progress';
+          if (task.status === 'Done') stBadge = 'badge-done';
+
+          tasksHTML += `
+            <div class="milestone-task-item ${task.status === 'Done' ? 'done' : ''}" style="margin-bottom:12px; padding:12px; cursor:pointer;" onclick="openTaskModal('${task.id}')">
+              <div>
+                <div style="font-weight:700; font-size:14px; margin-bottom:4px; color:var(--text-main);">${escapeHTML(task.title)}</div>
+                <div style="font-size:12px; color:var(--text-muted);">
+                  負責人: <strong>${escapeHTML(task.assignee || '未指派')}</strong> | 
+                  時程: ${task.startDate} ~ ${task.dueDate}
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="badge badge-weight">權重:${task.weight}</span>
+                <span class="badge ${stBadge}">${task.status}</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:12px;">
+          <h3 style="color:var(--primary-dark);">📅 當日排程清單</h3>
+          <button class="btn btn-primary" style="padding:6px 12px; font-size:12px;" onclick="openTaskModalWithDates('${dateStr}', '${dateStr}')">+ 新增工作</button>
+        </div>
+        <div>
+          ${tasksHTML}
+        </div>
+      `;
+
+      container.appendChild(card);
+    }
+
+    function navigateCalendar(direction) {
+      if (direction === 0) {
+        calendarCurrentDate = new Date();
+      } else {
+        if (calendarViewMode === 'month') {
+          calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + direction);
+        } else if (calendarViewMode === 'week') {
+          calendarCurrentDate.setDate(calendarCurrentDate.getDate() + (direction * 7));
+        } else if (calendarViewMode === 'day') {
+          calendarCurrentDate.setDate(calendarCurrentDate.getDate() + direction);
+        }
+      }
+      renderActiveView();
+    }
+
+    function changeCalendarViewMode(mode) {
+      calendarViewMode = mode;
+      document.getElementById('cal-mode-month').classList.toggle('active', mode === 'month');
+      document.getElementById('cal-mode-week').classList.toggle('active', mode === 'week');
+      document.getElementById('cal-mode-day').classList.toggle('active', mode === 'day');
+      renderActiveView();
+    }
+
+    function openTaskModalWithDates(start, due) {
+      openTaskModal();
+      document.getElementById('form-start-date').value = start;
+      document.getElementById('form-due-date').value = due;
+    }
+
+    // -------------------------------------------------------------
+    // 5. 鑰匙與磁扣登記簿渲染 (Key Log View)
+    // -------------------------------------------------------------
+    function renderKeyLogView() {
+      // 1. 填入可借用的鑰匙下拉選單
+      const itemSelect = document.getElementById('key-item-select');
+      itemSelect.innerHTML = '<option value="">請選擇鑰匙或磁扣...</option>';
+      
+      // 僅篩選 Available 的鑰匙
+      const availableItems = keyInventory.filter(item => item.status === 'Available');
+      availableItems.forEach(item => {
+        itemSelect.innerHTML += `<option value="${item.id}">${item.name} (${item.type})</option>`;
+      });
+
+      // 2. 填入辦理同仁下拉選單
+      const staffSelect = document.getElementById('key-staff');
+      staffSelect.innerHTML = '';
+      assignees.forEach(a => {
+        staffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+      });
+
+      // 3. 逾期跨日未歸還追蹤與警告橫幅計算
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = (today.getMonth() + 1).toString().padStart(2, '0');
+      const d = today.getDate().toString().padStart(2, '0');
+      const todayStr = `${y}-${m}-${d}`;
+      
+      let overdueCount = 0;
+      keyLogs.forEach(log => {
+        if (log.status === 'Borrowed' && log.borrowDate) {
+          const borrowDatePart = log.borrowDate.substring(0, 10); // 格式為 YYYY-MM-DD
+          if (borrowDatePart < todayStr) {
+            overdueCount++;
+          }
+        }
+      });
+
+      const banner = document.getElementById('key-overdue-banner');
+      if (overdueCount > 0) {
+        banner.style.display = 'flex';
+        document.getElementById('overdue-count-text').innerText = overdueCount;
+      } else {
+        banner.style.display = 'none';
+      }
+
+      // 4. 渲染歷史借用紀錄
+      const logsBody = document.getElementById('key-logs-body');
+      logsBody.innerHTML = '';
+
+      if (keyLogs.length === 0) {
+        logsBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">目前無任何借還登記紀錄。</td></tr>`;
+        return;
+      }
+
+      // 反序排列 (最新紀錄在最上面)
+      const sortedLogs = [...keyLogs].reverse();
+
+      sortedLogs.forEach(log => {
+        const isBorrowed = log.status === 'Borrowed';
+        
+        let isOverdue = false;
+        if (isBorrowed && log.borrowDate) {
+          const borrowDatePart = log.borrowDate.substring(0, 10);
+          if (borrowDatePart < todayStr) {
+            isOverdue = true;
+          }
+        }
+
+        let statusBadge = '';
+        let rowClass = '';
+
+        if (isBorrowed) {
+          if (isOverdue) {
+            statusBadge = '<span class="badge badge-danger" style="animation: pulse 1.5s infinite; font-weight:700; padding:4px 8px;">⚠️ 逾期未還</span>';
+            rowClass = 'class="row-overdue"';
+          } else {
+            statusBadge = '<span class="badge badge-todo">借出中</span>';
+          }
+        } else {
+          statusBadge = '<span class="badge badge-done">已歸還</span>';
+        }
+        
+        // 簽章圖檔預覽
+        const sigHTML = log.signature ? `<img src="${log.signature}" class="signature-thumbnail" onclick="previewSignature('${log.signature}')" title="點擊放大檢視">` : '<span style="color:var(--text-muted);">無</span>';
+
+        logsBody.innerHTML += `
+          <tr ${rowClass}>
+            <td style="font-weight:600;">${log.borrowDate}</td>
+            <td>${log.returnDate || '<span style="color:var(--primary); font-weight:700;">- 尚未歸還 -</span>'}</td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(log.borrower)}</td>
+            <td><strong>${escapeHTML(log.itemName)}</strong></td>
+            <td>${sigHTML}</td>
+            <td>${escapeHTML(log.staff || '')}</td>
+            <td>${statusBadge}</td>
+            <td>
+              ${isBorrowed ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; font-weight:700; border-color:var(--primary); color:var(--primary-dark);" onclick="returnKey('${log.id}')">辦理歸還</button>` : '<span style="color:var(--success); font-weight:700;">✓ 已完成</span>'}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 登記借出
+    async function submitKeyBorrow() {
+      const borrower = document.getElementById('key-borrower').value.trim();
+      const itemId = document.getElementById('key-item-select').value;
+      const staff = document.getElementById('key-staff').value;
+
+      if (!borrower) {
+        alert("請輸入使用人姓名！");
+        return;
+      }
+      if (!itemId) {
+        alert("請選擇要借用的鑰匙或磁扣！");
+        return;
+      }
+      if (!hasCanvasBeenDrawnOn) {
+        alert("使用人必須手寫簽名簽收！");
+        return;
+      }
+
+      // 提取簽章 Base64 圖檔
+      const signature = sigCanvas.toDataURL();
+
+      const borrowPayload = { borrower, itemId, staff, signature };
+
+      if (isGoogleSheetMode) {
+        const now = new Date();
+        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        const item = keyInventory.find(i => i.id === itemId);
+        if (item) item.status = 'Lent';
+
+        const newLog = {
+          id: 'klog-' + Date.now(),
+          borrowDate: nowStr,
+          returnDate: "",
+          borrower,
+          itemId,
+          itemName: item ? item.name : "未知鑰匙",
+          staff,
+          signature,
+          status: "Borrowed"
+        };
+        keyLogs.push(newLog);
+
+        await syncGoogleSheet('keyInventory');
+        await syncGoogleSheet('keyLogs');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/keys/borrow', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(borrowPayload)
+          });
+          if (res.ok) {
+            const newLog = await res.json();
+            
+            // 同步本機狀態
+            const item = keyInventory.find(i => i.id === itemId);
+            if (item) item.status = 'Lent';
+            keyLogs.push(newLog);
+          } else {
+            alert("伺服器登記借出失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法登記借出！");
+          return;
+        }
+      } else {
+        // 單機 LocalStorage 備用
+        const now = new Date();
+        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        const item = keyInventory.find(i => i.id === itemId);
+        if (item) item.status = 'Lent';
+
+        const newLog = {
+          id: 'klog-' + Date.now(),
+          borrowDate: nowStr,
+          returnDate: "",
+          borrower,
+          itemId,
+          itemName: item ? item.name : "未知鑰匙",
+          staff,
+          signature,
+          status: "Borrowed"
+        };
+        keyLogs.push(newLog);
+        
+        localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+        localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
+      }
+
+      // 重置表單與簽章畫布
+      document.getElementById('key-borrower').value = '';
+      clearSignature();
+      triggerConfetti(25);
+      renderActiveView();
+    }
+
+    // 辦理歸還
+    async function returnKey(logId) {
+      if (isGoogleSheetMode) {
+        const now = new Date();
+        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        
+        const log = keyLogs.find(l => l.id === logId);
+        if (log) {
+          log.returnDate = nowStr;
+          log.status = 'Returned';
+          const item = keyInventory.find(i => i.id === log.itemId);
+          if (item) item.status = 'Available';
+        }
+        await syncGoogleSheet('keyInventory');
+        await syncGoogleSheet('keyLogs');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/keys/return', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ id: logId })
+          });
+          if (res.ok) {
+            const updatedLog = await res.json();
+            // 同步本機
+            const idx = keyLogs.findIndex(l => l.id === logId);
+            if (idx !== -1) keyLogs[idx] = updatedLog;
+            const item = keyInventory.find(i => i.id === updatedLog.itemId);
+            if (item) item.status = 'Available';
+          } else {
+            alert("後端辦理歸還失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法歸還！");
+          return;
+        }
+      } else {
+        // 單機備用
+        const now = new Date();
+        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        
+        const log = keyLogs.find(l => l.id === logId);
+        if (log) {
+          log.returnDate = nowStr;
+          log.status = 'Returned';
+          const item = keyInventory.find(i => i.id === log.itemId);
+          if (item) item.status = 'Available';
+        }
+        localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+        localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
+      }
+
+      triggerConfetti(15);
+      renderActiveView();
+    }
+
+    // 放大顯示簽名圖檔
+    function previewSignature(dataUrl) {
+      document.getElementById('signature-big-image').src = dataUrl;
+      document.getElementById('signature-preview-modal').classList.add('active');
+    }
+    function closeSignaturePreview() {
+      document.getElementById('signature-preview-modal').classList.remove('active');
+    }
+
+    // -------------------------------------------------------------
+    // 場地預約相關 JavaScript 邏輯
+    // -------------------------------------------------------------
+    const PERIOD_ORDER = ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節"];
+
+    function renderVenueReserveView() {
+      // 1. 填入可預約場地下拉選單
+      const venueSelect = document.getElementById('reserve-venue-select');
+      venueSelect.innerHTML = '<option value="">請選擇場地...</option>';
+      venueInventory.forEach(v => {
+        venueSelect.innerHTML += `<option value="${v}">${v}</option>`;
+      });
+
+      // 預設日期填為今天
+      if (!document.getElementById('reserve-date').value) {
+        document.getElementById('reserve-date').value = new Date().toISOString().substring(0, 10);
+      }
+
+      // 2. 渲染預約紀錄
+      const resBody = document.getElementById('venue-reservations-body');
+      resBody.innerHTML = '';
+
+      if (venueReservations.length === 0) {
+        resBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:30px;">目前無任何場地預約紀錄。</td></tr>`;
+        return;
+      }
+
+      const sortedReservations = [...venueReservations].sort((a,b) => b.date.localeCompare(a.date));
+
+      sortedReservations.forEach(res => {
+        const avBadge = res.useAV ? '<span class="badge badge-progress" style="font-size:10px; padding:2px 6px;">影音</span>' : '<span style="color:#ccc;">-</span>';
+        const keyBadge = res.borrowKey ? '<span class="badge badge-label" style="font-size:10px; padding:2px 6px;">鑰匙</span>' : '<span style="color:#ccc;">-</span>';
+        const acBadge = res.useAC ? '<span class="badge badge-done" style="font-size:10px; padding:2px 6px; background:#e0f2fe; color:#0284c7; border-color:#bae6fd;">冷氣</span>' : '<span style="color:#ccc;">-</span>';
+        const chairsBadge = res.arrangeChairs ? '<span class="badge badge-todo" style="font-size:10px; padding:2px 6px;">桌椅</span>' : '<span style="color:#ccc;">-</span>';
+
+        // 支援新格式 startPeriod ~ endPeriod 以及舊格式 period
+        const periodText = (res.startPeriod && res.endPeriod)
+          ? (res.startPeriod === res.endPeriod ? res.startPeriod : `${res.startPeriod} ~ ${res.endPeriod}`)
+          : (res.period || '');
+
+        resBody.innerHTML += `
+          <tr>
+            <td style="font-weight:600;">${res.date}</td>
+            <td><strong>${escapeHTML(res.venue)}</strong></td>
+            <td style="font-weight:600; color:var(--primary-dark);">${escapeHTML(periodText)}</td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(res.requester)}</td>
+            <td>${avBadge}</td>
+            <td>${keyBadge}</td>
+            <td>${acBadge}</td>
+            <td>${chairsBadge}</td>
+            <td>
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="cancelReservation('${res.id}')">取消預約</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function submitVenueReservation() {
+      const venue = document.getElementById('reserve-venue-select').value;
+      const requester = document.getElementById('reserve-requester').value.trim();
+      const date = document.getElementById('reserve-date').value;
+      const startPeriod = document.getElementById('reserve-start-period').value;
+      const endPeriod = document.getElementById('reserve-end-period').value;
+      const useAV = document.getElementById('reserve-useAV').checked;
+      const borrowKey = document.getElementById('reserve-borrowKey').checked;
+      const useAC = document.getElementById('reserve-useAC').checked;
+      const arrangeChairs = document.getElementById('reserve-arrangeChairs').checked;
+
+      if (!venue) {
+        alert("請選擇預約場地！");
+        return;
+      }
+      if (!requester) {
+        alert("請輸入預約人姓名！");
+        return;
+      }
+      if (!date) {
+        alert("請選擇預約日期！");
+        return;
+      }
+      if (!startPeriod || !endPeriod) {
+        alert("請選擇完整的預約節次！");
+        return;
+      }
+
+      const startIndex = PERIOD_ORDER.indexOf(startPeriod);
+      const endIndex = PERIOD_ORDER.indexOf(endPeriod);
+      if (startIndex > endIndex) {
+        alert("❌ 節次順序錯誤：開始節次不能晚於結束節次！");
+        return;
+      }
+
+      // 檢查是否重疊預約
+      const hasConflict = venueReservations.some(r => {
+        if (r.venue !== venue || r.date !== date) return false;
+
+        const rStart = r.startPeriod || r.period;
+        const rEnd = r.endPeriod || r.period;
+        const rStartIdx = PERIOD_ORDER.indexOf(rStart);
+        const rEndIdx = PERIOD_ORDER.indexOf(rEnd);
+
+        // 重疊公式：s1 <= e2 && s2 <= e1
+        return (startIndex <= rEndIdx && rStartIdx <= endIndex);
+      });
+
+      if (hasConflict) {
+        alert(`❌ 預約衝突：${date} 該時段場地已有人預約，請選擇其他場地或時間範圍。`);
+        return;
+      }
+
+      const payload = { venue, requester, date, startPeriod, endPeriod, useAV, borrowKey, useAC, arrangeChairs };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'vres-' + Date.now();
+        venueReservations.push(payload);
+        await syncGoogleSheet('venueReservations');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/venues/reserve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            venueReservations.push(created);
+          } else {
+            alert("後端預約失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法登記預約！");
+          return;
+        }
+      } else {
+        payload.id = 'vres-' + Date.now();
+        venueReservations.push(payload);
+        localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
+      }
+
+      // 重置表單
+      document.getElementById('reserve-requester').value = '';
+      document.getElementById('reserve-useAV').checked = false;
+      document.getElementById('reserve-borrowKey').checked = false;
+      document.getElementById('reserve-useAC').checked = false;
+      document.getElementById('reserve-arrangeChairs').checked = false;
+
+      triggerConfetti(30);
+      renderActiveView();
+    }
+
+    async function cancelReservation(resId) {
+      if (confirm("確定要取消此項場地預約嗎？")) {
+        if (isGoogleSheetMode) {
+          venueReservations = venueReservations.filter(r => r.id !== resId);
+          await syncGoogleSheet('venueReservations');
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/venues/reserve?id=${resId}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              venueReservations = venueReservations.filter(r => r.id !== resId);
+            } else {
+              alert("後端取消預約失敗！");
+              return;
+            }
+          } catch(e) {
+            alert("網路連線失敗，無法取消預約！");
+            return;
+          }
+        } else {
+          venueReservations = venueReservations.filter(r => r.id !== resId);
+          localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
+        }
+        renderActiveView();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 人員排班 (Staff Roster) 相關 JavaScript 邏輯
+    // -------------------------------------------------------------
+    function switchRosterTab(tabName) {
+      activeRosterTab = tabName;
+      document.querySelectorAll('.roster-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      document.querySelectorAll('#pane-staff-roster .settings-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(`roster-content-${tabName}`).style.display = 'block';
+      document.getElementById(`roster-tab-btn-${tabName}`).classList.add('active');
+
+      if (tabName === 'duty') {
+        renderDutyRoster();
+      } else {
+        renderDeliveryRoster();
+      }
+    }
+
+    function renderStaffRosterView() {
+      // 1. 填入下拉選單 (同仁名單)
+      const dutyStaffSelect = document.getElementById('duty-staff-select');
+      dutyStaffSelect.innerHTML = '<option value="">請選擇值班同仁...</option>';
+      assignees.forEach(a => {
+        dutyStaffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+      });
+
+      const deliveryStaffSelect = document.getElementById('delivery-staff-select');
+      deliveryStaffSelect.innerHTML = '<option value="">請選擇外送同仁...</option>';
+      assignees.forEach(a => {
+        deliveryStaffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+      });
+
+      // 2. 設定篩選月份預設值 (若尚未設定，設為當前月 YYYY-MM)
+      const now = new Date();
+      const currentMonthStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}`;
+      
+      const dutyMonthInput = document.getElementById('duty-filter-month');
+      if (!dutyMonthInput.value) {
+        dutyMonthInput.value = currentMonthStr;
+      }
+      
+      const deliveryMonthInput = document.getElementById('delivery-filter-month');
+      if (!deliveryMonthInput.value) {
+        deliveryMonthInput.value = currentMonthStr;
+      }
+
+      // 3. 預設今日日期到新增日期欄位
+      const todayStr = now.toISOString().substring(0, 10);
+      if (!document.getElementById('duty-date').value) {
+        document.getElementById('duty-date').value = todayStr;
+      }
+      if (!document.getElementById('delivery-date').value) {
+        document.getElementById('delivery-date').value = todayStr;
+      }
+
+      // 4. 根據當前選擇子分頁渲染
+      if (activeRosterTab === 'duty') {
+        renderDutyRoster();
+      } else {
+        renderDeliveryRoster();
+      }
+    }
+
+    // 渲染值班排班與日數統計
+    function renderDutyRoster() {
+      const selectedMonth = document.getElementById('duty-filter-month').value; // "YYYY-MM"
+      const body = document.getElementById('duty-roster-body');
+      body.innerHTML = '';
+
+      // 1. 篩選當月值班紀錄
+      const monthlyDuty = dutyRoster.filter(r => r.date.substring(0, 7) === selectedMonth);
+
+      // 依日期排序 (正序)
+      monthlyDuty.sort((a,b) => a.date.localeCompare(b.date));
+
+      // 2. 統計各人值班日數
+      const stats = {};
+      assignees.forEach(a => stats[a] = 0);
+      monthlyDuty.forEach(r => {
+        if (stats[r.staff] !== undefined) {
+          stats[r.staff] += 1;
+        } else {
+          stats[r.staff] = 1;
+        }
+      });
+
+      // 3. 渲染統計卡片
+      const statsContainer = document.getElementById('duty-stats-container');
+      statsContainer.innerHTML = '';
+      for (const [staff, count] of Object.entries(stats)) {
+        statsContainer.innerHTML += `
+          <div class="mini-stat-item" style="padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; background:#fff; min-width: 100px; text-align:center;">
+            <div style="font-size:12px; color:var(--text-muted); font-weight:700;">${escapeHTML(staff)}</div>
+            <div style="font-size:18px; font-weight:700; color:var(--primary); margin-top:4px;">${count} 天</div>
+          </div>
+        `;
+      }
+
+      // 4. 渲染表格
+      if (monthlyDuty.length === 0) {
+        body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:30px;">本月目前無任何值班安排。</td></tr>`;
+        return;
+      }
+
+      monthlyDuty.forEach(r => {
+        let badgeClass = 'badge-todo';
+        if (r.shift === '上午值班') badgeClass = 'badge-progress';
+        if (r.shift === '下午值班') badgeClass = 'badge-label';
+
+        body.innerHTML += `
+          <tr>
+            <td style="font-weight:600;">${r.date}</td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(r.staff)}</td>
+            <td><span class="badge ${badgeClass}">${escapeHTML(r.shift)}</span></td>
+            <td>
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDutyRoster('${r.id}')">刪除排班</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 登記值班
+    async function submitDutyRoster() {
+      const date = document.getElementById('duty-date').value;
+      const staff = document.getElementById('duty-staff-select').value;
+      const shift = document.getElementById('duty-shift-select').value;
+
+      if (!date) {
+        alert("請選擇值班日期！");
+        return;
+      }
+      if (!staff) {
+        alert("請選擇值班同仁！");
+        return;
+      }
+      if (!shift) {
+        alert("請選擇值班時段！");
+        return;
+      }
+
+      // 檢查是否重複排班
+      const conflict = dutyRoster.some(r => r.date === date && r.staff === staff);
+      if (conflict) {
+        alert(`❌ 排班衝突：${staff} 在 ${date} 已有值班安排！`);
+        return;
+      }
+
+      const payload = { date, staff, shift };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'dr-' + Date.now();
+        dutyRoster.push(payload);
+        await syncGoogleSheet('dutyRoster');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/roster/duty', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            dutyRoster.push(created);
+          } else {
+            alert("後端登記值班失敗！");
+            return;
+          }
+        } catch(e) {
+          alert("無法連線後端伺服器登記值班！");
+          return;
+        }
+      } else {
+        payload.id = 'dr-' + Date.now();
+        dutyRoster.push(payload);
+        localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
+      }
+
+      triggerConfetti(20);
+      renderDutyRoster();
+    }
+
+    // 刪除值班
+    async function deleteDutyRoster(rosterId) {
+      if (confirm("確定要刪除這筆值班排班嗎？")) {
+        if (isGoogleSheetMode) {
+          dutyRoster = dutyRoster.filter(r => r.id !== rosterId);
+          await syncGoogleSheet('dutyRoster');
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/roster/duty?id=${rosterId}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              dutyRoster = dutyRoster.filter(r => r.id !== rosterId);
+            } else {
+              alert("後端刪除排班失敗！");
+              return;
+            }
+          } catch(e) {
+            alert("無法連線後端刪除！");
+            return;
+          }
+        } else {
+          dutyRoster = dutyRoster.filter(r => r.id !== rosterId);
+          localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
+        }
+        renderDutyRoster();
+      }
+    }
+
+    // 渲染外送排班與統計
+    function renderDeliveryRoster() {
+      const selectedMonth = document.getElementById('delivery-filter-month').value; // "YYYY-MM"
+      const body = document.getElementById('delivery-roster-body');
+      body.innerHTML = '';
+
+      // 1. 篩選當月外送外勤紀錄
+      const monthlyDelivery = deliveryRoster.filter(r => r.date.substring(0, 7) === selectedMonth);
+
+      // 依日期排序 (正序)
+      monthlyDelivery.sort((a,b) => a.date.localeCompare(b.date));
+
+      // 2. 統計各人外送日數
+      const stats = {};
+      assignees.forEach(a => stats[a] = 0);
+      monthlyDelivery.forEach(r => {
+        if (stats[r.staff] !== undefined) {
+          stats[r.staff] += 1;
+        } else {
+          stats[r.staff] = 1;
+        }
+      });
+
+      // 3. 渲染統計卡片
+      const statsContainer = document.getElementById('delivery-stats-container');
+      statsContainer.innerHTML = '';
+      for (const [staff, count] of Object.entries(stats)) {
+        statsContainer.innerHTML += `
+          <div class="mini-stat-item" style="padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; background:#fff; min-width: 100px; text-align:center;">
+            <div style="font-size:12px; color:var(--text-muted); font-weight:700;">${escapeHTML(staff)}</div>
+            <div style="font-size:18px; font-weight:700; color:var(--primary); margin-top:4px;">${count} 次</div>
+          </div>
+        `;
+      }
+
+      // 4. 渲染表格
+      if (monthlyDelivery.length === 0) {
+        body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:30px;">本月目前無任何外送安排。</td></tr>`;
+        return;
+      }
+
+      monthlyDelivery.forEach(r => {
+        body.innerHTML += `
+          <tr>
+            <td style="font-weight:600;">${r.date}</td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(r.staff)}</td>
+            <td><strong>${escapeHTML(r.purpose)}</strong></td>
+            <td>
+              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDeliveryRoster('${r.id}')">刪除外送</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 登記外送
+    async function submitDeliveryRoster() {
+      const date = document.getElementById('delivery-date').value;
+      const staff = document.getElementById('delivery-staff-select').value;
+      const purpose = document.getElementById('delivery-purpose').value.trim();
+
+      if (!date) {
+        alert("請選擇外送日期！");
+        return;
+      }
+      if (!staff) {
+        alert("請選擇外送同仁！");
+        return;
+      }
+      if (!purpose) {
+        alert("請填寫外送事由或地點！");
+        return;
+      }
+
+      const payload = { date, staff, purpose };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'del-' + Date.now();
+        deliveryRoster.push(payload);
+        await syncGoogleSheet('deliveryRoster');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/roster/delivery', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            deliveryRoster.push(created);
+          } else {
+            alert("後端登記外送失敗！");
+            return;
+          }
+        } catch(e) {
+          alert("無法連線後端伺服器登記外送！");
+          return;
+        }
+      } else {
+        payload.id = 'del-' + Date.now();
+        deliveryRoster.push(payload);
+        localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+      }
+
+      // 重置表單事由
+      document.getElementById('delivery-purpose').value = '';
+
+      triggerConfetti(20);
+      renderDeliveryRoster();
+    }
+
+    // 刪除外送
+    async function deleteDeliveryRoster(rosterId) {
+      if (confirm("確定要刪除這筆外勤外送排班嗎？")) {
+        if (isGoogleSheetMode) {
+          deliveryRoster = deliveryRoster.filter(r => r.id !== rosterId);
+          await syncGoogleSheet('deliveryRoster');
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/roster/delivery?id=${rosterId}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              deliveryRoster = deliveryRoster.filter(r => r.id !== rosterId);
+            } else {
+              alert("後端刪除外送紀錄失敗！");
+              return;
+            }
+          } catch(e) {
+            alert("無法連線後端刪除！");
+            return;
+          }
+        } else {
+          deliveryRoster = deliveryRoster.filter(r => r.id !== rosterId);
+          localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+        }
+        renderDeliveryRoster();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 管理員設定對話框頁籤切換與鑰匙增刪邏輯
+    // -------------------------------------------------------------
+    function switchSettingsTab(tabName) {
+      document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.settings-tab-content').forEach(content => content.classList.remove('active'));
+
+      document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+      document.getElementById(`tab-content-${tabName}`).classList.add('active');
+
+      if (tabName === 'keys') {
+        renderSettingsKeysList();
+      } else if (tabName === 'venues') {
+        renderSettingsVenuesList();
+      }
+    }
+
+    function renderSettingsKeysList() {
+      const container = document.getElementById('settings-keys-list');
+      container.innerHTML = '';
+
+      if (keyInventory.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px 0;">目前無任何鑰匙或磁扣。</div>';
+        return;
+      }
+
+      keyInventory.forEach(item => {
+        const typeBadge = item.type === '磁扣' ? '<span class="badge badge-progress" style="font-size:9px; padding:2px 6px;">磁扣</span>' : '<span class="badge badge-label" style="font-size:9px; padding:2px 6px;">鑰匙</span>';
+        
+        let statusBadge = '';
+        if (item.status === 'Available') {
+          statusBadge = '<span style="color:var(--success); font-weight:700; font-size:11px;">● 可借用</span>';
+        } else {
+          statusBadge = '<span style="color:var(--danger); font-weight:700; font-size:11px;">○ 已借出</span>';
+        }
+
+        container.innerHTML += `
+          <div class="config-list-item">
+            <div style="display:flex; align-items:center; gap:8px;">
+              ${typeBadge}
+              <span style="font-weight:700;">${escapeHTML(item.name)}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              ${statusBadge}
+              <button onclick="removeKeyInventorySetting('${item.id}')">刪除</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    async function addKeyInventorySetting() {
+      const input = document.getElementById('new-key-name');
+      const typeSelect = document.getElementById('new-key-type');
+      const name = input.value.trim();
+      const type = typeSelect.value;
+
+      if (!name) {
+        alert("請輸入名稱或編號！");
+        return;
+      }
+
+      const newItem = { name, type };
+
+      if (isGoogleSheetMode) {
+        newItem.id = 'kf-' + Date.now();
+        newItem.status = 'Available';
+        keyInventory.push(newItem);
+        await syncGoogleSheet('keyInventory');
+        input.value = '';
+        renderSettingsKeysList();
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/keys/inventory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(newItem)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            keyInventory.push(created);
+            input.value = '';
+            renderSettingsKeysList();
+          } else {
+            alert("後端新增項目失敗！");
+          }
+        } catch (e) {
+          alert("無法連線後端新增！");
+        }
+      } else {
+        newItem.id = 'kf-' + Date.now();
+        newItem.status = 'Available';
+        keyInventory.push(newItem);
+        localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+        input.value = '';
+        renderSettingsKeysList();
+      }
+    }
+
+    async function removeKeyInventorySetting(itemId) {
+      if (confirm("確定要刪除此鑰匙/磁扣項目嗎？刪除後，相關的歷史借用紀錄會保留但項目本身無法再被借用。")) {
+        if (isGoogleSheetMode) {
+          keyInventory = keyInventory.filter(i => i.id !== itemId);
+          await syncGoogleSheet('keyInventory');
+          renderSettingsKeysList();
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/keys/inventory?id=${itemId}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              keyInventory = keyInventory.filter(i => i.id !== itemId);
+              renderSettingsKeysList();
+            } else {
+              alert("後端刪除項目失敗！");
+            }
+          } catch (e) {
+            alert("無法連線後端刪除！");
+          }
+        } else {
+          keyInventory = keyInventory.filter(i => i.id !== itemId);
+          localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+          renderSettingsKeysList();
+        }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 場地項目管理相關 JavaScript 邏輯 (管理員設定)
+    // -------------------------------------------------------------
+    function renderSettingsVenuesList() {
+      const container = document.getElementById('settings-venues-list');
+      container.innerHTML = '';
+
+      if (venueInventory.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px 0;">目前無任何可預約場地。</div>';
+        return;
+      }
+
+      venueInventory.forEach(venue => {
+        container.innerHTML += `
+          <div class="config-list-item">
+            <span style="font-weight:700;">${escapeHTML(venue)}</span>
+            <button onclick="removeVenueInventorySetting('${escapeHTML(venue)}')">刪除</button>
+          </div>
+        `;
+      });
+    }
+
+    async function addVenueInventorySetting() {
+      const input = document.getElementById('new-venue-name');
+      const name = input.value.trim();
+
+      if (!name) {
+        alert("請輸入場地名稱！");
+        return;
+      }
+
+      if (venueInventory.includes(name)) {
+        alert("該場地名稱已存在！");
+        return;
+      }
+
+      if (isGoogleSheetMode) {
+        venueInventory.push(name);
+        await syncGoogleSheet('venueInventory');
+        input.value = '';
+        renderSettingsVenuesList();
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/venues/inventory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ name })
+          });
+          if (res.ok) {
+            venueInventory.push(name);
+            input.value = '';
+            renderSettingsVenuesList();
+          } else {
+            alert("後端新增場地失敗！");
+          }
+        } catch (e) {
+          alert("無法連線後端新增場地！");
+        }
+      } else {
+        venueInventory.push(name);
+        localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
+        input.value = '';
+        renderSettingsVenuesList();
+      }
+    }
+
+    async function removeVenueInventorySetting(venueName) {
+      if (confirm(`確定要刪除場地「${venueName}」嗎？刪除後將無法預約此場地，但已預約的歷史紀錄將被保留。`)) {
+        if (isGoogleSheetMode) {
+          venueInventory = venueInventory.filter(v => v !== venueName);
+          await syncGoogleSheet('venueInventory');
+          renderSettingsVenuesList();
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/venues/inventory?name=${encodeURIComponent(venueName)}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              venueInventory = venueInventory.filter(v => v !== venueName);
+              renderSettingsVenuesList();
+            } else {
+              alert("後端刪除場地失敗！");
+            }
+          } catch (e) {
+            alert("無法連線後端刪除場地！");
+          }
+        } else {
+          venueInventory = venueInventory.filter(v => v !== venueName);
+          localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
+          renderSettingsVenuesList();
+        }
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 6. 里程碑視圖渲染 (Milestone View)
+    // -------------------------------------------------------------
+    function renderMilestoneView(filteredTasks) {
+      const container = document.getElementById('milestones-container');
+      container.innerHTML = '';
+
+      const activeMilestones = milestones.length > 0 ? milestones : ["無里程碑"];
+
+      activeMilestones.forEach(ms => {
+        const msTasks = tasks.filter(t => (t.milestone || "無里程碑") === ms);
+        
+        if (msTasks.length === 0) {
+          container.innerHTML += `
+            <div class="milestone-card">
+              <div class="milestone-card-header">
+                <span class="milestone-name">🎯 ${escapeHTML(ms)}</span>
+                <span class="milestone-tasks-count">0 個任務</span>
+              </div>
+              <div class="progress-section">
+                <div class="progress-label-wrap">
+                  <span class="progress-label">整體完成率</span>
+                  <span class="progress-percentage">0%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+              </div>
+              <div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px 0;">目前無分配任務</div>
+            </div>
+          `;
+          return;
+        }
+
+        let totalWeight = 0;
+        let doneWeight = 0;
+        let doneCount = 0;
+
+        msTasks.forEach(t => {
+          const w = Number(t.weight || 0);
+          totalWeight += w;
+          if (t.status === 'Done') {
+            doneWeight += w;
+            doneCount++;
+          }
+        });
+
+        const rate = totalWeight > 0 ? Math.round((doneWeight / totalWeight) * 100) : 0;
+
+        let listHTML = '';
+        msTasks.forEach(t => {
+          let stClass = 'todo';
+          if (t.status === 'In Progress') stClass = 'progress';
+          if (t.status === 'Done') stClass = 'done';
+
+          listHTML += `
+            <div class="milestone-task-item ${stClass}">
+              <span class="milestone-task-title" title="${escapeHTML(t.title)}">${escapeHTML(t.title)}</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="badge badge-weight" style="font-size:9px; padding:1px 4px;">權重:${t.weight}</span>
+                <span class="badge ${stClass === 'todo' ? 'badge-todo' : (stClass === 'progress' ? 'badge-progress' : 'badge-done')}" style="font-size:9px; padding:1px 4px;">${t.status}</span>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML += `
+          <div class="milestone-card">
+            <div class="milestone-card-header">
+              <span class="milestone-name" title="${escapeHTML(ms)}">🎯 ${escapeHTML(ms)}</span>
+              <span class="milestone-tasks-count">${doneCount} / ${msTasks.length} 完成</span>
+            </div>
+            <div class="progress-section">
+              <div class="progress-label-wrap">
+                <span class="progress-label">整體完成率 (依權重)</span>
+                <span class="progress-percentage">${rate}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar-fill" id="ms-bar-${ms.replace(/\s+/g, '')}"></div>
+              </div>
+            </div>
+            <div class="milestone-tasks-list">
+              ${listHTML}
+            </div>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const fill = document.getElementById(`ms-bar-${ms.replace(/\s+/g, '')}`);
+          if (fill) fill.style.width = `${rate}%`;
+        }, 100);
+      });
+    }
+
+    // -------------------------------------------------------------
+    // 7. 統計視圖渲染 (Insights View)
+    // -------------------------------------------------------------
+    function renderInsightsView(filteredTasks) {
+      const container = document.getElementById('insights-chart-container');
+      container.innerHTML = '';
+
+      const chartData = {};
+      assignees.forEach(a => {
+        chartData[a] = 0;
+      });
+      chartData["未分派"] = 0;
+
+      tasks.forEach(t => {
+        const targetAssignee = t.assignee || "未分派";
+        if (chartData[targetAssignee] === undefined) {
+          chartData[targetAssignee] = 0;
+        }
+
+        if (currentChartMode === 'done') {
+          if (t.status === 'Done') {
+            chartData[targetAssignee] += Number(t.weight || 0);
+          }
+        } else {
+          chartData[targetAssignee] += Number(t.weight || 0);
+        }
+      });
+
+      let maxVal = 5;
+      Object.values(chartData).forEach(val => {
+        if (val > maxVal) maxVal = val;
+      });
+
+      Object.keys(chartData).forEach(assignee => {
+        const val = chartData[assignee];
+        const pct = Math.round((val / maxVal) * 100);
+
+        container.innerHTML += `
+          <div class="chart-row">
+            <span class="chart-label">
+              <span class="assignee-avatar">${assignee.charAt(0)}</span>
+              ${escapeHTML(assignee)}
+            </span>
+            <div class="chart-bar-outer">
+              <div class="chart-bar-inner" id="chart-bar-${assignee.replace(/\s+/g, '')}">
+                ${val > 0 ? `<span class="chart-bar-text">${pct}%</span>` : ''}
+              </div>
+            </div>
+            <span class="chart-value">${val} 點</span>
+          </div>
+        `;
+
+        setTimeout(() => {
+          const bar = document.getElementById(`chart-bar-${assignee.replace(/\s+/g, '')}`);
+          if (bar) bar.style.width = `${pct}%`;
+        }, 100);
+      });
+    }
+
+    function toggleChartMode(mode) {
+      currentChartMode = mode;
+      document.getElementById('chart-mode-done').classList.toggle('active', mode === 'done');
+      document.getElementById('chart-mode-all').classList.toggle('active', mode === 'all');
+      renderActiveView();
+    }
+
+    // -------------------------------------------------------------
+    // 任務新增與編輯 Modal 操作
+    // -------------------------------------------------------------
+    function openTaskModal(taskId = null) {
+      const modal = document.getElementById('task-modal');
+      const form = document.getElementById('task-form');
+      form.reset();
+
+      populateFilterOptions();
+
+      if (taskId) {
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) return;
+
+        document.getElementById('modal-title').innerText = "修改任務";
+        document.getElementById('task-id').value = task.id;
+        document.getElementById('form-title').value = task.title;
+        document.getElementById('form-assignee').value = task.assignee || "";
+        document.getElementById('form-status').value = task.status;
+        document.getElementById('form-start-date').value = task.startDate || "";
+        document.getElementById('form-due-date').value = task.dueDate || "";
+        document.getElementById('form-label').value = task.label || "";
+        document.getElementById('form-milestone').value = task.milestone || "";
+      } else {
+        document.getElementById('modal-title').innerText = "新增總務任務";
+        document.getElementById('task-id').value = "";
+        
+        const todayStr = new Date().toISOString().substring(0, 10);
+        const nextWeek = new Date();
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        const nextWeekStr = nextWeek.toISOString().substring(0, 10);
+
+        document.getElementById('form-start-date').value = todayStr;
+        document.getElementById('form-due-date').value = nextWeekStr;
+      }
+
+      modal.classList.add('active');
+    }
+
+    function closeTaskModal() {
+      document.getElementById('task-modal').classList.remove('active');
+    }
+
+    async function saveTask() {
+      const form = document.getElementById('task-form');
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const id = document.getElementById('task-id').value;
+      const title = document.getElementById('form-title').value.trim();
+      const assignee = document.getElementById('form-assignee').value;
+      const status = document.getElementById('form-status').value;
+      const startDate = document.getElementById('form-start-date').value;
+      const dueDate = document.getElementById('form-due-date').value;
+      const label = document.getElementById('form-label').value;
+      const milestone = document.getElementById('form-milestone').value;
+
+      const matchedLabelObj = labels.find(l => l.name === label);
+      const weight = matchedLabelObj ? matchedLabelObj.weight : 1;
+
+      if (id) {
+        const taskIndex = tasks.findIndex(t => t.id === id);
+        if (taskIndex !== -1) {
+          const oldStatus = tasks[taskIndex].status;
+          const updatedTask = {
+            id, title, assignee, status, startDate, dueDate, label, weight, milestone
+          };
+
+          if (isGoogleSheetMode) {
+            tasks[taskIndex] = updatedTask;
+            await syncGoogleSheet('tasks');
+          } else if (isApiMode) {
+            try {
+              const res = await fetch('/api/tasks', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify(updatedTask)
+              });
+              if (res.ok) {
+                tasks[taskIndex] = updatedTask;
+              } else {
+                alert("後端更新任務失敗！");
+                return;
+              }
+            } catch (e) {
+              alert("後端連線異常，無法更新！");
+              return;
+            }
+          } else {
+            tasks[taskIndex] = updatedTask;
+            localStorage.setItem('ga_tasks', JSON.stringify(tasks));
+          }
+
+          if (status === 'Done' && oldStatus !== 'Done') {
+            triggerConfetti(50);
+          }
+        }
+      } else {
+        const newTask = {
+          title, assignee, status, startDate, dueDate, label, weight, milestone
+        };
+
+        if (isGoogleSheetMode) {
+          newTask.id = 'task-' + Date.now();
+          tasks.push(newTask);
+          await syncGoogleSheet('tasks');
+        } else if (isApiMode) {
+          try {
+            const res = await fetch('/api/tasks', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json; charset=utf-8' },
+              body: JSON.stringify(newTask)
+            });
+            if (res.ok) {
+              const createdTask = await res.json();
+              tasks.push(createdTask);
+            } else {
+              alert("後端建立任務失敗！");
+              return;
+            }
+          } catch (e) {
+            alert("後端連線異常，無法儲存！");
+            return;
+          }
+        } else {
+          newTask.id = 'task-' + Date.now();
+          tasks.push(newTask);
+          localStorage.setItem('ga_tasks', JSON.stringify(tasks));
+        }
+
+        if (status === 'Done') {
+          triggerConfetti(50);
+        }
+      }
+
+      updateGlobalStats();
+      closeTaskModal();
+      renderActiveView();
+    }
+
+    async function deleteTask(taskId) {
+      if (confirm("確定要刪除此項任務嗎？")) {
+        if (isGoogleSheetMode) {
+          tasks = tasks.filter(t => t.id !== taskId);
+          await syncGoogleSheet('tasks');
+        } else if (isApiMode) {
+          try {
+            const res = await fetch(`/api/tasks?id=${taskId}`, {
+              method: 'DELETE'
+            });
+            if (res.ok) {
+              tasks = tasks.filter(t => t.id !== taskId);
+            } else {
+              alert("後端刪除任務失敗！");
+              return;
+            }
+          } catch (e) {
+            alert("後端連線異常，無法刪除！");
+            return;
+          }
+        } else {
+          tasks = tasks.filter(t => t.id !== taskId);
+          localStorage.setItem('ga_tasks', JSON.stringify(tasks));
+        }
+        updateGlobalStats();
+        renderActiveView();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // 管理系統配置項 (Settings Modal)
+    // -------------------------------------------------------------
+    function openSettingsModal() {
+      const modal = document.getElementById('settings-modal');
+      switchSettingsTab('general'); // 預設顯示一般頁籤
+      renderSettingsLists();
+      document.getElementById('settings-gsheet-url').value = localStorage.getItem('ga_googleSheetApiUrl') || '';
+      modal.classList.add('active');
+    }
+
+    async function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('active');
+      await saveConfigToBackend();
+      populateFilterOptions();
+      renderActiveView();
+    }
+
+    function renderSettingsLists() {
+      const assigneesList = document.getElementById('settings-assignees-list');
+      assigneesList.innerHTML = '';
+      assignees.forEach((a, index) => {
+        assigneesList.innerHTML += `
+          <div class="config-list-item">
+            <span>${escapeHTML(a)}</span>
+            <button onclick="removeAssigneeSetting(${index})">刪除</button>
+          </div>
+        `;
+      });
+
+      const labelsList = document.getElementById('settings-labels-list');
+      labelsList.innerHTML = '';
+      labels.forEach((l, index) => {
+        labelsList.innerHTML += `
+          <div class="config-list-item">
+            <span><strong>${escapeHTML(l.name)}</strong> (權重: ${l.weight})</span>
+            <button onclick="removeLabelSetting(${index})">刪除</button>
+          </div>
+        `;
+      });
+
+      const milestonesList = document.getElementById('settings-milestones-list');
+      milestonesList.innerHTML = '';
+      milestones.forEach((m, index) => {
+        milestonesList.innerHTML += `
+          <div class="config-list-item">
+            <span>${escapeHTML(m)}</span>
+            <button onclick="removeMilestoneSetting(${index})">刪除</button>
+          </div>
+        `;
+      });
+    }
+
+    function addAssigneeSetting() {
+      const input = document.getElementById('new-assignee-name');
+      const val = input.value.trim();
+      if (val && !assignees.includes(val)) {
+        assignees.push(val);
+        input.value = '';
+        renderSettingsLists();
+      }
+    }
+    function removeAssigneeSetting(index) {
+      if (confirm(`刪除此負責人，會使屬於他們的任務變為「未分派」，確定要刪除嗎？`)) {
+        assignees.splice(index, 1);
+        renderSettingsLists();
+      }
+    }
+
+    function addLabelSetting() {
+      const inputName = document.getElementById('new-label-name');
+      const selectWeight = document.getElementById('new-label-weight');
+      const name = inputName.value.trim();
+      const weight = Number(selectWeight.value);
+
+      if (name && !labels.some(l => l.name === name)) {
+        labels.push({ name, weight });
+        inputName.value = '';
+        renderSettingsLists();
+      }
+    }
+    function removeLabelSetting(index) {
+      if (confirm(`刪除標籤後，已指派此標籤的任務之權重將預設為 1，確定要刪除嗎？`)) {
+        labels.splice(index, 1);
+        renderSettingsLists();
+      }
+    }
+
+    function addMilestoneSetting() {
+      const input = document.getElementById('new-milestone-name');
+      const val = input.value.trim();
+      if (val && !milestones.includes(val)) {
+        milestones.push(val);
+        input.value = '';
+        renderSettingsLists();
+      }
+    }
+    function removeMilestoneSetting(index) {
+      if (confirm(`刪除里程碑，會使屬於此里程碑的任務變為「無里程碑」，確定要刪除嗎？`)) {
+        milestones.splice(index, 1);
+        renderSettingsLists();
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Excel 匯出 / 匯入邏輯 (SheetJS 整合)
+    // -------------------------------------------------------------
+    function exportToExcel() {
+      const filtered = getFilteredTasks();
+      if (filtered.length === 0) {
+        alert("目前沒有符合篩選條件的任務可供匯出。");
+        return;
+      }
+      
+      const data = filtered.map(t => ({
+        "任務名稱": t.title,
+        "狀態": t.status,
+        "負責人": t.assignee || "未分派",
+        "開始日期": t.startDate || "",
+        "截止日期": t.dueDate || "",
+        "標籤": t.label || "",
+        "權重": t.weight || 1,
+        "里程碑": t.milestone || ""
+      }));
+      
+      const ws = XLSX.utils.json_to_sheet(data);
+      
+      ws['!cols'] = [
+        { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 8 }, { wch: 25 }
+      ];
+      
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "總務處行政任務");
+      XLSX.writeFile(wb, "總務處行政任務列表.xlsx");
+    }
+
+    function downloadExcelTemplate() {
+      const headers = [
+        ["任務名稱", "狀態", "負責人", "開始日期", "截止日期", "標籤", "權重", "里程碑"]
+      ];
+      
+      const sampleRows = [
+        ["例行活動中心空調清洗保養", "To Do", "陳組長", "2026-07-15", "2026-07-18", "修繕", 3, "115學年度暑期校園修繕"],
+        ["採購總務處影印用 A4 影印紙 10 箱", "Done", "林幹事", "2026-07-01", "2026-07-02", "採購", 1, "例行行政庶務"]
+      ];
+      
+      const allData = headers.concat(sampleRows);
+      const ws = XLSX.utils.aoa_to_sheet(allData);
+      
+      ws['!cols'] = [
+        { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 8 }, { wch: 25 }
+      ];
+      
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "任務匯入範本");
+      XLSX.writeFile(wb, "總務處任務匯入範本.xlsx");
+    }
+
+    function importFromExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[firstSheetName];
+          const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+          if (jsonData.length === 0) {
+            alert("匯入失敗：此 Excel 檔案中無任務資料。");
+            return;
+          }
+
+          const firstRow = jsonData[0];
+          if (!firstRow.hasOwnProperty("任務名稱") || !firstRow.hasOwnProperty("狀態")) {
+            alert("匯入失敗：Excel 檔案結構不正確。首行必須包含「任務名稱」及「狀態」欄位。");
+            return;
+          }
+
+          const parsedTasks = jsonData.map((row, index) => {
+            let rowStatus = String(row["狀態"] || "To Do").trim();
+            if (rowStatus !== 'To Do' && rowStatus !== 'In Progress' && rowStatus !== 'Done') {
+              rowStatus = 'To Do';
+            }
+
+            const mockId = `task-${Date.now()}-${Math.floor(Math.random() * 100000)}-${index}`;
+
+            return {
+              id: mockId,
+              title: String(row["任務名稱"] || "未命名任務").trim(),
+              status: rowStatus,
+              assignee: row["負責人"] && String(row["負責人"]).trim() !== "未分派" ? String(row["負責人"]).trim() : "",
+              startDate: row["開始日期"] ? String(row["開始日期"]).trim() : "",
+              dueDate: row["截止日期"] ? String(row["截止日期"]).trim() : "",
+              label: row["標籤"] ? String(row["標籤"]).trim() : "行政",
+              weight: Number(row["權重"]) || 1,
+              milestone: row["里程碑"] ? String(row["里程碑"]).trim() : ""
+            };
+          });
+
+          let dbConfigUpdated = false;
+          parsedTasks.forEach(t => {
+            if (t.assignee && !assignees.includes(t.assignee)) {
+              assignees.push(t.assignee);
+              dbConfigUpdated = true;
+            }
+            if (t.label && !labels.some(l => l.name === t.label)) {
+              labels.push({ name: t.label, weight: t.weight || 1 });
+              dbConfigUpdated = true;
+            }
+            if (t.milestone && !milestones.includes(t.milestone)) {
+              milestones.push(t.milestone);
+              dbConfigUpdated = true;
+            }
+          });
+
+          if (dbConfigUpdated) {
+            await saveConfigToBackend();
+          }
+
+          if (isApiMode) {
+            const res = await fetch('/api/tasks/bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json; charset=utf-8' },
+              body: JSON.stringify(parsedTasks)
+            });
+            if (res.ok) {
+              tasks.push(...parsedTasks);
+            } else {
+              alert("上傳批次資料至伺服器時發生錯誤！");
+              return;
+            }
+          } else {
+            tasks.push(...parsedTasks);
+            localStorage.setItem('ga_tasks', JSON.stringify(tasks));
+          }
+
+          document.getElementById('excel-file-input').value = '';
+
+          updateGlobalStats();
+          populateFilterOptions();
+          renderActiveView();
+          triggerConfetti(50);
+          alert(`🎉 成功匯入 ${parsedTasks.length} 筆總務任務！`);
+
+        } catch (err) {
+          console.error("解析 Excel 失敗：", err);
+          alert("解析 Excel 檔案發生錯誤，請檢查檔案格式是否正確。");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // -------------------------------------------------------------
+    // 完成特效 (煙火)
+    // -------------------------------------------------------------
+    function triggerConfetti(count = 30) {
+      const box = document.getElementById('confetti-box');
+      box.style.display = 'block';
+      
+      const colors = ['#f43f5e', '#ec4899', '#d946ef', '#a855f7', '#3b82f6', '#10b981', '#fbbf24'];
+
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        
+        const left = Math.random() * 100;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const delay = Math.random() * 0.5;
+        const size = Math.random() * 8 + 6;
+        const duration = Math.random() * 1.5 + 1.5;
+
+        piece.style.left = `${left}vw`;
+        piece.style.backgroundColor = color;
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size}px`;
+        piece.style.animationDelay = `${delay}s`;
+        piece.style.animationDuration = `${duration}s`;
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+
+        box.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        box.innerHTML = '';
+        box.style.display = 'none';
+      }, 3500);
+    }
+
+    // -------------------------------------------------------------
+    // 安全過濾防止 XSS
+    // -------------------------------------------------------------
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{
+  "assignees": ["陳組長", "林幹事", "張助理"],
+  "labels": [
+    { "name": "修繕", "weight": 5 },
+    { "name": "採購", "weight": 3 },
+    { "name": "行政", "weight": 1 },
+    { "name": "安全", "weight": 3 }
+  ],
+  "milestones": [
+    "115學年度暑期校園修繕",
+    "辦公設備汰舊換新",
+    "退休同仁感恩餐會",
+    "例行行政庶務"
+  ],
+  "tasks": [
+    {
+      "id": "task-1",
+      "title": "活動中心舞台燈光電路修繕",
+      "status": "In Progress",
+      "assignee": "陳組長",
+      "startDate": "2026-07-05",
+      "dueDate": "2026-07-15",
+      "label": "修繕",
+      "weight": 5,
+      "milestone": "115學年度暑期校園修繕"
+    },
+    {
+      "id": "task-2",
+      "title": "採購總務處人體工學辦公椅 5 張",
+      "status": "To Do",
+      "assignee": "林幹事",
+      "startDate": "2026-07-12",
+      "dueDate": "2026-07-20",
+      "label": "採購",
+      "weight": 3,
+      "milestone": "辦公設備汰舊換新"
+    },
+    {
+      "id": "task-3",
+      "title": "年度退休同仁感恩餐會場地佈置與主持協調",
+      "status": "Done",
+      "assignee": "張助理",
+      "startDate": "2026-07-04",
+      "dueDate": "2026-07-08",
+      "label": "行政",
+      "weight": 3,
+      "milestone": "退休同仁感恩餐會"
+    }
+  ],
+  "keyInventory": [
+    { "id": "kf-1", "name": "五年十班教室鑰匙", "type": "鑰匙", "status": "Available" },
+    { "id": "kf-2", "name": "行政大樓磁扣 #12", "type": "磁扣", "status": "Available" },
+    { "id": "kf-3", "name": "體育器材室鑰匙", "type": "鑰匙", "status": "Lent" },
+    { "id": "kf-4", "name": "電腦教室二磁扣", "type": "磁扣", "status": "Lent" },
+    { "id": "kf-5", "name": "視聽會議室鑰匙", "type": "鑰匙", "status": "Available" }
+  ],
+  "keyLogs": [
+    {
+      "id": "klog-1",
+      "borrowDate": "2026-07-08 08:30",
+      "returnDate": "2026-07-08 17:30",
+      "borrower": "王有德",
+      "itemId": "kf-1",
+      "itemName": "五年十班教室鑰匙",
+      "staff": "陳組長",
+      "signature": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><text x='10' y='20' fill='purple' font-size='14' font-weight='bold'>王有德</text></svg>",
+      "status": "Returned"
+    },
+    {
+      "id": "klog-2",
+      "borrowDate": "2026-07-10 09:00",
+      "returnDate": "",
+      "borrower": "李明輝",
+      "itemId": "kf-3",
+      "itemName": "體育器材室鑰匙",
+      "staff": "林幹事",
+      "signature": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><text x='10' y='20' fill='purple' font-size='14' font-weight='bold'>李明輝</text></svg>",
+      "status": "Borrowed"
+    },
+    {
+      "id": "klog-3",
+      "borrowDate": "2026-07-09 10:15",
+      "returnDate": "",
+      "borrower": "張老師",
+      "itemId": "kf-4",
+      "itemName": "電腦教室二磁扣",
+      "staff": "張助理",
+      "signature": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='30'><text x='10' y='20' fill='purple' font-size='14' font-weight='bold'>張老師</text></svg>",
+      "status": "Borrowed"
+    }
+  ],
+  "venueInventory": [
+    "雅舍",
+    "活動中心",
+    "4樓會議室"
+  ],
+  "venueReservations": [
+    {
+      "id": "vres-1",
+      "venue": "雅舍",
+      "requester": "王老師",
+      "date": "2026-07-12",
+      "period": "第三節",
+      "useAV": true,
+      "borrowKey": true,
+      "useAC": true,
+      "arrangeChairs": false
+    }
+  ],
+  "dutyRoster": [
+    { "id": "dr-1", "date": "2026-07-13", "staff": "陳組長", "shift": "全天值班" },
+    { "id": "dr-2", "date": "2026-07-14", "staff": "林幹事", "shift": "上午值班" },
+    { "id": "dr-3", "date": "2026-07-15", "staff": "張助理", "shift": "下午值班" }
+  ],
+  "deliveryRoster": [
+    { "id": "del-1", "date": "2026-07-13", "staff": "林幹事", "purpose": "送公文至市府教育局" },
+    { "id": "del-2", "date": "2026-07-16", "staff": "陳組長", "purpose": "至採購行買A4紙張" }
+  ]
+}
