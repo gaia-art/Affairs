@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="icon2.ico" type="image/x-icon">
+  <link rel="icon" href="icon2.ico" type="image/x-icon">
   <title>樹義總務處全能管理系統</title>
   <!-- Google Fonts: Inter and Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1401,6 +1403,145 @@
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
       background: rgba(0, 0, 0, 0.6) !important;
     }
+
+    /* 📱 手機版 RWD 響應式佈局 */
+    @media (max-width: 992px) {
+      .app-container {
+        grid-template-columns: 1fr !important;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+
+      /* 側欄改為抽屜選單 */
+      .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        height: 100vh;
+        z-index: 10000 !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.active {
+        left: 0;
+      }
+
+      /* 側欄背景遮罩 */
+      .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9999;
+      }
+
+      .sidebar-backdrop.active {
+        display: block !important;
+      }
+
+      /* 頂部標頭手機版樣式 */
+      .top-header {
+        height: auto !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 12px 16px !important;
+        gap: 12px;
+      }
+
+      #mobile-menu-btn {
+        display: block !important;
+      }
+
+      #mobile-filter-btn {
+        display: inline-flex !important;
+      }
+
+      .filter-bar {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        border-top: 1px solid var(--border);
+        padding-top: 12px;
+      }
+
+      .filter-bar.active {
+        display: flex;
+      }
+
+      /* Excel 按鈕改為堆疊 */
+      .filter-bar > div {
+        flex-wrap: wrap;
+        border-right: none !important;
+        padding-right: 0 !important;
+        margin-right: 0 !important;
+        gap: 8px;
+      }
+
+      .filter-bar > div > button, 
+      .filter-bar > div > label {
+        flex: 1;
+        min-width: 100px;
+      }
+
+      .filter-select, .search-input {
+        width: 100% !important;
+      }
+
+      /* 右側主內容滾動 */
+      .main-content {
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* 首頁資訊卡片手機版排版 */
+      .key-log-layout {
+        grid-template-columns: 1fr !important;
+        gap: 16px;
+      }
+
+      .booking-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* 看板視圖改為垂直堆疊 */
+      .board-columns {
+        flex-direction: column !important;
+        gap: 16px;
+        overflow-y: auto !important;
+        padding: 16px !important;
+      }
+
+      .board-column {
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: 450px;
+      }
+
+      /* 時間軸與排班表格支援橫向滾動 */
+      .view-container {
+        overflow: auto;
+      }
+      
+      .table-card {
+        overflow-x: auto;
+      }
+
+      /* 彈窗對話框寬度適應 */
+      .modal-content, .login-card {
+        width: 90% !important;
+        max-width: 450px;
+        padding: 20px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1469,14 +1610,20 @@
     </div>
   </div>
 
+  <!-- 側欄手機版背景遮罩 -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+
   <div class="app-container">
     
     <!-- 側邊導覽列 -->
     <aside class="sidebar">
+      <!-- 手機版側欄關閉按鈕 -->
+      <button class="sidebar-close-btn" style="display: none; position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); z-index: 10;" onclick="closeMobileSidebar()">✕</button>
+
       <div class="sidebar-top">
         
         <!-- 品牌標誌 -->
-        <div class="brand-section" style="margin-bottom: 12px;">
+        <div class="brand-section" style="margin-bottom: 12px; position: relative;">
           <div class="brand-title-wrap">
             <div class="brand-icon" style="background: transparent; box-shadow: none;">
               <img src="icon.ico" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;" alt="icon">
@@ -1596,9 +1743,11 @@
       
       <!-- 頂部標頭 -->
       <header class="top-header">
-        <div class="view-title-area" style="display:flex; align-items:center; gap: 12px;">
-          <h2 id="current-view-title">所有任務 (表格)</h2>
+        <div class="view-title-area" style="display:flex; align-items:center; gap: 12px; width: 100%;">
+          <button id="mobile-menu-btn" style="display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-main); margin-right: 4px;" onclick="toggleMobileSidebar()">☰</button>
+          <h2 id="current-view-title" style="margin: 0; font-size: 16px; font-weight: 800;">所有任務 (表格)</h2>
           <span id="api-status-badge" class="badge">讀取狀態中...</span>
+          <button id="mobile-filter-btn" class="btn btn-secondary" style="display: none; margin-left: auto; padding: 6px 12px; font-size: 12px; font-weight: 700;" onclick="toggleMobileFilters()">🔍 篩選</button>
         </div>
         
         <!-- Excel 及過濾工具列 -->
@@ -3040,6 +3189,11 @@
 
     // 初始化載入
     window.addEventListener('DOMContentLoaded', async () => {
+      // 偵測行動裝置
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+      if (isMobile) {
+        console.log("📱 系統已偵測到您正在使用行動裝置或窄螢幕，已自動切換為手機版版面！");
+      }
       await initDatabase();
       checkLoginState();
       initUI();
@@ -3674,6 +3828,8 @@
           document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
           const targetBtn = e.currentTarget;
           targetBtn.classList.add('active');
+          
+          closeMobileSidebar();
           
           activeView = targetBtn.dataset.view;
           
@@ -6660,6 +6816,26 @@
       document.getElementById('profile-pass-new').value = '';
       document.getElementById('profile-pass-confirm').value = '';
       triggerConfetti(20);
+    }
+
+    // 📱 手機版 RWD 抽屜選單與篩選切換 [NEW]
+    function toggleMobileSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (sidebar) sidebar.classList.toggle('active');
+      if (backdrop) backdrop.classList.toggle('active');
+    }
+
+    function closeMobileSidebar() {
+      const sidebar = document.querySelector('.sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (sidebar) sidebar.classList.remove('active');
+      if (backdrop) backdrop.classList.remove('active');
+    }
+
+    function toggleMobileFilters() {
+      const filterBar = document.querySelector('.filter-bar');
+      if (filterBar) filterBar.classList.toggle('active');
     }
 
     // 快捷切換視圖
