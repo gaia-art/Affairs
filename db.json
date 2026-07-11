@@ -1,10 +1,26 @@
 {
-  "assignees": ["陳組長", "林幹事", "張助理"],
+  "assignees": [
+    "陳組長",
+    "黃主任",
+    "陳雅儀"
+  ],
   "labels": [
-    { "name": "修繕", "weight": 5 },
-    { "name": "採購", "weight": 3 },
-    { "name": "行政", "weight": 1 },
-    { "name": "安全", "weight": 3 }
+    {
+      "name": "修繕",
+      "weight": 5
+    },
+    {
+      "name": "採購",
+      "weight": 3
+    },
+    {
+      "name": "行政",
+      "weight": 1
+    },
+    {
+      "name": "安全",
+      "weight": 3
+    }
   ],
   "milestones": [
     "115學年度暑期校園修繕",
@@ -48,11 +64,36 @@
     }
   ],
   "keyInventory": [
-    { "id": "kf-1", "name": "五年十班教室鑰匙", "type": "鑰匙", "status": "Available" },
-    { "id": "kf-2", "name": "行政大樓磁扣 #12", "type": "磁扣", "status": "Available" },
-    { "id": "kf-3", "name": "體育器材室鑰匙", "type": "鑰匙", "status": "Lent" },
-    { "id": "kf-4", "name": "電腦教室二磁扣", "type": "磁扣", "status": "Lent" },
-    { "id": "kf-5", "name": "視聽會議室鑰匙", "type": "鑰匙", "status": "Available" }
+    {
+      "id": "kf-1",
+      "name": "五年十班教室鑰匙",
+      "type": "鑰匙",
+      "status": "Available"
+    },
+    {
+      "id": "kf-2",
+      "name": "行政大樓磁扣 #12",
+      "type": "磁扣",
+      "status": "Available"
+    },
+    {
+      "id": "kf-3",
+      "name": "體育器材室鑰匙",
+      "type": "鑰匙",
+      "status": "Lent"
+    },
+    {
+      "id": "kf-4",
+      "name": "電腦教室二磁扣",
+      "type": "磁扣",
+      "status": "Lent"
+    },
+    {
+      "id": "kf-5",
+      "name": "視聽會議室鑰匙",
+      "type": "鑰匙",
+      "status": "Available"
+    }
   ],
   "keyLogs": [
     {
@@ -108,12 +149,771 @@
     }
   ],
   "dutyRoster": [
-    { "id": "dr-1", "date": "2026-07-13", "staff": "陳組長", "shift": "全天值班" },
-    { "id": "dr-2", "date": "2026-07-14", "staff": "林幹事", "shift": "上午值班" },
-    { "id": "dr-3", "date": "2026-07-15", "staff": "張助理", "shift": "下午值班" }
+    {
+      "id": "dr-1",
+      "date": "2026-07-13",
+      "staff": "陳組長",
+      "shift": "全天值班"
+    },
+    {
+      "id": "dr-2",
+      "date": "2026-07-14",
+      "staff": "林幹事",
+      "shift": "上午值班"
+    },
+    {
+      "id": "dr-3",
+      "date": "2026-07-15",
+      "staff": "張助理",
+      "shift": "下午值班"
+    }
   ],
   "deliveryRoster": [
-    { "id": "del-1", "date": "2026-07-13", "staff": "林幹事", "purpose": "送公文至市府教育局" },
-    { "id": "del-2", "date": "2026-07-16", "staff": "陳組長", "purpose": "至採購行買A4紙張" }
+    {
+      "id": "del-1",
+      "date": "2026-07-13",
+      "staff": "林幹事",
+      "purpose": "送公文至市府教育局"
+    },
+    {
+      "id": "del-2",
+      "date": "2026-07-16",
+      "staff": "陳組長",
+      "purpose": "至採購行買A4紙張"
+    }
+  ],
+  "classes": [
+    "101",
+    "102",
+    "103",
+    "104",
+    "105",
+    "106",
+    "107",
+    "108",
+    "109",
+    "110",
+    "201",
+    "202",
+    "203",
+    "204",
+    "205",
+    "206",
+    "207",
+    "208",
+    "209",
+    "210",
+    "301",
+    "302",
+    "303",
+    "304",
+    "305",
+    "306",
+    "307",
+    "308",
+    "309",
+    "310",
+    "401",
+    "402",
+    "403",
+    "404",
+    "405",
+    "406",
+    "407",
+    "408",
+    "409",
+    "410",
+    "501",
+    "502",
+    "503",
+    "504",
+    "505",
+    "506",
+    "507",
+    "508",
+    "509",
+    "510",
+    "601",
+    "602",
+    "603",
+    "604",
+    "605",
+    "606",
+    "607",
+    "608",
+    "609",
+    "610"
+  ],
+  "offices": [
+    "教務處",
+    "學務處",
+    "總務處",
+    "輔導室",
+    "人事室",
+    "會計室",
+    "校長室"
+  ],
+  "periods": [
+    "早修",
+    "第一節",
+    "第二節",
+    "第三節",
+    "第四節",
+    "午休",
+    "第五節",
+    "第六節",
+    "第七節"
+  ],
+  "acTopups": [],
+  "acCards": [
+    {
+      "classCode": "101",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "102",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "103",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "104",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "105",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "106",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "107",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "108",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "109",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "110",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "201",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "202",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "203",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "204",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "205",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "206",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "207",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "208",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "209",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "210",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "301",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "302",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "303",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "304",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "305",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "306",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "307",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "308",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "309",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "310",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "401",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "402",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "403",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "404",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "405",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "406",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "407",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "408",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "409",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "410",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "501",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "502",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "503",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "504",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "505",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "506",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "507",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "508",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "509",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "510",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "601",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "602",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "603",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "604",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "605",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "606",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "607",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "608",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "609",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    },
+    {
+      "classCode": "610",
+      "returned": false,
+      "signature": "",
+      "date": ""
+    }
+  ],
+  "meetings": [],
+  "staffRoles": [
+    {
+      "name": "陳組長",
+      "role": "組長",
+      "password": "1234"
+    },
+    {
+      "name": "林幹事",
+      "role": "職工",
+      "password": "1234"
+    },
+    {
+      "name": "張助理",
+      "role": "職工",
+      "password": "1234"
+    },
+    {
+      "name": "黃主任",
+      "role": "主任",
+      "password": "1234"
+    },
+    {
+      "name": "李志工",
+      "role": "志工",
+      "password": "1234"
+    },
+    {
+      "name": "陳雅儀",
+      "role": "主任",
+      "password": "1234"
+    }
+  ],
+  "halls": [
+    "齊陽堂",
+    "臨淮堂",
+    "鍾陵堂",
+    "蘭陵堂",
+    "隴西堂",
+    "譙國堂",
+    "濟陽堂",
+    "彭城堂",
+    "陳留堂",
+    "清河堂",
+    "高陽堂",
+    "高平堂",
+    "苑陽堂",
+    "范陽堂",
+    "延陵堂",
+    "始平堂",
+    "京兆堂",
+    "沛國堂",
+    "宏農堂",
+    "下邳堂",
+    "上谷堂",
+    "天水堂",
+    "太原堂",
+    "平原堂",
+    "中山堂",
+    "平陽堂",
+    "安定堂",
+    "汝南堂",
+    "南陽堂",
+    "江夏堂",
+    "魯國堂",
+    "樂安堂",
+    "廣陵堂",
+    "榮陽堂",
+    "百濟堂",
+    "西平堂",
+    "西河堂",
+    "吳興堂",
+    "東海堂",
+    "河東堂",
+    "南昌堂",
+    "上黨堂",
+    "武功堂",
+    "解梁堂",
+    "廣平堂",
+    "東魯堂",
+    "河南堂",
+    "河間堂",
+    "敦煌堂",
+    "渤海堂",
+    "新鄭堂",
+    "鉅鹿堂",
+    "盧江堂",
+    "穎川堂",
+    "豫章堂",
+    "齊郡堂",
+    "榮安堂",
+    "會稽堂",
+    "馮翊堂",
+    "雁門堂",
+    "博陵堂",
+    "晉陽堂"
+  ],
+  "subjectClassrooms": [
+    {
+      "name": "語言教室一",
+      "hall": "齊陽堂"
+    },
+    {
+      "name": "語言教室二",
+      "hall": "臨淮堂"
+    },
+    {
+      "name": "語言教室三",
+      "hall": "鍾陵堂"
+    },
+    {
+      "name": "視聽教室",
+      "hall": "蘭陵堂"
+    },
+    {
+      "name": "自然教室",
+      "hall": "隴西堂"
+    },
+    {
+      "name": "多元社團教室",
+      "hall": "譙國堂"
+    },
+    {
+      "name": "教具室",
+      "hall": "濟陽堂"
+    },
+    {
+      "name": "教師研習室",
+      "hall": "彭城堂"
+    },
+    {
+      "name": "圖書室",
+      "hall": "陳留堂"
+    },
+    {
+      "name": "平陵堂藝廊",
+      "hall": "清河堂"
+    },
+    {
+      "name": "武功堂科任辦公室",
+      "hall": "高陽堂"
+    },
+    {
+      "name": "解梁堂輔導諮商室",
+      "hall": "高平堂"
+    },
+    {
+      "name": "廣平堂輔導處",
+      "hall": "苑陽堂"
+    },
+    {
+      "name": "自然教室一",
+      "hall": "范陽堂"
+    },
+    {
+      "name": "音樂教室一",
+      "hall": "延陵堂"
+    },
+    {
+      "name": "音樂教室二",
+      "hall": "始平堂"
+    },
+    {
+      "name": "音樂教室三",
+      "hall": "京兆堂"
+    },
+    {
+      "name": "資訊教室一",
+      "hall": "沛國堂"
+    },
+    {
+      "name": "資訊教室二",
+      "hall": "宏農堂"
+    },
+    {
+      "name": "自然科教具室",
+      "hall": "下邳堂"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "alog-1",
+      "timestamp": "2026-07-11 09:00:15",
+      "user": "黃主任",
+      "action": "初始化系統資料庫設定"
+    },
+    {
+      "user": "陳組長",
+      "action": "同仁登入：登入了系統 (身分：組長)",
+      "timestamp": "2026-07-11 12:04:03",
+      "id": "alog-1783742643599-717"
+    },
+    {
+      "user": "陳組長",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:06:19",
+      "id": "alog-1783742779576-789"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:06:26",
+      "id": "alog-1783742787072-839"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:07:39",
+      "id": "alog-1783742859415-762"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:07:49",
+      "id": "alog-1783742870182-275"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:08:16",
+      "id": "alog-1783742897069-267"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:11:15",
+      "id": "alog-1783743075698-434"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:12:23",
+      "id": "alog-1783743143831-217"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:17:19",
+      "id": "alog-1783743439181-733"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:17:35",
+      "id": "alog-1783743455577-325"
+    },
+    {
+      "user": "陳組長",
+      "action": "同仁登入：登入了系統 (身分：組長)",
+      "timestamp": "2026-07-11 12:25:47",
+      "id": "alog-1783743947633-912"
+    },
+    {
+      "user": "陳組長",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:25:54",
+      "id": "alog-1783743954376-311"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:25:59",
+      "id": "alog-1783743959806-951"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:29:02",
+      "id": "alog-1783744143104-236"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:31:56",
+      "id": "alog-1783744316535-923"
+    },
+    {
+      "user": "黃主任",
+      "action": "同仁登出：安全登出了系統",
+      "timestamp": "2026-07-11 12:32:16",
+      "id": "alog-1783744337159-736"
+    },
+    {
+      "user": "陳雅儀",
+      "action": "同仁登入：登入了系統 (身分：主任)",
+      "timestamp": "2026-07-11 12:32:22",
+      "id": "alog-1783744342016-202"
+    }
   ]
 }

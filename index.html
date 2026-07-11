@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>總務處全能管理系統</title>
+  <title>樹義總務處全能管理系統</title>
   <!-- Google Fonts: Inter and Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1007,6 +1007,8 @@
       transition: var(--transition);
       cursor: pointer;
       position: relative;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .calendar-day-cell:hover {
@@ -1049,6 +1051,8 @@
       cursor: pointer;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       transition: var(--transition);
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .calendar-task-strip:hover {
@@ -1384,9 +1388,81 @@
     .row-overdue:hover {
       background-color: #fee2e2 !important;
     }
+
+    /* 登入畫面動畫與美化 */
+    .login-card:hover {
+      box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6) !important;
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    
+    #login-overlay input:focus, #login-overlay select:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+      background: rgba(0, 0, 0, 0.6) !important;
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🛡️ 登入畫面 (Login Overlay) -->
+  <div id="login-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #0f172a 100%); z-index: 99999; align-items: center; justify-content: center; font-family: var(--font-main);">
+    <!-- 光影背景裝飾 -->
+    <div style="position: absolute; width: 300px; height: 300px; background: rgba(139, 92, 246, 0.15); filter: blur(80px); border-radius: 50%; top: 20%; left: 30%; pointer-events: none;"></div>
+    <div style="position: absolute; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.1); filter: blur(80px); border-radius: 50%; bottom: 20%; right: 30%; pointer-events: none;"></div>
+    
+    <div class="login-card" style="width: 400px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 32px; color: #fff; text-align: center; transform: translateY(0); transition: all 0.3s ease;">
+      
+      <!-- 系統 Logo & 標題 -->
+      <div style="margin-bottom: 24px;">
+        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 28px; font-weight: 900; line-height: 64px; border-radius: 16px; margin: 0 auto 16px auto; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center;">
+          樹
+        </div>
+        <h2 style="font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 4px;">《樹義》總務處行政管理</h2>
+        <p style="font-size: 12px; color: rgba(255, 255, 255, 0.5); margin: 0;">請選擇您的同仁帳號並輸入密碼登入</p>
+      </div>
+
+      <!-- 登入表單 -->
+      <div style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
+        
+        <!-- 選擇同仁 -->
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">👤 選擇同仁帳號</label>
+          <select id="login-user-select" style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; font-weight: 700; padding: 0 12px; outline: none; transition: border-color 0.2s; cursor: pointer;">
+            <!-- 動態加載 -->
+          </select>
+        </div>
+
+        <!-- 輸入密碼 -->
+        <div>
+          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">🔑 輸入密碼 (預設: 1234)</label>
+          <div style="position: relative;">
+            <input type="password" id="login-password-input" placeholder="請輸入登入密碼" style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; padding: 0 42px 0 12px; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key === 'Enter') handleLoginSubmit()">
+            <button type="button" onclick="toggleLoginPasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255, 255, 255, 0.5); cursor: pointer; padding: 4px; outline: none;" id="btn-toggle-login-pass">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <!-- 錯誤提示 -->
+        <div id="login-error-msg" style="color: var(--danger); font-size: 12px; font-weight: 600; display: none; text-align: center; background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; margin-top: 4px;">
+          ❌ 密碼輸入錯誤，請重新輸入！
+        </div>
+
+        <!-- 登入按鈕 -->
+        <button class="btn btn-primary" onclick="handleLoginSubmit()" style="width: 100%; height: 44px; font-size: 14px; font-weight: 700; border-radius: 8px; margin-top: 12px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+          🚀 登入系統
+        </button>
+
+      </div>
+
+      <!-- 頁尾提示 -->
+      <div style="margin-top: 24px; font-size: 11px; color: rgba(255, 255, 255, 0.4);">
+        若忘記密碼，請洽詢系統管理員 (黃主任) 進行重設。
+      </div>
+
+    </div>
+  </div>
 
   <div class="app-container">
     
@@ -1395,12 +1471,23 @@
       <div class="sidebar-top">
         
         <!-- 品牌標誌 -->
-        <div class="brand-section">
+        <div class="brand-section" style="margin-bottom: 12px;">
           <div class="brand-title-wrap">
             <div class="brand-icon">總</div>
-            <h1 class="brand-title">總務處行政管理</h1>
+            <h1 class="brand-title">樹義總務處行政管理</h1>
           </div>
-          <div class="brand-subtitle">GitHub Projects 核心模擬</div>
+          <div class="brand-subtitle">樹義國小行政管理系統</div>
+        </div>
+
+        <!-- 目前登入身分標籤 -->
+        <div style="margin: 0 0 24px 0; padding: 16px; background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+            <span>👤 目前登入同仁</span>
+          </div>
+          <div id="sidebar-user-display" style="color: var(--text-main); font-size: 14px; font-weight: 700; padding: 8px 12px; background: rgba(216, 79, 139, 0.05); border-radius: var(--radius-sm); border: 1px solid rgba(216, 79, 139, 0.15); display: flex; align-items: center; justify-content: space-between;">
+            <span id="current-user-name" style="color: var(--text-main);">-</span>
+            <span id="current-user-role" class="badge" style="font-size: 10px; padding: 2px 8px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700;">-</span>
+          </div>
         </div>
 
         <!-- 數據摘要 -->
@@ -1425,7 +1512,11 @@
 
         <!-- 導覽選單 -->
         <nav class="nav-menu">
-          <button class="nav-btn active" data-view="table">
+          <button class="nav-btn active" data-view="home">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            🏠 系統首頁 (首頁)
+          </button>
+          <button class="nav-btn" data-view="table">
             <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
             📋 所有任務 (表格)
           </button>
@@ -1440,6 +1531,14 @@
           <button class="nav-btn" data-view="calendar">
             <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
             📅 任務行事曆 (日程)
+          </button>
+          <button class="nav-btn" data-view="ac">
+            <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H7M19 9H5M21 13H3M19 17H5M17 21H7"/></svg>
+            ❄️ 冷氣卡與儲值
+          </button>
+          <button class="nav-btn" data-view="meetings">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V10h14v8z"/></svg>
+            💼 工作會議排程
           </button>
           <button class="nav-btn" data-view="key-log">
             <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
@@ -1461,14 +1560,19 @@
             <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
             📊 績效統計 ( Insights)
           </button>
+          <button class="nav-btn" data-view="admin" id="nav-btn-admin" style="display: none;">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5S13.4 12 12 12s-2.5-1.1-2.5-2.5S10.6 7 12 7zm0 13.9c-2.7 0-5.2-1.6-6.2-4.1.1-.9.7-1.7 1.7-2.3 1.2-.7 2.8-1.1 4.5-1.1s3.3.4 4.5 1.1c1 .6 1.6 1.4 1.7 2.3-1 2.5-3.5 4.1-6.2 4.1z"/></svg>
+            🛡️ 管理員專區
+          </button>
         </nav>
       </div>
 
       <!-- 側欄底部按鈕 -->
       <div class="sidebar-footer">
         <button class="btn btn-primary" id="btn-add-task">+ 新增任務</button>
-        <button class="btn btn-secondary" id="btn-open-settings">⚙️ 管理系統選項</button>
+        <button class="btn btn-secondary" id="btn-open-settings">⚙️ 基本資料設定</button>
         <button class="btn btn-danger-outline" id="btn-reset-data">重設預設資料</button>
+        <button class="btn btn-secondary" id="btn-logout" style="margin-top: 8px; border-color: var(--danger); color: var(--danger); font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 4px;" onclick="handleLogout()">🚪 登出系統</button>
       </div>
     </aside>
 
@@ -1514,8 +1618,397 @@
       <!-- 視圖內容區 -->
       <div class="view-container">
         
+        <!-- 🛡️ 管理員專區 (Admin Panel) -->
+        <section class="view-pane" id="pane-admin">
+          <!-- 上方標題與快速卡 -->
+          <div style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px;">
+            <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">🛡️ 樹義總務處系統管理員專區</h3>
+            <p style="color: var(--text-muted); font-size: 13px;">本專區限主任身分存取，可用於指派職工角色權限、檢視操作稽核軌跡，以及執行資料庫維護。</p>
+          </div>
+
+          <div class="key-log-layout" style="margin-bottom: 24px;">
+            <!-- 左欄：人員權限分配 -->
+            <div class="table-card" style="padding:20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                <h4 style="color:var(--primary-dark); font-size:15px; margin:0;">👥 職工權限類別指派</h4>
+              </div>
+              
+              <!-- 新增人員表單 -->
+              <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:16px;">
+                <h5 style="font-size:12px; font-weight:700; margin-top:0; margin-bottom:8px; color:var(--primary-dark);">+ 新增人員並指派身分</h5>
+                <div style="display:flex; gap:8px;">
+                  <input type="text" class="form-control" id="admin-new-staff-name" placeholder="輸入姓名 (如：蔡組長)">
+                  <select class="form-control" id="admin-new-staff-role" style="width: 110px;">
+                    <option value="主任">主任</option>
+                    <option value="組長" selected>組長</option>
+                    <option value="職工">職工</option>
+                    <option value="志工">志工</option>
+                  </select>
+                  <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addStaffRoleSetting()">新增人員</button>
+                </div>
+              </div>
+
+              <!-- 人員角色表格 -->
+              <div style="max-height: 350px; overflow-y:auto;">
+                <table class="data-table" style="font-size:13px;">
+                  <thead>
+                    <tr>
+                      <th>姓名</th>
+                      <th>身分權限類別</th>
+                      <th style="width:110px;">登入密碼</th>
+                      <th style="width:70px;">功能</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-staff-roles-body">
+                    <!-- 動態載入 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 右欄：操作審計日誌與系統維護 -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+              
+              <!-- 操作稽核軌跡 -->
+              <div class="table-card" style="padding:20px; flex:1; display:flex; flex-direction:column;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  <h4 style="color:var(--primary-dark); font-size:15px; margin:0;">📋 系統操作審計日誌 (Audit Trail)</h4>
+                  <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="clearAuditLogs()">清空日誌</button>
+                </div>
+                <div style="flex:1; max-height:220px; overflow-y:auto;">
+                  <table class="data-table" style="font-size:12px;">
+                    <thead>
+                      <tr>
+                        <th style="width:120px;">時間</th>
+                        <th style="width:70px;">操作者</th>
+                        <th>執行行為</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-audit-logs-body">
+                      <!-- 動態載入 -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 資料庫維護工具 -->
+              <div class="table-card" style="padding:20px;">
+                <h4 style="color:var(--primary-dark); font-size:15px; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">💾 資料庫維護工具</h4>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items: center;">
+                  <button class="btn btn-secondary" style="height:32px; font-size:13px;" onclick="exportDatabaseBackup()">📥 匯出備份資料 (JSON)</button>
+                  <label class="btn btn-secondary" style="margin:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; height:32px; font-size:13px; font-weight:600; border-radius:6px; padding:0 12px; border:1px solid var(--border); color:var(--text-main); background:#fff;">
+                    📤 匯入備份還原 (JSON)
+                    <input type="file" id="admin-import-file" style="display:none;" onchange="importDatabaseBackup(this)">
+                  </label>
+                  <button class="btn btn-danger-outline" style="height:32px; font-size:13px;" onclick="resetToDefault()">⚠️ 一鍵重置資料庫</button>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-top:8px;">
+                  重置或匯入資料庫會覆蓋目前所有任務、鑰匙、冷氣儲值紀錄與設定。請謹慎操作！
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- 0. 首頁儀表板 (Dashboard) -->
+        <section class="view-pane active" id="pane-home">
+          <!-- 歡迎與卡片摘要 -->
+          <div style="background: linear-gradient(135deg, rgba(216,79,139,0.1) 0%, rgba(18,166,168,0.1) 100%); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <h3 style="color: var(--primary-dark); font-size: 22px; font-weight: 900; margin-bottom: 6px;">歡迎使用 樹義總務處全能管理系統</h3>
+              <p style="color: var(--text-muted); font-size: 13px;" id="dashboard-date-str">請開始您的工作！</p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn btn-primary" onclick="switchView('table')">📋 管理工作任務</button>
+              <button class="btn btn-secondary" onclick="switchView('ac')">❄️ 冷氣儲值與卡片</button>
+            </div>
+          </div>
+
+          <!-- 四個快捷狀態卡 -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 22px;">📋</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">任務完成率</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-task-rate">0%</div>
+              </div>
+            </div>
+            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px;">🔑</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">今日借出鑰匙</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-key-lent">0 支</div>
+              </div>
+            </div>
+            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 22px;">❄️</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">冷氣卡已收回</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-ac-rate">0 / 60 班</div>
+              </div>
+            </div>
+            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div style="width: 48px; height: 48px; border-radius: 50%; background: #f3e8ff; color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 22px;">📅</div>
+              <div>
+                <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">已排定會議數</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-meetings-count">0 場</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 左右主欄位 -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: start;">
+            <!-- 左欄：近期會議 & 冷氣卡回收摘要 -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <!-- 近期會議日程 -->
+              <div class="table-card" style="padding: 20px; min-height: 250px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">📅 近期會議日程</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('meetings')">會議管理</button>
+                </div>
+                <div id="dash-meetings-list" style="display: flex; flex-direction: column; gap: 12px;">
+                  <!-- 動態載入近期會議 -->
+                </div>
+              </div>
+
+              <!-- 冷氣卡回收進度 -->
+              <div class="table-card" style="padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">❄️ 冷氣卡回收進度</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('ac')">辦理回收</button>
+                </div>
+                <div class="progress-section" style="gap: 10px;">
+                  <div class="progress-label-wrap">
+                    <span style="font-weight: 700; font-size: 13px;" id="dash-ac-percent-text">已完成收回 0%</span>
+                    <span class="progress-percentage" id="dash-ac-counts">0 / 60 班</span>
+                  </div>
+                  <div class="progress-track" style="height: 12px; border-radius: 6px; background: rgba(0,0,0,0.04);">
+                    <div class="progress-bar-fill" id="dash-ac-progress-bar" style="width: 0%; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 右欄：今日值班與外勤 & 逾期鑰匙 -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+              <!-- 今日值勤動態 -->
+              <div class="table-card" style="padding: 20px; min-height: 180px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">🏢 今日總務值勤與外勤</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('staff-roster')">人員排班</button>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <div id="dash-today-duty" style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--primary);">
+                    <!-- 今日值班同仁 -->
+                  </div>
+                  <div id="dash-today-delivery" style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--accent);">
+                    <!-- 今日外勤外送 -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- 逾期鑰匙/磁扣借用警示 -->
+              <div class="table-card" style="padding: 20px; min-height: 140px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">🔑 逾期未還鑰匙警告</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('key-log')">借還登記</button>
+                </div>
+                <div id="dash-overdue-container" style="font-size: 12px; color: var(--text-muted);">
+                  <!-- 逾期列表 -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. 冷氣卡與儲值管理 -->
+        <section class="view-pane" id="pane-ac">
+          <!-- 子頁籤 -->
+          <div class="settings-tabs" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
+            <button class="settings-tab-btn active" id="ac-tab-btn-topup" onclick="switchAcTab('topup')" style="padding: 10px 16px; font-weight:700;">❄️ 冷氣卡儲值登記</button>
+            <button class="settings-tab-btn" id="ac-tab-btn-checklist" onclick="switchAcTab('checklist')" style="padding: 10px 16px; font-weight:700;">📋 冷氣卡回收保管清單</button>
+          </div>
+
+          <!-- 子頁籤一：冷氣儲值登記 -->
+          <div class="roster-tab-content" id="ac-content-topup" style="display:block;">
+            <div class="key-log-layout">
+              <!-- 左側儲值表單 -->
+              <div class="table-card" style="padding:20px;">
+                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">❄️ 快速儲值登記</h3>
+                <form id="ac-topup-form" onsubmit="event.preventDefault();">
+                  
+                  <div class="form-group">
+                    <label class="form-label">使用對象類別 *</label>
+                    <div style="display: flex; gap: 20px; margin-top: 6px; margin-bottom: 10px;">
+                      <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+                        <input type="radio" name="ac-target-type" value="class" checked onchange="toggleAcTargetType()"> 班級
+                      </label>
+                      <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+                        <input type="radio" name="ac-target-type" value="office" onchange="toggleAcTargetType()"> 行政處室
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- 班級下拉 -->
+                  <div class="form-group" id="ac-class-select-group">
+                    <label class="form-label" for="ac-class-select">選擇班級 *</label>
+                    <select class="form-control" id="ac-class-select">
+                      <!-- 動態載入 -->
+                    </select>
+                  </div>
+
+                  <!-- 處室下拉 -->
+                  <div class="form-group" id="ac-office-select-group" style="display:none;">
+                    <label class="form-label" for="ac-office-select">選擇行政處室 *</label>
+                    <select class="form-control" id="ac-office-select">
+                      <!-- 動態載入 -->
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="ac-amount">儲值金額 (元) *</label>
+                    <input type="number" class="form-control" id="ac-amount" placeholder="請填寫儲值金額 (例如：1000)" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="ac-staff-select">辦理同仁 *</label>
+                    <select class="form-control" id="ac-staff-select">
+                      <!-- 同人名下拉 -->
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">儲值人員簽章 *</label>
+                    <div class="signature-pad-wrapper">
+                      <canvas id="ac-signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
+                      <div class="signature-actions">
+                        <span style="font-size:11px; color:var(--text-muted);">請在灰色區域手寫簽名</span>
+                        <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearAcSignature()">清除重簽</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="submitAcTopup()">儲值登記提交</button>
+                </form>
+              </div>
+
+              <!-- 右側儲值歷史清單 -->
+              <div class="table-card" style="padding:20px;">
+                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 儲值登記簿 (歷史紀錄)</h3>
+                <div style="overflow-x:auto;">
+                  <table class="data-table" style="font-size:13px;" id="ac-topup-table">
+                    <thead>
+                      <tr>
+                        <th>儲值日期</th>
+                        <th>儲值對象</th>
+                        <th>儲值金額</th>
+                        <th>辦理人員</th>
+                        <th>儲值人簽收</th>
+                        <th style="width:80px;">功能</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ac-topup-body">
+                      <!-- 動態載入 -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 子頁籤二：冷氣卡回收保管清單 -->
+          <div class="roster-tab-content" id="ac-content-checklist" style="display:none;">
+            <div class="table-card" style="padding:20px; margin-bottom: 20px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 12px;">
+                <h3 style="color:var(--primary-dark); font-size:16px;">📋 全校冷氣卡回收狀況 (共 60 班)</h3>
+                <div class="progress-section" style="width: 300px; gap: 4px; margin: 0;">
+                  <div class="progress-label-wrap">
+                    <span id="ac-checklist-percent-text">已收回 0%</span>
+                    <span class="progress-percentage" id="ac-checklist-counts">0 / 60 班</span>
+                  </div>
+                  <div class="progress-track" style="height:8px;">
+                    <div class="progress-bar-fill" id="ac-checklist-progress-bar" style="width:0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 60班狀態網格 -->
+              <div id="ac-cards-grid-container" style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- 動態生成按年級分組的 60 班網格 -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. 工作會議排程 -->
+        <section class="view-pane" id="pane-meetings">
+          <div class="key-log-layout">
+            <!-- 左側排程表單 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">💼 安排新會議</h3>
+              <form id="meeting-schedule-form" onsubmit="event.preventDefault();">
+                
+                <div class="form-group">
+                  <label class="form-label" for="meet-name-select">會議名稱 *</label>
+                  <select class="form-control" id="meet-name-select" required>
+                    <option value="職工會議">職工會議</option>
+                    <option value="處室會議">處室會議</option>
+                    <option value="臨時會議">臨時會議</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="meet-title-input">會議主題/備註</label>
+                  <input type="text" class="form-control" id="meet-title-input" placeholder="例如：期中總務處務會議">
+                </div>
+
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="form-label" for="meet-date">會議日期 *</label>
+                    <input type="date" class="form-control" id="meet-date" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="meet-time">會議時間 *</label>
+                    <input type="time" class="form-control" id="meet-time" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="meet-location">會議地點</label>
+                  <input type="text" class="form-control" id="meet-location" placeholder="例如：二樓校史室" value="總務處辦公室">
+                </div>
+
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitMeetingSchedule()">新增預定日程</button>
+              </form>
+            </div>
+
+            <!-- 右側會議列表 -->
+            <div class="table-card" style="padding:20px;">
+              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 已預定會議清單</h3>
+              <div style="overflow-x:auto;">
+                <table class="data-table" style="font-size:13px;" id="meetings-list-table">
+                  <thead>
+                    <tr>
+                      <th>會議日期</th>
+                      <th>時間</th>
+                      <th>會議名稱</th>
+                      <th>主題/備註</th>
+                      <th>地點</th>
+                      <th style="width:80px;">功能</th>
+                    </tr>
+                  </thead>
+                  <tbody id="meetings-list-body">
+                    <!-- 動態載入 -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- 1. 表格視圖 (Table) -->
-        <section class="view-pane active" id="pane-table">
+        <section class="view-pane" id="pane-table">
           <div class="table-card">
             <table class="data-table" id="tasks-table">
               <thead>
@@ -2071,83 +2564,123 @@
   <!-- ------------------------------------------------------------- -->
   <!-- 系統選項管理對話框 (Settings Modal) - 增加鑰匙管理 Tab -->
   <!-- ------------------------------------------------------------- -->
+  <!-- ------------------------------------------------------------- -->
+  <!-- 基本資料與系統配置設定 (Settings Modal) -->
+  <!-- ------------------------------------------------------------- -->
   <div class="modal-overlay" id="settings-modal">
-    <div class="modal-box" style="width: 580px;">
+    <div class="modal-box" style="width: 640px;">
       <div class="modal-header">
-        <h3>管理系統配置選項</h3>
+        <h3>基本資料與系統配置設定</h3>
         <button class="modal-close" onclick="closeSettingsModal()">×</button>
       </div>
       <div class="modal-body">
         
         <!-- 分頁頁籤 -->
-        <div class="settings-tabs">
-          <button class="settings-tab-btn active" id="tab-btn-general" onclick="switchSettingsTab('general')">⚙️ 一般選項配置</button>
-          <button class="settings-tab-btn" id="tab-btn-keys" onclick="switchSettingsTab('keys')">🔑 鑰匙與磁扣庫存管理</button>
-          <button class="settings-tab-btn" id="tab-btn-venues" onclick="switchSettingsTab('venues')">🏫 場地項目管理</button>
+        <div class="settings-tabs" style="flex-wrap: wrap; gap: 6px;">
+          <button class="settings-tab-btn active" id="tab-btn-staff" onclick="switchSettingsTab('staff')">👥 事務人員</button>
+          <button class="settings-tab-btn" id="tab-btn-classes" onclick="switchSettingsTab('classes')">🏫 班級與處室</button>
+          <button class="settings-tab-btn" id="tab-btn-venues" onclick="switchSettingsTab('venues')">📍 場地與堂號</button>
+          <button class="settings-tab-btn" id="tab-btn-keys" onclick="switchSettingsTab('keys')">🔑 鑰匙與磁扣</button>
+          <button class="settings-tab-btn" id="tab-btn-tasks" onclick="switchSettingsTab('tasks')">🏷️ 分類與里程碑</button>
+          <button class="settings-tab-btn" id="tab-btn-cloud" onclick="switchSettingsTab('cloud')">☁️ 雲端同步</button>
         </div>
 
-        <!-- 頁籤一：一般配置 -->
-        <div class="settings-tab-content active" id="tab-content-general">
-          <!-- 1. 負責人名單 -->
+        <!-- 1. 事務人員 -->
+        <div class="settings-tab-content active" id="tab-content-staff">
           <div style="margin-bottom: 20px;">
-            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">👥 總務處同仁名單</h4>
-            <div id="settings-assignees-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">👥 總務處事務同仁名單</h4>
+            <div id="settings-assignees-list" style="max-height:160px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
             <div style="display:flex; gap:8px; margin-top:8px;">
-              <input type="text" class="form-control" id="new-assignee-name" placeholder="輸入同仁姓名 (例如：黃組員)">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addAssigneeSetting()">新增</button>
-            </div>
-          </div>
-
-          <!-- 2. 標籤與權重 -->
-          <div style="margin-bottom: 20px;">
-            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏷️ 任務標籤與權重設定</h4>
-            <div id="settings-labels-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <input type="text" class="form-control" id="new-label-name" placeholder="標籤名稱 (例如：採購)">
-              <select class="form-control" id="new-label-weight" style="width: 100px;">
-                <option value="1">權重: 1</option>
-                <option value="3">權重: 3</option>
-                <option value="5">權重: 5</option>
+              <input type="text" class="form-control" id="new-assignee-name" placeholder="例如：林組員" style="flex:1;">
+              <select class="form-control" id="new-assignee-role" style="width: 100px;">
+                <option value="主任">主任</option>
+                <option value="組長" selected>組長</option>
+                <option value="職工">職工</option>
+                <option value="志工">志工</option>
               </select>
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addLabelSetting()">新增</button>
-            </div>
-          </div>
-
-          <!-- 3. 里程碑管理 -->
-          <div>
-            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🎯 里程碑 (年度大型計畫)</h4>
-            <div id="settings-milestones-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:6px; border-radius:6px; background:#fff;"></div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <input type="text" class="form-control" id="new-milestone-name" placeholder="里程碑計畫 (例如：暑期耐震補強)">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addMilestoneSetting()">新增</button>
-            </div>
-          </div>
-
-          <!-- 4. Google Sheet 雲端 API 設定 -->
-          <div style="margin-top: 20px; border-top:1px dashed var(--border); padding-top:16px;">
-            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📊 Google Sheet 雲端試算表 API 網址</h4>
-            <div style="display:flex; gap:8px;">
-              <input type="text" class="form-control" id="settings-gsheet-url" placeholder="貼上您的 Google Apps Script 網頁應用程式網址 (例如：https://script.google.com/macros/s/.../exec)">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
-            </div>
-            <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
-              貼上並儲存後，系統將會**直接對您的 Google Sheet 雲端試算表進行讀寫同步**。清空並儲存則會切換回本地資料庫/LocalStorage 模式。
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addAssigneeSetting()">新增同仁</button>
             </div>
           </div>
         </div>
 
-        <!-- 頁籤二：鑰匙與磁扣管理 -->
+        <!-- 2. 班級與處室 -->
+        <div class="settings-tab-content" id="tab-content-classes">
+          <!-- 班級 -->
+          <div style="margin-bottom: 20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <h4 style="color:var(--primary-dark); font-size:13px; margin:0;">🏫 班級清單</h4>
+              <button class="btn btn-secondary" style="padding:4px 10px; font-size:11px; border-color:var(--primary); color:var(--primary-dark);" onclick="generateDefaultClassesSetting()">一鍵產生 60 班 (1-6年級各10班)</button>
+            </div>
+            <div id="settings-classes-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-class-code" placeholder="手動輸入班級代碼 (例如：111)">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addClassSetting()">新增班級</button>
+            </div>
+          </div>
+          <!-- 處室 -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏢 行政處室清單</h4>
+            <div id="settings-offices-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-office-name" placeholder="例如：校長室">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addOfficeSetting()">新增處室</button>
+            </div>
+          </div>
+          <!-- 科任教室與堂號對應 -->
+          <div>
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏫 科任教室名稱與堂號對應</h4>
+            <div id="settings-subject-classrooms-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-subject-classroom-name" placeholder="例如：語言教室一">
+              <select class="form-control" id="new-subject-classroom-hall" style="width: 130px;">
+                <!-- 動態載入堂號 -->
+              </select>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addSubjectClassroomSetting()">新增教室</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 場地與堂號 -->
+        <div class="settings-tab-content" id="tab-content-venues">
+          <!-- 場地 -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📍 可預約場地清單</h4>
+            <div id="settings-venues-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-venue-name" placeholder="例如：創客教室">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addVenueInventorySetting()">新增場地</button>
+            </div>
+          </div>
+          <!-- 堂號 (節次) -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">⏰ 預約時段/堂號設定</h4>
+            <div id="settings-periods-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-period-name" placeholder="例如：第八節">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addPeriodSetting()">新增堂號</button>
+            </div>
+          </div>
+          <!-- 教室堂號 (62古風堂號) -->
+          <div>
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏛️ 教室古風堂號清單 (62個堂號)</h4>
+            <div id="settings-halls-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-hall-name" placeholder="例如：解梁堂">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addHallSetting()">新增堂號</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 鑰匙與磁扣 -->
         <div class="settings-tab-content" id="tab-content-keys">
           <div style="margin-bottom: 16px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🔑 目前庫存清單</h4>
-            <div id="settings-keys-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;">
-              <!-- 動態載入鑰匙庫存 -->
-            </div>
+            <div id="settings-keys-list" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;"></div>
           </div>
           <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px;">
             <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增鑰匙 / 磁扣項目</h5>
             <div style="display:flex; gap:8px;">
-              <input type="text" class="form-control" id="new-key-name" placeholder="種類編號/名稱 (例如：五年八班教室鑰匙)">
+              <input type="text" class="form-control" id="new-key-name" placeholder="名稱 (例如：校史室鑰匙)">
               <select class="form-control" id="new-key-type" style="width: 100px;">
                 <option value="鑰匙">鑰匙</option>
                 <option value="磁扣">磁扣</option>
@@ -2157,26 +2690,75 @@
           </div>
         </div>
 
-        <!-- 頁籤三：場地項目管理 -->
-        <div class="settings-tab-content" id="tab-content-venues">
-          <div style="margin-bottom: 16px;">
-            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏫 目前可預約場地清單</h4>
-            <div id="settings-venues-list" style="max-height: 240px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;">
-              <!-- 動態載入場地項目 -->
+        <!-- 5. 任務分類與里程碑 -->
+        <div class="settings-tab-content" id="tab-content-tasks">
+          <!-- 標籤與權重 -->
+          <div style="margin-bottom: 20px;">
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏷️ 任務分類與權重設定</h4>
+            <div id="settings-labels-list" style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-label-name" placeholder="例如：綠化">
+              <select class="form-control" id="new-label-weight" style="width: 100px;">
+                <option value="1">權重: 1</option>
+                <option value="3">權重: 3</option>
+                <option value="5">權重: 5</option>
+              </select>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addLabelSetting()">新增</button>
             </div>
           </div>
-          <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px;">
-            <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增場地項目</h5>
-            <div style="display:flex; gap:8px;">
-              <input type="text" class="form-control" id="new-venue-name" placeholder="場地名稱 (例如：多功能教室)">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addVenueInventorySetting()">新增</button>
+          <!-- 里程碑 -->
+          <div>
+            <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🎯 里程碑 (年度專案)</h4>
+            <div id="settings-milestones-list" style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;"></div>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <input type="text" class="form-control" id="new-milestone-name" placeholder="例如：校慶籌備">
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addMilestoneSetting()">新增</button>
             </div>
+          </div>
+        </div>
+
+        <!-- 6. 雲端同步 -->
+        <div class="settings-tab-content" id="tab-content-cloud">
+          <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📊 Google Sheet 雲端試算表 API 網址</h4>
+          <div style="display:flex; gap:8px;">
+            <input type="text" class="form-control" id="settings-gsheet-url" placeholder="貼上您的 Google Apps Script 網頁應用程式網址">
+            <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); margin-top:6px; line-height: 1.4;">
+            儲存後系統將以此雲端試算表作為資料同步來源。清空則切換回本地資料庫。
           </div>
         </div>
 
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary" onclick="closeSettingsModal()">關閉視窗</button>
+        <button class="btn btn-primary" onclick="closeSettingsModal()">關閉儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 冷氣卡歸還簽收對話框 (AC Card Return Modal) -->
+  <div class="modal-overlay" id="ac-card-modal">
+    <div class="modal-box" style="width: 400px;">
+      <div class="modal-header">
+        <h3 id="ac-card-modal-title">冷氣卡收回簽收</h3>
+        <button class="modal-close" onclick="closeAcCardModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:12px; font-weight:700; font-size: 16px; color: var(--primary-dark);" id="ac-card-class-display">班級：101</div>
+        <div class="form-group">
+          <label class="form-label">收回簽收手寫簽章 *</label>
+          <div class="signature-pad-wrapper">
+            <canvas id="ac-card-signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
+            <div class="signature-actions">
+              <span style="font-size:11px; color:var(--text-muted);">請在灰色區域手寫簽章</span>
+              <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearAcCardSignature()">清除重簽</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAcCardModal()">取消</button>
+        <button class="btn btn-primary" onclick="saveAcCardReturn()">簽收確認</button>
       </div>
     </div>
   </div>
@@ -2200,7 +2782,53 @@
   <!-- ------------------------------------------------------------- -->
   <script>
     // 預設單機模式下備用的初始資料集
-    const DEFAULT_ASSIGNEES = ["陳組長", "林幹事", "張助理"];
+    const DEFAULT_ASSIGNEES = ["陳組長", "林幹事", "張助理", "黃主任", "李志工"];
+    
+    const DEFAULT_STAFF_ROLES = [
+      { name: "陳組長", role: "組長", password: "1234" },
+      { name: "林幹事", role: "職工", password: "1234" },
+      { name: "張助理", role: "職工", password: "1234" },
+      { name: "黃主任", "role": "主任", password: "1234" },
+      { name: "李志工", role: "志工", password: "1234" }
+    ];
+
+    const DEFAULT_HALLS = [
+      "齊陽堂", "臨淮堂", "鍾陵堂", "蘭陵堂", "隴西堂", "譙國堂", "濟陽堂", "彭城堂",
+      "陳留堂", "清河堂", "高陽堂", "高平堂", "苑陽堂", "范陽堂", "延陵堂", "始平堂",
+      "京兆堂", "沛國堂", "宏農堂", "下邳堂", "上谷堂", "天水堂", "太原堂", "平原堂",
+      "中山堂", "平陽堂", "安定堂", "汝南堂", "南陽堂", "江夏堂", "魯國堂", "樂安堂",
+      "廣陵堂", "榮陽堂", "百濟堂", "西平堂", "西河堂", "吳興堂", "東海堂", "河東堂",
+      "南昌堂", "上黨堂", "武功堂", "解梁堂", "廣平堂", "東魯堂", "河南堂", "河間堂",
+      "敦煌堂", "渤海堂", "新鄭堂", "鉅鹿堂", "盧江堂", "穎川堂", "豫章堂", "齊郡堂",
+      "榮安堂", "會稽堂", "馮翊堂", "雁門堂", "博陵堂", "晉陽堂"
+    ];
+
+    const DEFAULT_SUBJECT_CLASSROOMS = [
+      { name: "語言教室一", hall: "齊陽堂" },
+      { name: "語言教室二", hall: "臨淮堂" },
+      { name: "語言教室三", hall: "鍾陵堂" },
+      { name: "視聽教室", hall: "蘭陵堂" },
+      { name: "自然教室", hall: "隴西堂" },
+      { name: "多元社團教室", hall: "譙國堂" },
+      { name: "教具室", hall: "濟陽堂" },
+      { name: "教師研習室", hall: "彭城堂" },
+      { name: "圖書室", hall: "陳留堂" },
+      { name: "平陵堂藝廊", hall: "清河堂" },
+      { name: "武功堂科任辦公室", hall: "高陽堂" },
+      { name: "解梁堂輔導諮商室", hall: "高平堂" },
+      { name: "廣平堂輔導處", hall: "苑陽堂" },
+      { name: "自然教室一", hall: "范陽堂" },
+      { name: "音樂教室一", hall: "延陵堂" },
+      { name: "音樂教室二", hall: "始平堂" },
+      { name: "音樂教室三", hall: "京兆堂" },
+      { name: "資訊教室一", hall: "沛國堂" },
+      { name: "資訊教室二", hall: "宏農堂" },
+      { name: "自然科教具室", hall: "下邳堂" }
+    ];
+
+    const DEFAULT_AUDIT_LOGS = [
+      { id: "alog-1", timestamp: "2026-07-11 09:00:15", user: "黃主任", action: "初始化系統資料庫設定" }
+    ];
     
     const DEFAULT_LABELS = [
       { name: "修繕", weight: 5 },
@@ -2274,7 +2902,7 @@
     let isGoogleSheetMode = false;
 
     let isApiMode = false; // 是否連線至後端
-    let activeView = 'table';
+    let activeView = 'home';
     let currentSortField = 'dueDate';
     let currentSortOrder = 'asc';
     let currentChartMode = 'done';
@@ -2287,17 +2915,44 @@
     let calendarCurrentDate = new Date(2026, 6, 10); // 預設 2026 年 7 月 10 日
     let calendarViewMode = 'month'; // 'month', 'week', 'day'
 
+    // 新增：班級、處室、堂號與冷氣、會議變數
+    let classes = [];
+    let offices = [];
+    let periods = [];
+    let acTopups = [];
+    let acCards = [];
+    let meetings = [];
+    let activeAcTab = 'topup';
+    let currentSigningClass = '';
+    
+    // 新增角色與科任堂號對應變數
+    let staffRoles = [];
+    let halls = [];
+    let subjectClassrooms = [];
+    let auditLogs = [];
+    let currentUser = localStorage.getItem('ga_currentUser') || '陳組長';
+    let currentUserRole = localStorage.getItem('ga_currentUserRole') || '組長';
+
     // 簽名畫布狀態變數
     let isDrawing = false;
     let sigCanvas, sigCtx;
+    let acDrawing = false;
+    let acCanvas, acCtx;
+    let acCardDrawing = false;
+    let acCardCanvas, acCardCtx;
 
     // 初始化載入
     window.addEventListener('DOMContentLoaded', async () => {
       await initDatabase();
+      checkLoginState();
       initUI();
       initSignatureCanvas();
-      renderActiveView();
-      updateGlobalStats();
+      initAcSignatureCanvas();
+      initAcCardSignatureCanvas();
+      if (localStorage.getItem('ga_isLoggedIn') === 'true') {
+        renderActiveView();
+        updateGlobalStats();
+      }
     });
 
     // -------------------------------------------------------------
@@ -2335,6 +2990,9 @@
 
       // 根據不同視圖進行渲染
       switch(activeView) {
+        case 'home':
+          renderHomeView();
+          break;
         case 'table':
           renderTableView(filtered);
           break;
@@ -2346,6 +3004,12 @@
           break;
         case 'calendar':
           renderCalendarView();
+          break;
+        case 'ac':
+          renderAcView();
+          break;
+        case 'meetings':
+          renderMeetingsView();
           break;
         case 'key-log':
           renderKeyLogView();
@@ -2361,6 +3025,9 @@
           break;
         case 'insights':
           renderInsightsView(filtered);
+          break;
+        case 'admin':
+          renderAdminView();
           break;
       }
     }
@@ -2382,10 +3049,22 @@
           const pVenueReservations = fetch(googleSheetApiUrl + '?type=venueReservations').then(r => r.json());
           const pDutyRoster = fetch(googleSheetApiUrl + '?type=dutyRoster').then(r => r.json());
           const pDeliveryRoster = fetch(googleSheetApiUrl + '?type=deliveryRoster').then(r => r.json());
+          const pClasses = fetch(googleSheetApiUrl + '?type=classes').then(r => r.json()).catch(() => []);
+          const pOffices = fetch(googleSheetApiUrl + '?type=offices').then(r => r.json()).catch(() => []);
+          const pPeriods = fetch(googleSheetApiUrl + '?type=periods').then(r => r.json()).catch(() => []);
+          const pAcTopups = fetch(googleSheetApiUrl + '?type=acTopups').then(r => r.json()).catch(() => []);
+          const pAcCards = fetch(googleSheetApiUrl + '?type=acCards').then(r => r.json()).catch(() => []);
+          const pMeetings = fetch(googleSheetApiUrl + '?type=meetings').then(r => r.json()).catch(() => []);
+          const pStaffRoles = fetch(googleSheetApiUrl + '?type=staffRoles').then(r => r.json()).catch(() => null);
+          const pHalls = fetch(googleSheetApiUrl + '?type=halls').then(r => r.json()).catch(() => null);
+          const pSubjectClassrooms = fetch(googleSheetApiUrl + '?type=subjectClassrooms').then(r => r.json()).catch(() => null);
+          const pAuditLogs = fetch(googleSheetApiUrl + '?type=auditLogs').then(r => r.json()).catch(() => null);
 
           const results = await Promise.all([
             pAssignees, pLabels, pMilestones, pTasks, pKeyInventory, pKeyLogs,
-            pVenueInventory, pVenueReservations, pDutyRoster, pDeliveryRoster
+            pVenueInventory, pVenueReservations, pDutyRoster, pDeliveryRoster,
+            pClasses, pOffices, pPeriods, pAcTopups, pAcCards, pMeetings,
+            pStaffRoles, pHalls, pSubjectClassrooms, pAuditLogs
           ]);
 
           assignees = results[0] || [];
@@ -2398,13 +3077,52 @@
           venueReservations = results[7] || [];
           dutyRoster = results[8] || [];
           deliveryRoster = results[9] || [];
+          classes = results[10] || [];
+          offices = results[11] || [];
+          periods = results[12] || [];
+          acTopups = results[13] || [];
+          acCards = results[14] || [];
+          meetings = results[15] || [];
 
           isGoogleSheetMode = true;
           isApiMode = false;
 
+          // 雲端獲取，若為 null 則代表試算表無此 Sheet，回退至 LocalStorage 載入，保持無縫相容
+          const gStaffRoles = results[16];
+          if (gStaffRoles && gStaffRoles.length > 0) {
+            staffRoles = gStaffRoles;
+          } else {
+            const savedStaffRoles = localStorage.getItem('ga_staffRoles');
+            staffRoles = savedStaffRoles ? JSON.parse(savedStaffRoles) : [...DEFAULT_STAFF_ROLES];
+          }
+
+          const gHalls = results[17];
+          if (gHalls && gHalls.length > 0) {
+            halls = gHalls.map(h => typeof h === 'object' ? h.name : h);
+          } else {
+            const savedHalls = localStorage.getItem('ga_halls');
+            halls = savedHalls ? JSON.parse(savedHalls) : [...DEFAULT_HALLS];
+          }
+
+          const gSubjectClassrooms = results[18];
+          if (gSubjectClassrooms && gSubjectClassrooms.length > 0) {
+            subjectClassrooms = gSubjectClassrooms;
+          } else {
+            const savedSubjectClassrooms = localStorage.getItem('ga_subjectClassrooms');
+            subjectClassrooms = savedSubjectClassrooms ? JSON.parse(savedSubjectClassrooms) : [...DEFAULT_SUBJECT_CLASSROOMS];
+          }
+
+          const gAuditLogs = results[19];
+          if (gAuditLogs && gAuditLogs.length > 0) {
+            auditLogs = gAuditLogs;
+          } else {
+            const savedAuditLogs = localStorage.getItem('ga_auditLogs');
+            auditLogs = savedAuditLogs ? JSON.parse(savedAuditLogs) : [];
+          }
+
           // 偵測是否為全新空白試算表，若是則引導用戶初始化
           if (assignees.length === 0 && tasks.length === 0) {
-            if (confirm("📢 偵測到您的 Google 雲端試算表目前是空的！\n\n是否要自動將網頁現有的暫存資料（包括預設任務、鑰匙、場地、排班等）上傳並初始化至您的 Google Sheets？")) {
+            if (confirm("📢 偵測到您的 Google 雲端試算表目前是空的！\n\n是否要自動將網頁現有的暫存資料上傳並初始化至您的 Google Sheets？")) {
               loadFromLocalStorage();
               await Promise.all([
                 syncGoogleSheet('assignees'),
@@ -2416,17 +3134,27 @@
                 syncGoogleSheet('venueInventory'),
                 syncGoogleSheet('venueReservations'),
                 syncGoogleSheet('dutyRoster'),
-                syncGoogleSheet('deliveryRoster')
+                syncGoogleSheet('deliveryRoster'),
+                syncGoogleSheet('classes'),
+                syncGoogleSheet('offices'),
+                syncGoogleSheet('periods'),
+                syncGoogleSheet('acTopups'),
+                syncGoogleSheet('acCards'),
+                syncGoogleSheet('meetings'),
+                syncGoogleSheet('staffRoles'),
+                syncGoogleSheet('halls'),
+                syncGoogleSheet('subjectClassrooms'),
+                syncGoogleSheet('auditLogs')
               ]);
-              alert("🎉 雲端試算表初始化完成！所有資料已寫入您的 Google Sheets，未來將自動在雲端同步。");
+              alert("🎉 雲端試算表初始化完成！");
             }
           }
 
           updateApiStatusBadge(true, '● 雲端模式 (Google 試算表同步)');
           return;
         } catch (e) {
-          console.error("無法連線 Google Sheet 試算表，改為本機 LocalStorage 模式：", e);
-          alert("⚠️ 無法連線至您的 Google Sheet 試算表，系統已暫時自動切換至本機暫存模式！");
+          console.error("無法連線 Google Sheet，改為本機 LocalStorage 模式：", e);
+          alert("⚠️ 無法連線至您的 Google Sheet，系統已暫時自動切換至本機暫存模式！");
           isGoogleSheetMode = false;
         }
       }
@@ -2435,9 +3163,15 @@
         const configRes = await fetch('/api/config');
         if (configRes.ok) {
           const config = await configRes.json();
-          assignees = config.assignees;
-          labels = config.labels;
-          milestones = config.milestones;
+          assignees = config.assignees || [];
+          labels = config.labels || [];
+          milestones = config.milestones || [];
+          classes = config.classes || [];
+          offices = config.offices || [];
+          periods = config.periods || [];
+          staffRoles = config.staffRoles || [];
+          halls = config.halls || [];
+          subjectClassrooms = config.subjectClassrooms || [];
           isApiMode = true;
         }
       } catch (e) {
@@ -2450,23 +3184,30 @@
           const tasksRes = await fetch('/api/tasks');
           tasks = await tasksRes.json();
           
-          // 獲取鑰匙與磁扣資料
           const keysRes = await fetch('/api/keys');
           const keysData = await keysRes.json();
           keyInventory = keysData.inventory;
           keyLogs = keysData.logs;
 
-          // 獲取場地與預約資料
           const venueRes = await fetch('/api/venues');
           const venueData = await venueRes.json();
           venueInventory = venueData.inventory;
           venueReservations = venueData.reservations;
 
-          // 獲取排班與外勤資料
           const rosterRes = await fetch('/api/roster');
           const rosterData = await rosterRes.json();
           dutyRoster = rosterData.duty;
           deliveryRoster = rosterData.delivery;
+
+          // 獲取冷氣與會議
+          const acTopupsRes = await fetch('/api/ac/topups');
+          acTopups = await acTopupsRes.json();
+          const acCardsRes = await fetch('/api/ac/cards');
+          acCards = await acCardsRes.json();
+          const meetingsRes = await fetch('/api/meetings');
+          meetings = await meetingsRes.json();
+          const auditRes = await fetch('/api/audit-logs');
+          auditLogs = await auditRes.json();
 
           updateApiStatusBadge(true);
         } catch (e) {
@@ -2497,7 +3238,6 @@
       tasks = savedTasks ? JSON.parse(savedTasks) : [...DEFAULT_TASKS];
       if (!savedTasks) localStorage.setItem('ga_tasks', JSON.stringify(tasks));
 
-      // 鑰匙資料庫 LocalStorage
       const savedKeyInventory = localStorage.getItem('ga_keyInventory');
       keyInventory = savedKeyInventory ? JSON.parse(savedKeyInventory) : [
         { id: "kf-1", name: "五年十班教室鑰匙", type: "鑰匙", status: "Available" },
@@ -2510,7 +3250,6 @@
       keyLogs = savedKeyLogs ? JSON.parse(savedKeyLogs) : [];
       if (!savedKeyLogs) localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
 
-      // 場地資料庫 LocalStorage
       const savedVenueInventory = localStorage.getItem('ga_venueInventory');
       venueInventory = savedVenueInventory ? JSON.parse(savedVenueInventory) : ["雅舍", "活動中心", "4樓會議室"];
       if (!savedVenueInventory) localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
@@ -2519,7 +3258,6 @@
       venueReservations = savedVenueReservations ? JSON.parse(savedVenueReservations) : [];
       if (!savedVenueReservations) localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
 
-      // 排班與外勤資料庫 LocalStorage
       const savedDutyRoster = localStorage.getItem('ga_dutyRoster');
       dutyRoster = savedDutyRoster ? JSON.parse(savedDutyRoster) : [];
       if (!savedDutyRoster) localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
@@ -2527,6 +3265,61 @@
       const savedDeliveryRoster = localStorage.getItem('ga_deliveryRoster');
       deliveryRoster = savedDeliveryRoster ? JSON.parse(savedDeliveryRoster) : [];
       if (!savedDeliveryRoster) localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+
+      // 班級、處室、堂號
+      const savedClasses = localStorage.getItem('ga_classes');
+      if (savedClasses) {
+        classes = JSON.parse(savedClasses);
+      } else {
+        classes = [];
+        for (let g = 1; g <= 6; g++) {
+          for (let r = 1; r <= 10; r++) {
+            classes.push(`${g}${r < 10 ? '0' + r : r}`);
+          }
+        }
+        localStorage.setItem('ga_classes', JSON.stringify(classes));
+      }
+
+      const savedOffices = localStorage.getItem('ga_offices');
+      offices = savedOffices ? JSON.parse(savedOffices) : ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"];
+      if (!savedOffices) localStorage.setItem('ga_offices', JSON.stringify(offices));
+
+      const savedPeriods = localStorage.getItem('ga_periods');
+      periods = savedPeriods ? JSON.parse(savedPeriods) : ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節"];
+      if (!savedPeriods) localStorage.setItem('ga_periods', JSON.stringify(periods));
+
+      const savedAcTopups = localStorage.getItem('ga_acTopups');
+      acTopups = savedAcTopups ? JSON.parse(savedAcTopups) : [];
+      if (!savedAcTopups) localStorage.setItem('ga_acTopups', JSON.stringify(acTopups));
+
+      const savedAcCards = localStorage.getItem('ga_acCards');
+      if (savedAcCards) {
+        acCards = JSON.parse(savedAcCards);
+      } else {
+        acCards = classes.map(c => ({ classCode: c, returned: false, signature: "", date: "" }));
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+      }
+
+      const savedMeetings = localStorage.getItem('ga_meetings');
+      meetings = savedMeetings ? JSON.parse(savedMeetings) : [];
+      if (!savedMeetings) localStorage.setItem('ga_meetings', JSON.stringify(meetings));
+
+      // 新增的角色、堂號、科任教室、稽核軌跡
+      const savedStaffRoles = localStorage.getItem('ga_staffRoles');
+      staffRoles = savedStaffRoles ? JSON.parse(savedStaffRoles) : [...DEFAULT_STAFF_ROLES];
+      if (!savedStaffRoles) localStorage.setItem('ga_staffRoles', JSON.stringify(staffRoles));
+
+      const savedHalls = localStorage.getItem('ga_halls');
+      halls = savedHalls ? JSON.parse(savedHalls) : [...DEFAULT_HALLS];
+      if (!savedHalls) localStorage.setItem('ga_halls', JSON.stringify(halls));
+
+      const savedSubjectClassrooms = localStorage.getItem('ga_subjectClassrooms');
+      subjectClassrooms = savedSubjectClassrooms ? JSON.parse(savedSubjectClassrooms) : [...DEFAULT_SUBJECT_CLASSROOMS];
+      if (!savedSubjectClassrooms) localStorage.setItem('ga_subjectClassrooms', JSON.stringify(subjectClassrooms));
+
+      const savedAuditLogs = localStorage.getItem('ga_auditLogs');
+      auditLogs = savedAuditLogs ? JSON.parse(savedAuditLogs) : [...DEFAULT_AUDIT_LOGS];
+      if (!savedAuditLogs) localStorage.setItem('ga_auditLogs', JSON.stringify(auditLogs));
     }
 
     function updateApiStatusBadge(online, textOverride = '') {
@@ -2557,6 +3350,16 @@
       else if (type === 'venueReservations') list = venueReservations;
       else if (type === 'dutyRoster') list = dutyRoster;
       else if (type === 'deliveryRoster') list = deliveryRoster;
+      else if (type === 'classes') list = classes.map(c => ({ name: c }));
+      else if (type === 'offices') list = offices.map(o => ({ name: o }));
+      else if (type === 'periods') list = periods.map(p => ({ name: p }));
+      else if (type === 'acTopups') list = acTopups;
+      else if (type === 'acCards') list = acCards;
+      else if (type === 'meetings') list = meetings;
+      else if (type === 'staffRoles') list = staffRoles;
+      else if (type === 'halls') list = halls.map(h => ({ name: h }));
+      else if (type === 'subjectClassrooms') list = subjectClassrooms;
+      else if (type === 'auditLogs') list = auditLogs;
 
       try {
         await fetch(googleSheetApiUrl, {
@@ -2582,12 +3385,23 @@
         await syncGoogleSheet('assignees');
         await syncGoogleSheet('labels');
         await syncGoogleSheet('milestones');
+        await syncGoogleSheet('classes');
+        await syncGoogleSheet('offices');
+        await syncGoogleSheet('periods');
+        await syncGoogleSheet('staffRoles');
+        await syncGoogleSheet('halls');
+        await syncGoogleSheet('subjectClassrooms');
+
+        localStorage.setItem('ga_staffRoles', JSON.stringify(staffRoles));
+        localStorage.setItem('ga_halls', JSON.stringify(halls));
+        localStorage.setItem('ga_subjectClassrooms', JSON.stringify(subjectClassrooms));
+        localStorage.setItem('ga_auditLogs', JSON.stringify(auditLogs));
       } else if (isApiMode) {
         try {
           await fetch('/api/config', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset=utf-8' },
-            body: JSON.stringify({ assignees, labels, milestones })
+            body: JSON.stringify({ assignees, labels, milestones, classes, offices, periods, staffRoles, halls, subjectClassrooms })
           });
         } catch (e) {
           console.error("儲存後端配置檔失敗:", e);
@@ -2596,12 +3410,64 @@
         localStorage.setItem('ga_assignees', JSON.stringify(assignees));
         localStorage.setItem('ga_labels', JSON.stringify(labels));
         localStorage.setItem('ga_milestones', JSON.stringify(milestones));
+        localStorage.setItem('ga_classes', JSON.stringify(classes));
+        localStorage.setItem('ga_offices', JSON.stringify(offices));
+        localStorage.setItem('ga_periods', JSON.stringify(periods));
         localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
         localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
         localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
         localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
         localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
         localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
+        localStorage.setItem('ga_acTopups', JSON.stringify(acTopups));
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+        localStorage.setItem('ga_meetings', JSON.stringify(meetings));
+        localStorage.setItem('ga_staffRoles', JSON.stringify(staffRoles));
+        localStorage.setItem('ga_halls', JSON.stringify(halls));
+        localStorage.setItem('ga_subjectClassrooms', JSON.stringify(subjectClassrooms));
+        localStorage.setItem('ga_auditLogs', JSON.stringify(auditLogs));
+      }
+    }
+
+    async function logSystemAction(actionStr) {
+      const now = new Date();
+      const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+      
+      const payload = {
+        user: currentUser || "系統",
+        action: actionStr,
+        timestamp: nowStr
+      };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'alog-' + Date.now();
+        auditLogs.push(payload);
+        await syncGoogleSheet('auditLogs');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/audit-logs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            auditLogs.push(created);
+          } else {
+            console.error("後端寫入稽核日誌失敗");
+          }
+        } catch (e) {
+          console.error("無法連線寫入稽核日誌：", e);
+        }
+      } else {
+        payload.id = 'alog-' + Date.now();
+        auditLogs.push(payload);
+        localStorage.setItem('ga_auditLogs', JSON.stringify(auditLogs));
+      }
+
+      // 若當前在管理員專區，重繪日誌
+      if (activeView === 'admin') {
+        renderAdminLogs();
       }
     }
 
@@ -2612,9 +3478,19 @@
             await fetch('/api/config', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json; charset=utf-8' },
-              body: JSON.stringify({ assignees: DEFAULT_ASSIGNEES, labels: DEFAULT_LABELS, milestones: DEFAULT_MILESTONES })
+              body: JSON.stringify({ 
+                assignees: DEFAULT_ASSIGNEES, 
+                labels: DEFAULT_LABELS, 
+                milestones: DEFAULT_MILESTONES,
+                classes: Array.from({length: 6}, (_, g) => Array.from({length: 10}, (_, r) => `${g+1}${(r+1).toString().padStart(2, '0')}`)).flat(),
+                offices: ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"],
+                periods: ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節"],
+                staffRoles: DEFAULT_STAFF_ROLES,
+                halls: DEFAULT_HALLS,
+                subjectClassrooms: DEFAULT_SUBJECT_CLASSROOMS
+              })
             });
-            await fetch('/api/tasks/bulk', {});
+            await fetch('/api/audit-logs', { method: 'DELETE' });
             location.reload();
             return;
           } catch (e) {
@@ -2632,6 +3508,16 @@
         localStorage.removeItem('ga_venueReservations');
         localStorage.removeItem('ga_dutyRoster');
         localStorage.removeItem('ga_deliveryRoster');
+        localStorage.removeItem('ga_classes');
+        localStorage.removeItem('ga_offices');
+        localStorage.removeItem('ga_periods');
+        localStorage.removeItem('ga_acTopups');
+        localStorage.removeItem('ga_acCards');
+        localStorage.removeItem('ga_meetings');
+        localStorage.removeItem('ga_staffRoles');
+        localStorage.removeItem('ga_halls');
+        localStorage.removeItem('ga_subjectClassrooms');
+        localStorage.removeItem('ga_auditLogs');
         await initDatabase();
         initUI();
         renderActiveView();
@@ -2654,15 +3540,19 @@
           
           let viewTitle = "";
           switch(activeView) {
+            case 'home': viewTitle = "🏠 樹義總務處系統首頁"; break;
             case 'table': viewTitle = "所有任務 (表格)"; break;
             case 'board': viewTitle = "看板視圖 (狀態)"; break;
             case 'timeline': viewTitle = "時間軸視圖 (人員)"; break;
             case 'calendar': viewTitle = "任務行事曆 (日程)"; break;
+            case 'ac': viewTitle = "❄️ 冷氣卡與儲值管理"; break;
+            case 'meetings': viewTitle = "💼 工作會議排程"; break;
             case 'key-log': viewTitle = "鑰匙與磁扣借還登記"; break;
             case 'venue-reserve': viewTitle = "🏫 場地預約管理"; break;
             case 'staff-roster': viewTitle = "📅 事務人員排班"; break;
             case 'milestone': viewTitle = "里程碑視圖 (計畫)"; break;
             case 'insights': viewTitle = "績效統計 (Insights)"; break;
+            case 'admin': viewTitle = "🛡️ 樹義總務處系統管理員專區"; break;
           }
           document.getElementById('current-view-title').innerText = viewTitle;
           
@@ -2685,6 +3575,8 @@
       document.getElementById('calendar-filter-label').addEventListener('change', renderActiveView);
 
       populateFilterOptions();
+      populateGlobalUserSelect();
+      applyPermissions();
     }
 
     function populateFilterOptions() {
@@ -2750,6 +3642,156 @@
       milestones.forEach(m => {
         formMilestone.innerHTML += `<option value="${m}">${m}</option>`;
       });
+    }
+
+    function populateLoginUserSelect() {
+      const loginSelect = document.getElementById('login-user-select');
+      if (!loginSelect) return;
+      loginSelect.innerHTML = '';
+      assignees.forEach(name => {
+        const roleObj = staffRoles.find(r => r.name === name);
+        const roleName = roleObj ? roleObj.role : '職工';
+        loginSelect.innerHTML += `<option value="${name}">${name} (${roleName})</option>`;
+      });
+    }
+
+    function populateGlobalUserSelect() {
+      populateLoginUserSelect();
+      
+      const uName = document.getElementById('current-user-name');
+      const uRole = document.getElementById('current-user-role');
+      if (uName) uName.innerText = currentUser || '-';
+      if (uRole) {
+        uRole.innerText = currentUserRole || '-';
+        if (currentUserRole === '主任') {
+          uRole.style.background = '#dc2626';
+        } else if (currentUserRole === '組長') {
+          uRole.style.background = '#2563eb';
+        } else if (currentUserRole === '職工') {
+          uRole.style.background = '#16a34a';
+        } else {
+          uRole.style.background = '#6b7280';
+        }
+      }
+    }
+
+    function checkLoginState() {
+      const isLoggedIn = localStorage.getItem('ga_isLoggedIn') === 'true';
+      const loginOverlay = document.getElementById('login-overlay');
+      const appContainer = document.querySelector('.app-container');
+      
+      if (!isLoggedIn) {
+        populateGlobalUserSelect();
+        if (loginOverlay) loginOverlay.style.display = 'flex';
+        if (appContainer) appContainer.style.display = 'none';
+      } else {
+        if (loginOverlay) loginOverlay.style.display = 'none';
+        if (appContainer) appContainer.style.display = 'flex';
+        
+        // 載入目前登入同仁姓名與角色
+        currentUser = localStorage.getItem('ga_currentUser') || '陳組長';
+        const roleObj = staffRoles.find(r => r.name === currentUser);
+        currentUserRole = roleObj ? roleObj.role : '職工';
+        localStorage.setItem('ga_currentUserRole', currentUserRole);
+
+        populateGlobalUserSelect();
+        applyPermissions();
+      }
+    }
+
+    function handleLoginSubmit() {
+      const userSelect = document.getElementById('login-user-select');
+      const passInput = document.getElementById('login-password-input');
+      const errorMsg = document.getElementById('login-error-msg');
+      
+      if (!userSelect || !passInput) return;
+      
+      const username = userSelect.value;
+      const enteredPass = passInput.value;
+      
+      const matchedStaff = staffRoles.find(r => r.name === username);
+      const correctPass = matchedStaff ? (matchedStaff.password || "1234") : "1234";
+      
+      if (enteredPass === correctPass) {
+        // 驗證成功
+        localStorage.setItem('ga_isLoggedIn', 'true');
+        localStorage.setItem('ga_currentUser', username);
+        currentUser = username;
+        currentUserRole = matchedStaff ? matchedStaff.role : '職工';
+        localStorage.setItem('ga_currentUserRole', currentUserRole);
+        
+        if (errorMsg) errorMsg.style.display = 'none';
+        passInput.value = '';
+        
+        // 進入系統
+        checkLoginState();
+        renderActiveView();
+        updateGlobalStats();
+        
+        // 紀錄日誌
+        logSystemAction(`同仁登入：登入了系統 (身分：${currentUserRole})`);
+      } else {
+        // 密碼錯誤
+        if (errorMsg) {
+          errorMsg.style.display = 'block';
+          errorMsg.innerText = "❌ 密碼輸入錯誤，請重新輸入！";
+        }
+        passInput.value = '';
+        passInput.focus();
+      }
+    }
+
+    async function handleLogout() {
+      if (!confirm("確定要登出《樹義》總務處管理系統嗎？")) return;
+      
+      await logSystemAction(`同仁登出：安全登出了系統`);
+      
+      localStorage.removeItem('ga_isLoggedIn');
+      
+      // 重置登入密碼輸入框
+      const passInput = document.getElementById('login-password-input');
+      if (passInput) passInput.value = '';
+      const errorMsg = document.getElementById('login-error-msg');
+      if (errorMsg) errorMsg.style.display = 'none';
+      
+      checkLoginState();
+    }
+
+    function toggleLoginPasswordVisibility() {
+      const passInput = document.getElementById('login-password-input');
+      const btn = document.getElementById('btn-toggle-login-pass');
+      if (!passInput || !btn) return;
+      
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+        btn.innerText = '🔒';
+      } else {
+        passInput.type = 'password';
+        btn.innerText = '👁️';
+      }
+    }
+
+    function applyPermissions() {
+      // 1. 側邊欄與按鈕權限限制
+      const adminBtn = document.getElementById('nav-btn-admin');
+      if (adminBtn) {
+        adminBtn.style.display = (currentUserRole === '主任') ? 'flex' : 'none';
+      }
+
+      const settingsBtn = document.getElementById('btn-open-settings');
+      if (settingsBtn) {
+        settingsBtn.style.display = (currentUserRole === '主任') ? 'block' : 'none';
+      }
+
+      const resetBtn = document.getElementById('btn-reset-data');
+      if (resetBtn) {
+        resetBtn.style.display = (currentUserRole === '主任') ? 'block' : 'none';
+      }
+
+      const addTaskBtn = document.getElementById('btn-add-task');
+      if (addTaskBtn) {
+        addTaskBtn.style.display = (currentUserRole === '志工') ? 'none' : 'block';
+      }
     }
 
     // -------------------------------------------------------------
@@ -2837,6 +3879,143 @@
     function clearSignature() {
       resetSignatureCanvasBackground();
       hasCanvasBeenDrawnOn = false;
+    }
+
+    let hasAcCanvasBeenDrawnOn = false;
+    let hasAcCardCanvasBeenDrawnOn = false;
+
+    function initAcSignatureCanvas() {
+      acCanvas = document.getElementById('ac-signature-canvas');
+      acCtx = acCanvas.getContext('2d');
+      acCtx.strokeStyle = '#3b2440';
+      acCtx.lineWidth = 3;
+      acCtx.lineCap = 'round';
+      acCtx.lineJoin = 'round';
+
+      acCanvas.addEventListener('mousedown', (e) => {
+        acDrawing = true;
+        const rect = acCanvas.getBoundingClientRect();
+        if (!hasAcCanvasBeenDrawnOn) {
+          acCtx.clearRect(0, 0, acCanvas.width, acCanvas.height);
+          hasAcCanvasBeenDrawnOn = true;
+        }
+        acCtx.beginPath();
+        acCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+      acCanvas.addEventListener('mousemove', (e) => {
+        if (!acDrawing) return;
+        const rect = acCanvas.getBoundingClientRect();
+        acCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        acCtx.stroke();
+      });
+      acCanvas.addEventListener('mouseup', () => { acDrawing = false; });
+      acCanvas.addEventListener('mouseout', () => { acDrawing = false; });
+
+      // Touch events
+      acCanvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = acCanvas.getBoundingClientRect();
+        if (!hasAcCanvasBeenDrawnOn) {
+          acCtx.clearRect(0, 0, acCanvas.width, acCanvas.height);
+          hasAcCanvasBeenDrawnOn = true;
+        }
+        acCtx.beginPath();
+        acCtx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        acDrawing = true;
+      });
+      acCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!acDrawing) return;
+        const touch = e.touches[0];
+        const rect = acCanvas.getBoundingClientRect();
+        acCtx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        acCtx.stroke();
+      });
+      acCanvas.addEventListener('touchend', () => { acDrawing = false; });
+
+      resetAcSignatureCanvasBackground();
+    }
+
+    function resetAcSignatureCanvasBackground() {
+      acCtx.clearRect(0, 0, acCanvas.width, acCanvas.height);
+      acCtx.fillStyle = 'rgba(110, 95, 120, 0.15)';
+      acCtx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+      acCtx.textAlign = 'center';
+      acCtx.textBaseline = 'middle';
+      acCtx.fillText('請在此灰色方框內簽收', acCanvas.width / 2, acCanvas.height / 2);
+      hasAcCanvasBeenDrawnOn = false;
+    }
+
+    function clearAcSignature() {
+      resetAcSignatureCanvasBackground();
+    }
+
+    function initAcCardSignatureCanvas() {
+      acCardCanvas = document.getElementById('ac-card-signature-canvas');
+      acCardCtx = acCardCanvas.getContext('2d');
+      acCardCtx.strokeStyle = '#3b2440';
+      acCardCtx.lineWidth = 3;
+      acCardCtx.lineCap = 'round';
+      acCardCtx.lineJoin = 'round';
+
+      acCardCanvas.addEventListener('mousedown', (e) => {
+        acCardDrawing = true;
+        const rect = acCardCanvas.getBoundingClientRect();
+        if (!hasAcCardCanvasBeenDrawnOn) {
+          acCardCtx.clearRect(0, 0, acCardCanvas.width, acCardCanvas.height);
+          hasAcCardCanvasBeenDrawnOn = true;
+        }
+        acCardCtx.beginPath();
+        acCardCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+      acCardCanvas.addEventListener('mousemove', (e) => {
+        if (!acCardDrawing) return;
+        const rect = acCardCanvas.getBoundingClientRect();
+        acCardCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        acCardCtx.stroke();
+      });
+      acCardCanvas.addEventListener('mouseup', () => { acCardDrawing = false; });
+      acCardCanvas.addEventListener('mouseout', () => { acCardDrawing = false; });
+
+      // Touch events
+      acCardCanvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = acCardCanvas.getBoundingClientRect();
+        if (!hasAcCardCanvasBeenDrawnOn) {
+          acCardCtx.clearRect(0, 0, acCardCanvas.width, acCardCanvas.height);
+          hasAcCardCanvasBeenDrawnOn = true;
+        }
+        acCardCtx.beginPath();
+        acCardCtx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        acCardDrawing = true;
+      });
+      acCardCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!acCardDrawing) return;
+        const touch = e.touches[0];
+        const rect = acCardCanvas.getBoundingClientRect();
+        acCardCtx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        acCardCtx.stroke();
+      });
+      acCardCanvas.addEventListener('touchend', () => { acCardDrawing = false; });
+
+      resetAcCardSignatureCanvasBackground();
+    }
+
+    function resetAcCardSignatureCanvasBackground() {
+      acCardCtx.clearRect(0, 0, acCardCanvas.width, acCardCanvas.height);
+      acCardCtx.fillStyle = 'rgba(110, 95, 120, 0.15)';
+      acCardCtx.font = '14px -apple-system, BlinkMacSystemFont, sans-serif';
+      acCardCtx.textAlign = 'center';
+      acCardCtx.textBaseline = 'middle';
+      acCardCtx.fillText('請在此灰色方框內簽收', acCardCanvas.width / 2, acCardCanvas.height / 2);
+      hasAcCardCanvasBeenDrawnOn = false;
+    }
+
+    function clearAcCardSignature() {
+      resetAcCardSignatureCanvasBackground();
     }
 
     // -------------------------------------------------------------
@@ -3490,6 +4669,10 @@
 
     // 登記借出
     async function submitKeyBorrow() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法進行借用鑰匙登記！");
+        return;
+      }
       const borrower = document.getElementById('key-borrower').value.trim();
       const itemId = document.getElementById('key-item-select').value;
       const staff = document.getElementById('key-staff').value;
@@ -3579,6 +4762,9 @@
         localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
       }
 
+      const lookupItem = keyInventory.find(i => i.id === itemId);
+      logSystemAction(`借出鑰匙/磁扣：[${lookupItem ? lookupItem.name : '未知'}] 借給 ${borrower}`);
+
       // 重置表單與簽章畫布
       document.getElementById('key-borrower').value = '';
       clearSignature();
@@ -3588,6 +4774,10 @@
 
     // 辦理歸還
     async function returnKey(logId) {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法進行歸還鑰匙登記！");
+        return;
+      }
       if (isGoogleSheetMode) {
         const now = new Date();
         const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
@@ -3638,6 +4828,9 @@
         localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
         localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
       }
+
+      const lookupLog = keyLogs.find(l => l.id === logId);
+      logSystemAction(`歸還鑰匙/磁扣：[${lookupLog ? lookupLog.itemName : '未知'}] 已歸還庫存`);
 
       triggerConfetti(15);
       renderActiveView();
@@ -3711,6 +4904,10 @@
     }
 
     async function submitVenueReservation() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法預約場地！");
+        return;
+      }
       const venue = document.getElementById('reserve-venue-select').value;
       const requester = document.getElementById('reserve-requester').value.trim();
       const date = document.getElementById('reserve-date').value;
@@ -3793,6 +4990,8 @@
         localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
       }
 
+      logSystemAction(`登記場地預約：預約了場地 [${venue}] (時間：${date} ${startPeriod}~${endPeriod})`);
+
       // 重置表單
       document.getElementById('reserve-requester').value = '';
       document.getElementById('reserve-useAV').checked = false;
@@ -3805,7 +5004,12 @@
     }
 
     async function cancelReservation(resId) {
-      if (confirm("確定要取消此項場地預約嗎？")) {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法取消場地預約！");
+        return;
+      }
+      const cancelledRes = venueReservations.find(r => r.id === resId);
+      if (confirm(`確定要取消 [${cancelledRes ? cancelledRes.venue : ''}] 場地預約嗎？`)) {
         if (isGoogleSheetMode) {
           venueReservations = venueReservations.filter(r => r.id !== resId);
           await syncGoogleSheet('venueReservations');
@@ -3828,6 +5032,7 @@
           venueReservations = venueReservations.filter(r => r.id !== resId);
           localStorage.setItem('ga_venueReservations', JSON.stringify(venueReservations));
         }
+        logSystemAction(`取消場地預約：取消了場地 [${cancelledRes ? cancelledRes.venue : '未知'}] 的預約`);
         renderActiveView();
       }
     }
@@ -3951,7 +5156,7 @@
             <td style="font-weight:700; color:var(--text-main);">${escapeHTML(r.staff)}</td>
             <td><span class="badge ${badgeClass}">${escapeHTML(r.shift)}</span></td>
             <td>
-              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDutyRoster('${r.id}')">刪除排班</button>
+              ${(currentUserRole !== '志工') ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDutyRoster('${r.id}')">刪除排班</button>` : ''}
             </td>
           </tr>
         `;
@@ -3960,6 +5165,10 @@
 
     // 登記值班
     async function submitDutyRoster() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法排班！");
+        return;
+      }
       const date = document.getElementById('duty-date').value;
       const staff = document.getElementById('duty-staff-select').value;
       const shift = document.getElementById('duty-shift-select').value;
@@ -4014,13 +5223,20 @@
         localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
       }
 
+      logSystemAction(`排定值班：安排 ${staff} 於 ${date} 值班 (${shift})`);
+
       triggerConfetti(20);
       renderDutyRoster();
     }
 
     // 刪除值班
     async function deleteDutyRoster(rosterId) {
-      if (confirm("確定要刪除這筆值班排班嗎？")) {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法刪除排班！");
+        return;
+      }
+      const deletedR = dutyRoster.find(r => r.id === rosterId);
+      if (confirm(`確定要刪除 ${deletedR ? deletedR.staff : ''} 於 ${deletedR ? deletedR.date : ''} 的值班排班嗎？`)) {
         if (isGoogleSheetMode) {
           dutyRoster = dutyRoster.filter(r => r.id !== rosterId);
           await syncGoogleSheet('dutyRoster');
@@ -4043,6 +5259,7 @@
           dutyRoster = dutyRoster.filter(r => r.id !== rosterId);
           localStorage.setItem('ga_dutyRoster', JSON.stringify(dutyRoster));
         }
+        logSystemAction(`刪除值班：移除了 ${deletedR ? deletedR.staff : ''} 於 ${deletedR ? deletedR.date : ''} 的值班排班`);
         renderDutyRoster();
       }
     }
@@ -4095,7 +5312,7 @@
             <td style="font-weight:700; color:var(--text-main);">${escapeHTML(r.staff)}</td>
             <td><strong>${escapeHTML(r.purpose)}</strong></td>
             <td>
-              <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDeliveryRoster('${r.id}')">刪除外送</button>
+              ${(currentUserRole !== '志工') ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteDeliveryRoster('${r.id}')">刪除外送</button>` : ''}
             </td>
           </tr>
         `;
@@ -4104,6 +5321,10 @@
 
     // 登記外送
     async function submitDeliveryRoster() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法登記外送！");
+        return;
+      }
       const date = document.getElementById('delivery-date').value;
       const staff = document.getElementById('delivery-staff-select').value;
       const purpose = document.getElementById('delivery-purpose').value.trim();
@@ -4151,6 +5372,8 @@
         localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
       }
 
+      logSystemAction(`登記外勤外送：登記 ${staff} 於 ${date} 外勤 (${purpose})`);
+
       // 重置表單事由
       document.getElementById('delivery-purpose').value = '';
 
@@ -4160,7 +5383,12 @@
 
     // 刪除外送
     async function deleteDeliveryRoster(rosterId) {
-      if (confirm("確定要刪除這筆外勤外送排班嗎？")) {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法刪除外送排班！");
+        return;
+      }
+      const deletedR = deliveryRoster.find(r => r.id === rosterId);
+      if (confirm(`確定要刪除 ${deletedR ? deletedR.staff : ''} 於 ${deletedR ? deletedR.date : ''} 的外勤排班嗎？`)) {
         if (isGoogleSheetMode) {
           deliveryRoster = deliveryRoster.filter(r => r.id !== rosterId);
           await syncGoogleSheet('deliveryRoster');
@@ -4183,6 +5411,7 @@
           deliveryRoster = deliveryRoster.filter(r => r.id !== rosterId);
           localStorage.setItem('ga_deliveryRoster', JSON.stringify(deliveryRoster));
         }
+        logSystemAction(`刪除外勤值班：移除了 ${deletedR ? deletedR.staff : ''} 於 ${deletedR ? deletedR.date : ''} 的外勤排班`);
         renderDeliveryRoster();
       }
     }
@@ -4398,7 +5627,7 @@
               alert("後端刪除場地失敗！");
             }
           } catch (e) {
-            alert("無法連線後端刪除場地！");
+            alert("無法連線後端刪地！");
           }
         } else {
           venueInventory = venueInventory.filter(v => v !== venueName);
@@ -4612,6 +5841,10 @@
     }
 
     async function saveTask() {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以新增或修改任務！");
+        return;
+      }
       const form = document.getElementById('task-form');
       if (!form.checkValidity()) {
         form.reportValidity();
@@ -4663,6 +5896,8 @@
             localStorage.setItem('ga_tasks', JSON.stringify(tasks));
           }
 
+          logSystemAction(`編輯任務：修改了任務 [${title}] (負責人：${assignee})`);
+
           if (status === 'Done' && oldStatus !== 'Done') {
             triggerConfetti(50);
           }
@@ -4700,6 +5935,8 @@
           localStorage.setItem('ga_tasks', JSON.stringify(tasks));
         }
 
+        logSystemAction(`新增任務：建立了新任務 [${title}] (負責人：${assignee})`);
+
         if (status === 'Done') {
           triggerConfetti(50);
         }
@@ -4711,7 +5948,12 @@
     }
 
     async function deleteTask(taskId) {
-      if (confirm("確定要刪除此項任務嗎？")) {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以刪除任務！");
+        return;
+      }
+      const deletedTask = tasks.find(t => t.id === taskId);
+      if (confirm(`確定要刪除任務 [${deletedTask ? deletedTask.title : ''}] 嗎？`)) {
         if (isGoogleSheetMode) {
           tasks = tasks.filter(t => t.id !== taskId);
           await syncGoogleSheet('tasks');
@@ -4734,6 +5976,7 @@
           tasks = tasks.filter(t => t.id !== taskId);
           localStorage.setItem('ga_tasks', JSON.stringify(tasks));
         }
+        logSystemAction(`刪除任務：刪除了任務 [${deletedTask ? deletedTask.title : '未知任務'}]`);
         updateGlobalStats();
         renderActiveView();
       }
@@ -5036,7 +6279,7 @@
     // -------------------------------------------------------------
     function escapeHTML(str) {
       if (!str) return '';
-      return str.replace(/[&<>'"]/g, 
+      return String(str).replace(/[&<>'"]/g, 
         tag => ({
           '&': '&amp;',
           '<': '&lt;',
@@ -5045,6 +6288,1487 @@
           '"': '&quot;'
         }[tag] || tag)
       );
+    }
+
+    // -------------------------------------------------------------
+    // 首頁及各新分頁互動 JavaScript 邏輯 [NEW]
+    // -------------------------------------------------------------
+
+    // 快捷切換視圖
+    function switchView(viewName) {
+      const btn = document.querySelector(`.nav-btn[data-view="${viewName}"]`);
+      if (btn) {
+        btn.click();
+      } else {
+        activeView = viewName;
+        renderActiveView();
+      }
+    }
+
+    // 1. 首頁儀表板渲染
+    function renderHomeView() {
+      // 日期字串
+      const today = new Date();
+      const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+      document.getElementById('dashboard-date-str').innerText = `今天是 ${today.toLocaleDateString('zh-TW', options)}，請開始您的工作！`;
+
+      // 任務統計
+      const total = tasks.length;
+      const done = tasks.filter(t => t.status === 'Done').length;
+      const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('dash-task-rate').innerText = `${rate}%`;
+
+      // 鑰匙借出統計
+      const keyLentCount = keyInventory.filter(item => item.status === 'Lent').length;
+      document.getElementById('dash-key-lent').innerText = `${keyLentCount} 支`;
+
+      // 冷氣卡收回統計
+      const acReturnedCount = acCards.filter(item => item.returned === true).length;
+      document.getElementById('dash-ac-rate').innerText = `${acReturnedCount} / ${acCards.length} 班`;
+      
+      // 冷氣卡回收進度條
+      const acRate = acCards.length > 0 ? Math.round((acReturnedCount / acCards.length) * 100) : 0;
+      document.getElementById('dash-ac-percent-text').innerText = `已完成收回 ${acRate}%`;
+      document.getElementById('dash-ac-counts').innerText = `${acReturnedCount} / ${acCards.length} 班`;
+      document.getElementById('dash-ac-progress-bar').style.width = `${acRate}%`;
+
+      // 會議統計
+      document.getElementById('dash-meetings-count').innerText = `${meetings.length} 場`;
+
+      // 渲染近期會議
+      const meetList = document.getElementById('dash-meetings-list');
+      meetList.innerHTML = '';
+      
+      // 依日期排序，只列出未來的會議或近期的會議
+      const sortedMeetings = [...meetings].sort((a, b) => a.date.localeCompare(b.date));
+      const todayStr = today.toISOString().substring(0, 10);
+      const upcomingMeetings = sortedMeetings.filter(m => m.date >= todayStr).slice(0, 5);
+
+      if (upcomingMeetings.length === 0) {
+        meetList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px 0; font-size:12px;">近期無預定的會議</div>';
+      } else {
+        upcomingMeetings.forEach(m => {
+          let badgeClass = 'badge-todo';
+          if (m.name === '處室會議') badgeClass = 'badge-progress';
+          if (m.name === '臨時會議') badgeClass = 'badge-label';
+
+          meetList.innerHTML += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 3px solid var(--primary);">
+              <div>
+                <span class="badge ${badgeClass}" style="font-size: 10px; padding: 2px 6px; margin-right: 8px;">${escapeHTML(m.name)}</span>
+                <strong style="color:var(--text-main);">${escapeHTML(m.title || '無主題')}</strong>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">📍 地點: ${escapeHTML(m.location || '未定')}</div>
+              </div>
+              <div style="text-align: right; font-weight: 600; color: var(--primary-dark);">
+                <div>${m.date}</div>
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: normal; margin-top: 2px;">${m.time}</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      // 今日值日同仁
+      const dutyContainer = document.getElementById('dash-today-duty');
+      const todayRoster = dutyRoster.find(r => r.date === todayStr);
+      if (todayRoster) {
+        dutyContainer.innerHTML = `🏢 <strong>今日值班同仁</strong>：<span style="font-weight:700; color:var(--primary-dark); font-size:14px;">${escapeHTML(todayRoster.staff)}</span> (${escapeHTML(todayRoster.shift)})`;
+      } else {
+        dutyContainer.innerHTML = `🏢 <strong>今日值班同仁</strong>：<span style="color:var(--text-muted);">今日無安排值班同仁</span>`;
+      }
+
+      // 今日外勤同仁
+      const deliveryContainer = document.getElementById('dash-today-delivery');
+      const todayDeliveries = deliveryRoster.filter(d => d.date === todayStr);
+      if (todayDeliveries.length > 0) {
+        const listStr = todayDeliveries.map(d => `<span style="font-weight:700; color:var(--accent);">${escapeHTML(d.staff)}</span> (${escapeHTML(d.purpose)})`).join('、');
+        deliveryContainer.innerHTML = `🛵 <strong>今日外勤派遣</strong>：${listStr}`;
+      } else {
+        deliveryContainer.innerHTML = `🛵 <strong>今日外勤派遣</strong>：<span style="color:var(--text-muted);">今日無外勤外送排程</span>`;
+      }
+
+      // 逾期鑰匙警告
+      const overdueContainer = document.getElementById('dash-overdue-container');
+      overdueContainer.innerHTML = '';
+      
+      let overdueLogs = [];
+      keyLogs.forEach(log => {
+        if (log.status === 'Borrowed' && log.borrowDate) {
+          const borrowDatePart = log.borrowDate.substring(0, 10);
+          if (borrowDatePart < todayStr) {
+            overdueLogs.push(log);
+          }
+        }
+      });
+
+      if (overdueLogs.length === 0) {
+        overdueContainer.innerHTML = '<div style="color: var(--success); font-weight:700; display:flex; align-items:center; gap:6px;">✓ 目前無任何逾期未還的鑰匙！</div>';
+      } else {
+        overdueLogs.forEach(log => {
+          overdueContainer.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding: 6px; background:var(--danger-light); border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; color:var(--danger);">
+              <span>🔑 <strong>${escapeHTML(log.itemName)}</strong> (借用人: ${escapeHTML(log.borrower)})</span>
+              <span style="font-weight:700; font-size:11px;">逾期自 ${log.borrowDate.split(' ')[0]}</span>
+            </div>
+          `;
+        });
+      }
+    }
+
+    // 2. 冷氣儲值與卡片管理頁面邏輯
+    function renderAcView() {
+      // 根據 activeAcTab 切換顯示內容
+      document.getElementById('ac-tab-btn-topup').classList.toggle('active', activeAcTab === 'topup');
+      document.getElementById('ac-tab-btn-checklist').classList.toggle('active', activeAcTab === 'checklist');
+      document.getElementById('ac-content-topup').style.display = activeAcTab === 'topup' ? 'block' : 'none';
+      document.getElementById('ac-content-checklist').style.display = activeAcTab === 'checklist' ? 'block' : 'none';
+
+      if (activeAcTab === 'topup') {
+        renderAcTopups();
+      } else if (activeAcTab === 'checklist') {
+        renderAcChecklist();
+      }
+    }
+
+    function switchAcTab(tabName) {
+      activeAcTab = tabName;
+      renderAcView();
+    }
+
+    // 欄位切換：班級或處室
+    function toggleAcTargetType() {
+      const type = document.querySelector('input[name="ac-target-type"]:checked').value;
+      document.getElementById('ac-class-select-group').style.display = type === 'class' ? 'block' : 'none';
+      document.getElementById('ac-office-select-group').style.display = type === 'office' ? 'block' : 'none';
+    }
+
+    // 渲染儲值列表
+    function renderAcTopups() {
+      const body = document.getElementById('ac-topup-body');
+      body.innerHTML = '';
+
+      if (acTopups.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:30px;">目前無任何儲值登記紀錄。</td></tr>';
+        return;
+      }
+
+      // 反序排列 (最新紀錄在最上面)
+      const sortedTopups = [...acTopups].reverse();
+
+      sortedTopups.forEach(topup => {
+        const sigHTML = topup.signature ? `<img src="${topup.signature}" class="signature-thumbnail" onclick="previewSignature('${topup.signature}')" title="點擊放大檢視">` : '<span style="color:var(--text-muted);">無</span>';
+        
+        const deleteBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長')
+          ? `<button class="action-btn delete" onclick="deleteAcTopup('${topup.id}')" title="刪除儲值紀錄">✕</button>`
+          : '<span style="color:var(--text-muted); font-size:11px;">唯讀</span>';
+
+        body.innerHTML += `
+          <tr>
+            <td style="font-weight:600;">${topup.date}</td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(topup.target)}</td>
+            <td style="font-weight:700; color:var(--primary-dark);">$ ${topup.amount} 元</td>
+            <td>${escapeHTML(topup.staff)}</td>
+            <td>${sigHTML}</td>
+            <td>
+              ${deleteBtnHTML}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 提交儲值
+    async function submitAcTopup() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法進行冷氣儲值登記！");
+        return;
+      }
+      const type = document.querySelector('input[name="ac-target-type"]:checked').value;
+      const target = type === 'class' 
+        ? document.getElementById('ac-class-select').value 
+        : document.getElementById('ac-office-select').value;
+      
+      const amount = document.getElementById('ac-amount').value.trim();
+      const staff = document.getElementById('ac-staff-select').value;
+
+      if (!target) {
+        alert("請選擇儲值對象！");
+        return;
+      }
+      if (!amount || Number(amount) <= 0) {
+        alert("請輸入有效的儲值金額！");
+        return;
+      }
+      if (!hasAcCanvasBeenDrawnOn) {
+        alert("需儲值人員必須手寫簽名確認！");
+        return;
+      }
+
+      const signature = acCanvas.toDataURL();
+      const payload = {
+        target,
+        amount: Number(amount),
+        staff,
+        signature,
+        date: new Date().toISOString().substring(0, 10)
+      };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'act-' + Date.now();
+        acTopups.push(payload);
+        await syncGoogleSheet('acTopups');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/ac/topups', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            acTopups.push(created);
+          } else {
+            alert("後端儲存失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法登記儲值！");
+          return;
+        }
+      } else {
+        payload.id = 'act-' + Date.now();
+        acTopups.push(payload);
+        localStorage.setItem('ga_acTopups', JSON.stringify(acTopups));
+      }
+
+      logSystemAction(`冷氣卡儲值：為 ${target} 儲值了 ${amount} 元 (經辦同仁：${staff})`);
+
+      // 重置
+      document.getElementById('ac-amount').value = '';
+      clearAcSignature();
+      triggerConfetti(25);
+      renderAcTopups();
+      updateGlobalStats();
+    }
+
+    // 刪除儲值
+    async function deleteAcTopup(id) {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以刪除冷氣卡儲值紀錄！");
+        return;
+      }
+      const deletedTopup = acTopups.find(t => t.id === id);
+      if (!confirm(`確定要刪除 ${deletedTopup ? deletedTopup.target : ''} 的冷氣儲值紀錄嗎？`)) return;
+
+      if (isGoogleSheetMode) {
+        acTopups = acTopups.filter(t => t.id !== id);
+        await syncGoogleSheet('acTopups');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch(`/api/ac/topups?id=${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            acTopups = acTopups.filter(t => t.id !== id);
+          } else {
+            alert("後端刪除失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法刪除紀錄！");
+          return;
+        }
+      } else {
+        acTopups = acTopups.filter(t => t.id !== id);
+        localStorage.setItem('ga_acTopups', JSON.stringify(acTopups));
+      }
+
+      logSystemAction(`刪除冷氣卡儲值：刪除了 [${deletedTopup ? deletedTopup.target : '未知'}] 儲值金額 ${deletedTopup ? deletedTopup.amount : 0} 元的紀錄`);
+
+      renderAcTopups();
+    }
+
+    // 渲染冷氣卡回收保管清單
+    function renderAcChecklist() {
+      const returnedCount = acCards.filter(item => item.returned === true).length;
+      const rate = acCards.length > 0 ? Math.round((returnedCount / acCards.length) * 100) : 0;
+      
+      document.getElementById('ac-checklist-percent-text').innerText = `已收回 ${rate}%`;
+      document.getElementById('ac-checklist-counts').innerText = `${returnedCount} / ${acCards.length} 班`;
+      document.getElementById('ac-checklist-progress-bar').style.width = `${rate}%`;
+
+      const container = document.getElementById('ac-cards-grid-container');
+      container.innerHTML = '';
+
+      // 按年級分組 (1~6年級)
+      for (let g = 1; g <= 6; g++) {
+        const gradeClasses = acCards.filter(item => item.classCode.startsWith(String(g)));
+        
+        if (gradeClasses.length === 0) continue;
+
+        const gradeRow = document.createElement('div');
+        gradeRow.style.border = '1px solid var(--border)';
+        gradeRow.style.borderRadius = '10px';
+        gradeRow.style.padding = '14px';
+        gradeRow.style.background = '#faf8fc';
+
+        gradeRow.innerHTML = `<h4 style="color:var(--primary-dark); font-size:14px; margin-bottom:12px; border-bottom: 1px dashed var(--border); padding-bottom:6px;">🏫 ${g} 年級冷氣卡保管狀況</h4>`;
+
+        const grid = document.createElement('div');
+        grid.style.display = 'grid';
+        grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(130px, 1fr))';
+        grid.style.gap = '10px';
+
+        gradeClasses.forEach(item => {
+          const classCard = document.createElement('div');
+          classCard.style.padding = '10px';
+          classCard.style.borderRadius = '8px';
+          classCard.style.border = '1px solid ' + (item.returned ? 'var(--success)' : 'var(--border)');
+          classCard.style.background = item.returned ? 'var(--success-light)' : 'white';
+          classCard.style.display = 'flex';
+          classCard.style.flexDirection = 'column';
+          classCard.style.alignItems = 'center';
+          classCard.style.justifyContent = 'center';
+          classCard.style.gap = '6px';
+          classCard.style.textAlign = 'center';
+          
+          if (item.returned) {
+            const undoBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長') 
+              ? `<button class="btn btn-secondary" style="padding:2px 8px; font-size:10px; height:20px; line-height:1; margin-top:2px; border-color:var(--danger); color:var(--danger);" onclick="resetAcCardReturn('${item.classCode}')">撤銷</button>`
+              : '';
+            classCard.innerHTML = `
+              <div style="font-weight:700; color:var(--success); font-size:14px;">${item.classCode} 班</div>
+              <div style="font-size:10px; color:var(--text-muted);">已收回 ✓</div>
+              <img src="${item.signature}" style="max-height:22px; max-width:80px; border:1px solid #ccc; background:#fff; border-radius:3px; cursor:pointer;" onclick="previewSignature('${item.signature}')" title="點擊放大簽名">
+              ${undoBtnHTML}
+            `;
+          } else {
+            const signBtnHTML = (currentUserRole !== '志工') 
+              ? `<button class="btn btn-primary" style="padding:4px 8px; font-size:11px; height:24px; line-height:1; width:100%;" onclick="openAcCardModal('${item.classCode}')">簽收收回</button>`
+              : '<span style="color:var(--text-muted); font-size:10px;">唯讀模式</span>';
+            classCard.innerHTML = `
+              <div style="font-weight:700; color:var(--text-main); font-size:14px;">${item.classCode} 班</div>
+              <div style="font-size:10px; color:var(--danger); font-weight:600;">未收回 ✕</div>
+              ${signBtnHTML}
+            `;
+          }
+          grid.appendChild(classCard);
+        });
+
+        gradeRow.appendChild(grid);
+        container.appendChild(gradeRow);
+      }
+    }
+
+    // 彈出冷氣卡收回簽名 Modal
+    function openAcCardModal(classCode) {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法簽收冷氣卡！");
+        return;
+      }
+      currentSigningClass = classCode;
+      document.getElementById('ac-card-class-display').innerText = `收回班級：${classCode} 班`;
+      document.getElementById('ac-card-modal').classList.add('active');
+      setTimeout(() => {
+        initAcCardSignatureCanvas();
+      }, 100);
+    }
+
+    function closeAcCardModal() {
+      document.getElementById('ac-card-modal').classList.remove('active');
+      currentSigningClass = '';
+    }
+
+    // 保存回收冷氣卡
+    async function saveAcCardReturn() {
+      if (currentUserRole === '志工') {
+        alert("權限不足：志工身分僅能瀏覽，無法進行冷氣卡回收登記！");
+        return;
+      }
+      if (!hasAcCardCanvasBeenDrawnOn) {
+        alert("請手寫簽名確認已收回冷氣卡！");
+        return;
+      }
+
+      const signature = acCardCanvas.toDataURL();
+      const classCode = currentSigningClass;
+      const now_str = new Date().toISOString().substring(0, 10);
+
+      const payload = { classCode, signature };
+
+      if (isGoogleSheetMode) {
+        const item = acCards.find(c => c.classCode === classCode);
+        if (item) {
+          item.returned = true;
+          item.signature = signature;
+          item.date = now_str;
+        }
+        await syncGoogleSheet('acCards');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/ac/cards/sign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            const idx = acCards.findIndex(c => c.classCode === classCode);
+            if (idx !== -1) acCards[idx] = updated;
+          } else {
+            alert("後端簽收失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法完成簽收！");
+          return;
+        }
+      } else {
+        const item = acCards.find(c => c.classCode === classCode);
+        if (item) {
+          item.returned = true;
+          item.signature = signature;
+          item.date = now_str;
+        }
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+      }
+
+      logSystemAction(`回收冷氣卡：簽收回收 ${classCode} 班的冷氣卡`);
+
+      closeAcCardModal();
+      triggerConfetti(20);
+      renderAcChecklist();
+    }
+
+    // 撤銷冷氣卡回收
+    async function resetAcCardReturn(classCode) {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以撤銷冷氣卡回收狀態！");
+        return;
+      }
+      if (!confirm(`確定要將 ${classCode} 班的冷氣卡狀態重設為【未收回】嗎？`)) return;
+
+      const payload = { classCode };
+
+      if (isGoogleSheetMode) {
+        const item = acCards.find(c => c.classCode === classCode);
+        if (item) {
+          item.returned = false;
+          item.signature = "";
+          item.date = "";
+        }
+        await syncGoogleSheet('acCards');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/ac/cards/reset', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const updated = await res.json();
+            const idx = acCards.findIndex(c => c.classCode === classCode);
+            if (idx !== -1) acCards[idx] = updated;
+          } else {
+            alert("後端撤銷失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法重設狀態！");
+          return;
+        }
+      } else {
+        const item = acCards.find(c => c.classCode === classCode);
+        if (item) {
+          item.returned = false;
+          item.signature = "";
+          item.date = "";
+        }
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+      }
+
+      logSystemAction(`撤銷冷氣卡回收：已將 ${classCode} 班的冷氣卡重設為未收回`);
+
+      renderAcChecklist();
+    }
+
+    // 3. 會議排程頁面邏輯
+    function renderMeetingsView() {
+      const body = document.getElementById('meetings-list-body');
+      body.innerHTML = '';
+
+      // 設定會議日期預設為今天
+      if (!document.getElementById('meet-date').value) {
+        document.getElementById('meet-date').value = new Date().toISOString().substring(0, 10);
+      }
+      if (!document.getElementById('meet-time').value) {
+        document.getElementById('meet-time').value = '10:00';
+      }
+
+      if (meetings.length === 0) {
+        body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:30px;">目前無任何排定會議。</td></tr>';
+        return;
+      }
+
+      // 按日期由新到舊排序
+      const sortedMeetings = [...meetings].sort((a, b) => b.date.localeCompare(a.date));
+
+      sortedMeetings.forEach(meet => {
+        let badgeClass = 'badge-todo';
+        if (meet.name === '處室會議') badgeClass = 'badge-progress';
+        if (meet.name === '臨時會議') badgeClass = 'badge-label';
+
+        const deleteBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長')
+          ? `<button class="action-btn delete" onclick="deleteMeeting('${meet.id}')" title="刪除會議排程">✕</button>`
+          : '<span style="color:var(--text-muted); font-size:11px;">唯讀</span>';
+
+        body.innerHTML += `
+          <tr>
+            <td style="font-weight:600;">${meet.date}</td>
+            <td style="font-weight:600; color:var(--primary-dark);">${meet.time}</td>
+            <td><span class="badge ${badgeClass}">${escapeHTML(meet.name)}</span></td>
+            <td style="font-weight:700; color:var(--text-main);">${escapeHTML(meet.title || '-')}</td>
+            <td><strong>${escapeHTML(meet.location)}</strong></td>
+            <td>
+              ${deleteBtnHTML}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // 提交會議排程
+    async function submitMeetingSchedule() {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以排定會議日程！");
+        return;
+      }
+      const name = document.getElementById('meet-name-select').value;
+      const title = document.getElementById('meet-title-input').value.trim();
+      const date = document.getElementById('meet-date').value;
+      const time = document.getElementById('meet-time').value;
+      const location = document.getElementById('meet-location').value.trim();
+
+      if (!name || !date || !time) {
+        alert("請填寫會議名稱、日期及時間！");
+        return;
+      }
+
+      const payload = { name, title, date, time, location };
+
+      if (isGoogleSheetMode) {
+        payload.id = 'meet-' + Date.now();
+        meetings.push(payload);
+        await syncGoogleSheet('meetings');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch('/api/meetings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          if (res.ok) {
+            const created = await res.json();
+            meetings.push(created);
+          } else {
+            alert("後端儲存會議日程失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法登記會議日程！");
+          return;
+        }
+      } else {
+        payload.id = 'meet-' + Date.now();
+        meetings.push(payload);
+        localStorage.setItem('ga_meetings', JSON.stringify(meetings));
+      }
+
+      logSystemAction(`排定會議：排定了 [${name}] 會議 (時間：${date} ${time})`);
+
+      document.getElementById('meet-title-input').value = '';
+      triggerConfetti(15);
+      renderMeetingsView();
+      updateGlobalStats();
+    }
+
+    // 刪除會議
+    async function deleteMeeting(id) {
+      if (currentUserRole !== '主任' && currentUserRole !== '組長') {
+        alert("權限不足：只有組長與主任可以取消會議日程！");
+        return;
+      }
+      const deletedMeet = meetings.find(m => m.id === id);
+      if (!confirm(`確定要取消 [${deletedMeet ? deletedMeet.name : ''}] 會議排程嗎？`)) return;
+
+      if (isGoogleSheetMode) {
+        meetings = meetings.filter(m => m.id !== id);
+        await syncGoogleSheet('meetings');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch(`/api/meetings?id=${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            meetings = meetings.filter(m => m.id !== id);
+          } else {
+            alert("後端刪除會議失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路連線失敗，無法取消會議日程！");
+          return;
+        }
+      } else {
+        meetings = meetings.filter(m => m.id !== id);
+        localStorage.setItem('ga_meetings', JSON.stringify(meetings));
+      }
+
+      logSystemAction(`取消會議：取消了 [${deletedMeet ? deletedMeet.name : '未知'}] 會議 (原定時間：${deletedMeet ? deletedMeet.date : ''})`);
+
+      renderMeetingsView();
+    }
+
+    // -------------------------------------------------------------
+    // 🛡️ 管理員專區 (Admin Panel) 相關 JavaScript 邏輯
+    // -------------------------------------------------------------
+    // 4.2 班級與處室管理渲染
+    function renderSettingsClasses() {
+      const container = document.getElementById('settings-classes-list');
+      container.innerHTML = '';
+      if (classes.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); width:100%; text-align:center;">目前無設定任何班級</div>';
+      } else {
+        classes.forEach(code => {
+          container.innerHTML += `
+            <span style="display:inline-flex; align-items:center; gap:4px; padding: 2px 6px; background:#e2e8f0; border-radius:4px; font-weight:600; color:var(--text-main);">
+              ${code}
+              <span style="cursor:pointer; color:var(--danger); font-weight:700;" onclick="deleteClassSetting('${code}')">×</span>
+            </span>
+          `;
+        });
+      }
+
+      // 處室
+      const officeContainer = document.getElementById('settings-offices-list');
+      officeContainer.innerHTML = '';
+      offices.forEach(name => {
+        officeContainer.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 4px 8px; background:#f8fafc; border-radius:4px; border:1px solid var(--border);">
+            <span>🏢 ${escapeHTML(name)}</span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteOfficeSetting('${escapeHTML(name)}')">✕</button>
+          </div>
+        `;
+      });
+
+      // 3. 科任教室與堂號對應
+      const subjectContainer = document.getElementById('settings-subject-classrooms-list');
+      if (subjectContainer) {
+        subjectContainer.innerHTML = '';
+        subjectClassrooms.forEach(item => {
+          subjectContainer.innerHTML += `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding: 4px 8px; background:#f8fafc; border-radius:4px; border:1px solid var(--border);">
+              <span>🏫 ${escapeHTML(item.name)} (${escapeHTML(item.hall || '無堂號')})</span>
+              <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteSubjectClassroomSetting('${escapeJS(item.name)}')">✕</button>
+            </div>
+          `;
+        });
+      }
+
+      // 動態更新下拉選單
+      const hallSelect = document.getElementById('new-subject-classroom-hall');
+      if (hallSelect) {
+        hallSelect.innerHTML = '<option value="">無對應堂號...</option>';
+        halls.forEach(h => {
+          hallSelect.innerHTML += `<option value="${h}">${h}</option>`;
+        });
+      }
+    }
+
+    async function addSubjectClassroomSetting() {
+      const nameInput = document.getElementById('new-subject-classroom-name');
+      const hallSelect = document.getElementById('new-subject-classroom-hall');
+      const name = nameInput.value.trim();
+      const hall = hallSelect.value;
+
+      if (!name) return;
+      if (subjectClassrooms.some(c => c.name === name)) {
+        alert("此科任教室已存在！");
+        return;
+      }
+
+      subjectClassrooms.push({ name, hall });
+      await saveConfigToBackend();
+      nameInput.value = '';
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    async function deleteSubjectClassroomSetting(name) {
+      if (!confirm(`確定要刪除科任教室【${name}】嗎？`)) return;
+      subjectClassrooms = subjectClassrooms.filter(c => c.name !== name);
+      await saveConfigToBackend();
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    function renderAdminView() {
+      // 1. 渲染人員角色清單
+      const staffBody = document.getElementById('admin-staff-roles-body');
+      if (staffBody) {
+        staffBody.innerHTML = '';
+        assignees.forEach(name => {
+          // 找出角色，若無則預設職工
+          let roleObj = staffRoles.find(r => r.name === name);
+          if (!roleObj) {
+            roleObj = { name: name, role: '職工', password: '1234' };
+            staffRoles.push(roleObj);
+          }
+          
+          staffBody.innerHTML += `
+            <tr>
+              <td style="font-weight:700; color:var(--text-main);">${escapeHTML(name)}</td>
+              <td>
+                <select class="form-control" style="width:100%; height:28px; padding:2px 6px;" onchange="updateStaffRole('${escapeJS(name)}', this.value)">
+                  <option value="主任" ${roleObj.role === '主任' ? 'selected' : ''}>主任</option>
+                  <option value="組長" ${roleObj.role === '組長' ? 'selected' : ''}>組長</option>
+                  <option value="職工" ${roleObj.role === '職工' ? 'selected' : ''}>職工</option>
+                  <option value="志工" ${roleObj.role === '志工' ? 'selected' : ''}>志工</option>
+                </select>
+              </td>
+              <td>
+                <input type="text" class="form-control" style="width:100%; height:28px; padding:2px 6px; font-weight:600;" value="${escapeHTML(roleObj.password || '1234')}" onchange="updateStaffPassword('${escapeJS(name)}', this.value)">
+              </td>
+              <td>
+                <button class="btn btn-secondary" style="padding:2px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="deleteStaffRole('${escapeJS(name)}')">刪除</button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // 2. 渲染稽核軌跡
+      renderAdminLogs();
+    }
+
+    function renderAdminLogs() {
+      const logsBody = document.getElementById('admin-audit-logs-body');
+      if (logsBody) {
+        logsBody.innerHTML = '';
+        if (auditLogs.length === 0) {
+          logsBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px;">無任何稽核日誌。</td></tr>';
+          return;
+        }
+
+        // 反序排列 (最新在上面)
+        const sortedLogs = [...auditLogs].reverse();
+        sortedLogs.forEach(log => {
+          logsBody.innerHTML += `
+            <tr>
+              <td style="color:var(--text-muted);">${log.timestamp}</td>
+              <td style="font-weight:700;">${escapeHTML(log.user)}</td>
+              <td style="color:var(--text-main);">${escapeHTML(log.action)}</td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    async function addStaffRoleSetting() {
+      const nameInput = document.getElementById('admin-new-staff-name');
+      const roleSelect = document.getElementById('admin-new-staff-role');
+      const name = nameInput.value.trim();
+      const role = roleSelect.value;
+
+      if (!name) {
+        alert("請輸入姓名！");
+        return;
+      }
+
+      if (assignees.includes(name)) {
+        alert("該姓名已存在於系統中！");
+        return;
+      }
+
+      assignees.push(name);
+      staffRoles.push({ name, role, password: "1234" });
+
+      await saveConfigToBackend();
+      logSystemAction(`新增同仁身分：建立了 [${name}] 的系統帳號並指派為 [${role}]`);
+
+      nameInput.value = '';
+      renderAdminView();
+      populateFilterOptions();
+      populateGlobalUserSelect();
+    }
+
+    async function updateStaffRole(name, newRole) {
+      const idx = staffRoles.findIndex(r => r.name === name);
+      if (idx !== -1) {
+        staffRoles[idx].role = newRole;
+      } else {
+        staffRoles.push({ name, role: newRole, password: "1234" });
+      }
+
+      await saveConfigToBackend();
+      logSystemAction(`變更同仁權限：將 [${name}] 的權限變更為 [${newRole}]`);
+
+      // 如果更改的是自己，即時更新
+      if (name === currentUser) {
+        currentUserRole = newRole;
+        applyPermissions();
+        // 如果此時已經失去主任身分，切換回首頁
+        if (currentUserRole !== '主任') {
+          activeView = 'home';
+          document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.view === 'home') btn.classList.add('active');
+          });
+          document.getElementById('current-view-title').innerText = "🏠 樹義總務處系統首頁";
+          renderActiveView();
+        }
+      }
+      renderAdminView();
+    }
+
+    async function updateStaffPassword(name, newPassword) {
+      const idx = staffRoles.findIndex(r => r.name === name);
+      if (idx !== -1) {
+        staffRoles[idx].password = newPassword;
+      } else {
+        staffRoles.push({ name, role: '職工', password: newPassword });
+      }
+
+      await saveConfigToBackend();
+      logSystemAction(`管理員變更密碼：變更了同仁 [${name}] 的登入密碼`);
+      renderAdminView();
+    }
+
+    async function deleteStaffRole(name) {
+      if (name === currentUser) {
+        alert("您不能刪除您自己當前登入的帳號！");
+        return;
+      }
+      if (!confirm(`確定要將同仁 [${name}] 及其權限從系統中徹底刪除嗎？`)) return;
+
+      assignees = assignees.filter(a => a !== name);
+      staffRoles = staffRoles.filter(r => r.name !== name);
+
+      await saveConfigToBackend();
+      logSystemAction(`刪除同仁身分：移除了 [${name}] 的系統帳號與權限`);
+
+      renderAdminView();
+      populateFilterOptions();
+      populateGlobalUserSelect();
+    }
+
+    async function clearAuditLogs() {
+      if (!confirm("確定要清空所有的系統操作日誌嗎？這項操作無法復原。")) return;
+
+      if (isApiMode) {
+        try {
+          const res = await fetch('/api/audit-logs', { method: 'DELETE' });
+          if (res.ok) {
+            auditLogs = [];
+          } else {
+            alert("後端清空日誌失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("無法連線後端清空日誌！");
+          return;
+        }
+      } else {
+        auditLogs = [];
+        localStorage.setItem('ga_auditLogs', JSON.stringify(auditLogs));
+      }
+
+      logSystemAction("清空系統審計日誌");
+      renderAdminView();
+    }
+
+    function exportDatabaseBackup() {
+      const dataBackup = {
+        assignees, labels, milestones, tasks, keyInventory, keyLogs,
+        venueInventory, venueReservations, dutyRoster, deliveryRoster,
+        classes, offices, periods, acTopups, acCards, meetings, staffRoles, halls, subjectClassrooms
+      };
+
+      const jsonString = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataBackup, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", jsonString);
+      downloadAnchor.setAttribute("download", `樹義總務處資料庫備份_${new Date().toISOString().substring(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      logSystemAction("備份資料庫：匯出了完整的系統資料庫備份檔");
+    }
+
+    async function importDatabaseBackup(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          // 簡易驗證欄位是否齊全
+          if (!imported.tasks || !imported.keyInventory || !imported.venueReservations) {
+            alert("❌ 備份檔格式不符或欄位缺失！");
+            return;
+          }
+
+          if (!confirm("⚠️ 警告：匯入備份會覆蓋目前的所有系統資料，是否繼續？")) {
+            input.value = '';
+            return;
+          }
+
+          // 覆蓋變數
+          if (imported.assignees) assignees = imported.assignees;
+          if (imported.labels) labels = imported.labels;
+          if (imported.milestones) milestones = imported.milestones;
+          if (imported.tasks) tasks = imported.tasks;
+          if (imported.keyInventory) keyInventory = imported.keyInventory;
+          if (imported.keyLogs) keyLogs = imported.keyLogs;
+          if (imported.venueInventory) venueInventory = imported.venueInventory;
+          if (imported.venueReservations) venueReservations = imported.venueReservations;
+          if (imported.dutyRoster) dutyRoster = imported.dutyRoster;
+          if (imported.deliveryRoster) deliveryRoster = imported.deliveryRoster;
+          if (imported.classes) classes = imported.classes;
+          if (imported.offices) offices = imported.offices;
+          if (imported.periods) periods = imported.periods;
+          if (imported.acTopups) acTopups = imported.acTopups;
+          if (imported.acCards) acCards = imported.acCards;
+          if (imported.meetings) meetings = imported.meetings;
+          if (imported.staffRoles) staffRoles = imported.staffRoles;
+          if (imported.halls) halls = imported.halls;
+          if (imported.subjectClassrooms) subjectClassrooms = imported.subjectClassrooms;
+          if (imported.auditLogs) auditLogs = imported.auditLogs;
+
+          // 儲存
+          await saveConfigToBackend();
+          
+          logSystemAction("備份資料庫：匯入並還原了系統資料庫");
+          alert("✓ 資料庫匯入還原成功！");
+          
+          input.value = '';
+          renderActiveView();
+          populateFilterOptions();
+          populateGlobalUserSelect();
+        } catch(err) {
+          alert("解析備份檔案時發生錯誤：" + err.message);
+          input.value = '';
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // 輔助函式：逸出 JavaScript 字串
+    function escapeJS(str) {
+      return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+    }
+
+    // 4. 系統基本資料設定控制台功能 [NEW]
+    
+    // 設定視窗開關
+    function openSettingsModal() {
+      document.getElementById('settings-modal').classList.add('active');
+      switchSettingsTab('staff');
+    }
+    function closeSettingsModal() {
+      document.getElementById('settings-modal').classList.remove('active');
+      renderActiveView();
+    }
+
+    // 切換基本資料設定頁籤
+    function switchSettingsTab(tabName) {
+      // 隱藏所有設定頁籤
+      document.querySelectorAll('.settings-tab-content').forEach(c => c.style.display = 'none');
+      document.querySelectorAll('.settings-tab-btn').forEach(b => b.classList.remove('active'));
+
+      // 啟動指定頁籤
+      document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+      document.getElementById(`tab-content-${tabName}`).style.display = 'block';
+
+      // 填入該頁籤資料清單
+      switch(tabName) {
+        case 'staff': renderSettingsStaff(); break;
+        case 'classes': renderSettingsClasses(); break;
+        case 'venues': renderSettingsVenues(); break;
+        case 'keys': renderSettingsKeys(); break;
+        case 'tasks': renderSettingsTasks(); break;
+        case 'cloud': renderSettingsCloud(); break;
+      }
+    }
+
+    // 填充下拉選單的通用邏輯
+    function populateAcAndPeriodOptions() {
+      // 1. 冷氣儲值的班級與處室與同仁
+      const acClassSelect = document.getElementById('ac-class-select');
+      const acOfficeSelect = document.getElementById('ac-office-select');
+      const acStaffSelect = document.getElementById('ac-staff-select');
+
+      if (acClassSelect) {
+        const selClass = acClassSelect.value;
+        acClassSelect.innerHTML = '<option value="">請選擇班級...</option>';
+        classes.forEach(c => {
+          acClassSelect.innerHTML += `<option value="${c}">${c} 班</option>`;
+        });
+        if (selClass && classes.includes(selClass)) acClassSelect.value = selClass;
+      }
+      if (acOfficeSelect) {
+        const selOffice = acOfficeSelect.value;
+        acOfficeSelect.innerHTML = '<option value="">請選擇處室...</option>';
+        offices.forEach(o => {
+          acOfficeSelect.innerHTML += `<option value="${o}">${o}</option>`;
+        });
+        if (selOffice && offices.includes(selOffice)) acOfficeSelect.value = selOffice;
+      }
+      if (acStaffSelect) {
+        const selStaff = acStaffSelect.value;
+        acStaffSelect.innerHTML = '<option value="">請選擇辦理同仁...</option>';
+        assignees.forEach(a => {
+          acStaffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+        });
+        if (selStaff && assignees.includes(selStaff)) acStaffSelect.value = selStaff;
+      }
+
+      // 2. 場地預約的堂號 (節次)
+      const reserveStartPeriod = document.getElementById('reserve-start-period');
+      const reserveEndPeriod = document.getElementById('reserve-end-period');
+      if (reserveStartPeriod && reserveEndPeriod) {
+        const selectedStart = reserveStartPeriod.value;
+        const selectedEnd = reserveEndPeriod.value;
+
+        reserveStartPeriod.innerHTML = '';
+        reserveEndPeriod.innerHTML = '';
+        periods.forEach(p => {
+          reserveStartPeriod.innerHTML += `<option value="${p}">${p}</option>`;
+          reserveEndPeriod.innerHTML += `<option value="${p}">${p}</option>`;
+        });
+
+        if (selectedStart && periods.includes(selectedStart)) reserveStartPeriod.value = selectedStart;
+        else if (periods.length > 1) reserveStartPeriod.value = periods[1];
+
+        if (selectedEnd && periods.includes(selectedEnd)) reserveEndPeriod.value = selectedEnd;
+        else if (periods.length > 1) reserveEndPeriod.value = periods[1];
+      }
+
+      // 3. 場地預約的場地下拉
+      const reserveVenueSelect = document.getElementById('reserve-venue-select');
+      if (reserveVenueSelect) {
+        const selectedVenue = reserveVenueSelect.value;
+        reserveVenueSelect.innerHTML = '<option value="">請選擇場地...</option>';
+        venueInventory.forEach(v => {
+          const matchedClassroom = subjectClassrooms.find(c => c.name === v);
+          const displayName = matchedClassroom ? `${v} (${matchedClassroom.hall || '無堂號'})` : v;
+          reserveVenueSelect.innerHTML += `<option value="${v}">${displayName}</option>`;
+        });
+        if (selectedVenue && venueInventory.includes(selectedVenue)) reserveVenueSelect.value = selectedVenue;
+      }
+
+      // 4. 鑰匙與磁扣借還的同仁下拉
+      const keyStaff = document.getElementById('key-staff');
+      if (keyStaff) {
+        const selectedKeyStaff = keyStaff.value;
+        keyStaff.innerHTML = '';
+        assignees.forEach(a => {
+          keyStaff.innerHTML += `<option value="${a}">${a}</option>`;
+        });
+        if (selectedKeyStaff && assignees.includes(selectedKeyStaff)) keyStaff.value = selectedKeyStaff;
+      }
+
+      // 5. 排班同仁下拉
+      const dutyStaffSelect = document.getElementById('duty-staff-select');
+      const deliveryStaffSelect = document.getElementById('delivery-staff-select');
+      if (dutyStaffSelect) {
+        const selDuty = dutyStaffSelect.value;
+        dutyStaffSelect.innerHTML = '<option value="">請選擇同仁...</option>';
+        assignees.forEach(a => {
+          dutyStaffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+        });
+        if (selDuty && assignees.includes(selDuty)) dutyStaffSelect.value = selDuty;
+      }
+      if (deliveryStaffSelect) {
+        const selDelivery = deliveryStaffSelect.value;
+        deliveryStaffSelect.innerHTML = '<option value="">請選擇同仁...</option>';
+        assignees.forEach(a => {
+          deliveryStaffSelect.innerHTML += `<option value="${a}">${a}</option>`;
+        });
+        if (selDelivery && assignees.includes(selDelivery)) deliveryStaffSelect.value = selDelivery;
+      }
+    }
+
+    // 覆寫原本的篩選填入並執行冷氣與堂號下拉填入
+    const originalPopulateFilterOptions = populateFilterOptions;
+    populateFilterOptions = function() {
+      originalPopulateFilterOptions();
+      populateAcAndPeriodOptions();
+    };
+
+    // 4.1 事務人員管理渲染
+    function renderSettingsStaff() {
+      const container = document.getElementById('settings-assignees-list');
+      container.innerHTML = '';
+      assignees.forEach(name => {
+        const roleObj = staffRoles.find(r => r.name === name);
+        const roleName = roleObj ? roleObj.role : '職工';
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 6px 12px; background:#f8fafc; border-radius:6px; border:1px solid var(--border); font-size:13px;">
+            <span style="display:flex; align-items:center; gap:8px; font-weight:600; color:var(--text-main);">
+              <span>👤 ${escapeHTML(name)}</span>
+              <span class="badge" style="font-size:10px; padding:2px 6px; background:rgba(0,0,0,0.06); color:var(--text-muted); font-weight:700;">${roleName}</span>
+            </span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteAssigneeSetting('${escapeHTML(name)}')">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    async function addAssigneeSetting() {
+      const input = document.getElementById('new-assignee-name');
+      const roleSelect = document.getElementById('new-assignee-role');
+      const name = input.value.trim();
+      const role = roleSelect ? roleSelect.value : '職工';
+      if (!name) return;
+      if (assignees.includes(name)) {
+        alert("同仁姓名已存在！");
+        return;
+      }
+      assignees.push(name);
+      staffRoles.push({ name, role, password: '1234' });
+      await saveConfigToBackend();
+      input.value = '';
+      renderSettingsStaff();
+      populateFilterOptions();
+      populateGlobalUserSelect();
+    }
+
+    async function deleteAssigneeSetting(name) {
+      if (name === currentUser) {
+        alert("您不能刪除您自己當前登入的帳號！");
+        return;
+      }
+      if (!confirm(`確定要刪除事務同仁【${name}】嗎？`)) return;
+      assignees = assignees.filter(a => a !== name);
+      staffRoles = staffRoles.filter(r => r.name !== name);
+      await saveConfigToBackend();
+      renderSettingsStaff();
+      populateFilterOptions();
+      populateGlobalUserSelect();
+    }
+
+
+
+    async function generateDefaultClassesSetting() {
+      if (!confirm("確定要重新產生 60 個班級代碼嗎 (這將會覆寫目前的班級與冷氣卡保管狀態)？")) return;
+      
+      const newClasses = [];
+      for (let g = 1; g <= 6; g++) {
+        for (let r = 1; r <= 10; r++) {
+          newClasses.push(`${g}${r < 10 ? '0' + r : r}`);
+        }
+      }
+      classes = newClasses;
+
+      // 重設冷氣卡保管狀態
+      acCards = classes.map(c => ({ classCode: c, returned: false, signature: "", date: "" }));
+      if (!isApiMode && !isGoogleSheetMode) {
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+      } else if (isGoogleSheetMode) {
+        await syncGoogleSheet('acCards');
+      }
+
+      await saveConfigToBackend();
+      renderSettingsClasses();
+      populateFilterOptions();
+      triggerConfetti(20);
+    }
+
+    async function addClassSetting() {
+      const input = document.getElementById('new-class-code');
+      const code = input.value.trim();
+      if (!code) return;
+      if (classes.includes(code)) {
+        alert("此班級代碼已存在！");
+        return;
+      }
+      classes.push(code);
+      
+      // 冷氣卡同步新增
+      if (!acCards.some(c => c.classCode === code)) {
+        acCards.push({ classCode: code, returned: false, signature: "", date: "" });
+        if (!isApiMode && !isGoogleSheetMode) {
+          localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+        } else if (isGoogleSheetMode) {
+          await syncGoogleSheet('acCards');
+        }
+      }
+
+      await saveConfigToBackend();
+      input.value = '';
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    async function deleteClassSetting(code) {
+      if (!confirm(`確定要刪除班級【${code}】嗎？`)) return;
+      classes = classes.filter(c => c !== code);
+      acCards = acCards.filter(c => c.classCode !== code);
+      
+      if (!isApiMode && !isGoogleSheetMode) {
+        localStorage.setItem('ga_acCards', JSON.stringify(acCards));
+      } else if (isGoogleSheetMode) {
+        await syncGoogleSheet('acCards');
+      }
+
+      await saveConfigToBackend();
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    async function addOfficeSetting() {
+      const input = document.getElementById('new-office-name');
+      const name = input.value.trim();
+      if (!name) return;
+      if (offices.includes(name)) {
+        alert("此處室名稱已存在！");
+        return;
+      }
+      offices.push(name);
+      await saveConfigToBackend();
+      input.value = '';
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    async function deleteOfficeSetting(name) {
+      if (!confirm(`確定要刪除行政處室【${name}】嗎？`)) return;
+      offices = offices.filter(o => o !== name);
+      await saveConfigToBackend();
+      renderSettingsClasses();
+      populateFilterOptions();
+    }
+
+    // 4.3 場地與堂號管理渲染
+    function renderSettingsVenues() {
+      // 場地
+      const container = document.getElementById('settings-venues-list');
+      container.innerHTML = '';
+      venueInventory.forEach(name => {
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 4px 8px; background:#f8fafc; border-radius:4px; border:1px solid var(--border);">
+            <span>📍 ${escapeHTML(name)}</span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteVenueSetting('${escapeHTML(name)}')">✕</button>
+          </div>
+        `;
+      });
+
+      // 堂號
+      const periodContainer = document.getElementById('settings-periods-list');
+      periodContainer.innerHTML = '';
+      periods.forEach(name => {
+        periodContainer.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 4px 8px; background:#f8fafc; border-radius:4px; border:1px solid var(--border);">
+            <span>⏰ ${escapeHTML(name)}</span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deletePeriodSetting('${escapeHTML(name)}')">✕</button>
+          </div>
+        `;
+      });
+
+      // 教室堂號
+      const hallContainer = document.getElementById('settings-halls-list');
+      if (hallContainer) {
+        hallContainer.innerHTML = '';
+        if (halls.length === 0) {
+          hallContainer.innerHTML = '<div style="color:var(--text-muted); width:100%; text-align:center;">目前無設定任何古風堂號</div>';
+        } else {
+          halls.forEach(name => {
+            hallContainer.innerHTML += `
+              <span style="display:inline-flex; align-items:center; gap:4px; padding: 2px 6px; background:#e2e8f0; border-radius:4px; font-weight:600; color:var(--text-main);">
+                ${name}
+                <span style="cursor:pointer; color:var(--danger); font-weight:700;" onclick="deleteHallSetting('${escapeJS(name)}')">×</span>
+              </span>
+            `;
+          });
+        }
+      }
+    }
+
+    async function deleteVenueSetting(name) {
+      if (!confirm(`確定要刪除預約場地【${name}】嗎？`)) return;
+      
+      if (isGoogleSheetMode) {
+        venueInventory = venueInventory.filter(v => v !== name);
+        await syncGoogleSheet('venueInventory');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch(`/api/venues/inventory?name=${encodeURIComponent(name)}`, { method: 'DELETE' });
+          if (res.ok) {
+            venueInventory = venueInventory.filter(v => v !== name);
+          } else {
+            alert("後端刪除場地失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路錯誤，無法刪除場地！");
+          return;
+        }
+      } else {
+        venueInventory = venueInventory.filter(v => v !== name);
+        localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
+      }
+      
+      renderSettingsVenues();
+      populateFilterOptions();
+    }
+
+    async function addPeriodSetting() {
+      const input = document.getElementById('new-period-name');
+      const name = input.value.trim();
+      if (!name) return;
+      if (periods.includes(name)) {
+        alert("此節次堂號已存在！");
+        return;
+      }
+      periods.push(name);
+      await saveConfigToBackend();
+      input.value = '';
+      renderSettingsVenues();
+      populateFilterOptions();
+    }
+
+    async function deletePeriodSetting(name) {
+      if (!confirm(`確定要刪除堂號時段【${name}】嗎？`)) return;
+      periods = periods.filter(p => p !== name);
+      await saveConfigToBackend();
+      renderSettingsVenues();
+      populateFilterOptions();
+    }
+
+    async function addHallSetting() {
+      const input = document.getElementById('new-hall-name');
+      const name = input.value.trim();
+      if (!name) return;
+      if (halls.includes(name)) {
+        alert("此堂號已存在！");
+        return;
+      }
+      halls.push(name);
+      await saveConfigToBackend();
+      input.value = '';
+      renderSettingsVenues();
+      renderSettingsClasses(); // 連動更新科任教室的下拉堂號
+    }
+
+    async function deleteHallSetting(name) {
+      if (!confirm(`確定要刪除堂號【${name}】嗎？`)) return;
+      halls = halls.filter(h => h !== name);
+      // 清理科任教室中對應的堂號
+      subjectClassrooms.forEach(c => {
+        if (c.hall === name) c.hall = "";
+      });
+      await saveConfigToBackend();
+      renderSettingsVenues();
+      renderSettingsClasses();
+    }
+
+    // 4.4 鑰匙與磁扣庫存管理渲染
+    function renderSettingsKeys() {
+      const container = document.getElementById('settings-keys-list');
+      container.innerHTML = '';
+
+      if (keyInventory.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px;">目前庫存清單為空</div>';
+        return;
+      }
+
+      keyInventory.forEach(item => {
+        container.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:#f8fafc; border-radius:4px; border:1px solid var(--border); margin-bottom:6px;">
+            <span>🔑 <strong>${escapeHTML(item.name)}</strong> (${item.type}) - <span style="font-weight:600; color:${item.status === 'Available' ? 'var(--success)' : 'var(--danger)'};">${item.status === 'Available' ? '在庫' : '已借出'}</span></span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteKeyInventorySetting('${item.id}')">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    async function deleteKeyInventorySetting(id) {
+      const item = keyInventory.find(i => i.id === id);
+      if (item && item.status === 'Lent') {
+        alert("此鑰匙目前在外借中，必須先歸還才能辦理刪除！");
+        return;
+      }
+      if (!confirm("確定要刪除此筆鑰匙項目嗎？")) return;
+
+      if (isGoogleSheetMode) {
+        keyInventory = keyInventory.filter(i => i.id !== id);
+        await syncGoogleSheet('keyInventory');
+      } else if (isApiMode) {
+        try {
+          const res = await fetch(`/api/keys/inventory?id=${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            keyInventory = keyInventory.filter(i => i.id !== id);
+          } else {
+            alert("後端庫存刪除失敗！");
+            return;
+          }
+        } catch (e) {
+          alert("網路錯誤，無法刪除庫存！");
+          return;
+        }
+      } else {
+        keyInventory = keyInventory.filter(i => i.id !== id);
+        localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
+      }
+      
+      renderSettingsKeys();
+      populateFilterOptions();
+    }
+
+    // 4.5 標籤與里程碑管理渲染
+    function renderSettingsTasks() {
+      // 標籤列表
+      const labelContainer = document.getElementById('settings-labels-list');
+      labelContainer.innerHTML = '';
+      labels.forEach(l => {
+        labelContainer.innerHTML += `
+          <div style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:var(--primary-light); color:var(--primary-dark); border:1px solid var(--border); border-radius:20px; margin:4px;">
+            <span>${escapeHTML(l.name)} (權重: ${l.weight})</span>
+            <span style="cursor:pointer; font-weight:700; color:var(--danger);" onclick="deleteLabelSetting('${escapeHTML(l.name)}')">×</span>
+          </div>
+        `;
+      });
+
+      // 里程碑列表
+      const milestoneContainer = document.getElementById('settings-milestones-list');
+      milestoneContainer.innerHTML = '';
+      milestones.forEach(name => {
+        milestoneContainer.innerHTML += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 4px 8px; background:#f8fafc; border-radius:4px; border:1px solid var(--border); margin-bottom:4px;">
+            <span>🎯 ${escapeHTML(name)}</span>
+            <button class="btn-danger-outline" style="padding:2px 6px; font-size:10px;" onclick="deleteMilestoneSetting('${escapeHTML(name)}')">✕</button>
+          </div>
+        `;
+      });
+    }
+
+    async function deleteLabelSetting(name) {
+      if (!confirm(`確定要刪除分類標籤【${name}】嗎？`)) return;
+      labels = labels.filter(l => l.name !== name);
+      await saveConfigToBackend();
+      renderSettingsTasks();
+      populateFilterOptions();
+    }
+
+    async function deleteMilestoneSetting(name) {
+      if (!confirm(`確定要刪除里程碑【${name}】嗎？`)) return;
+      milestones = milestones.filter(m => m !== name);
+      await saveConfigToBackend();
+      renderSettingsTasks();
+      populateFilterOptions();
+    }
+
+    // 4.6 雲端試算表設定渲染
+    function renderSettingsCloud() {
+      document.getElementById('settings-gsheet-url').value = googleSheetApiUrl;
     }
   </script>
 </body>

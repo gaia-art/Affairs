@@ -12,7 +12,7 @@ DB_FILE = 'db.json'
 
 # 預設資料庫範本
 DEFAULT_DB = {
-    "assignees": ["陳組長", "林幹事", "張助理"],
+    "assignees": ["陳組長", "林幹事", "張助理", "黃主任", "李志工"],
     "labels": [
         { "name": "修繕", "weight": 5 },
         { "name": "採購", "weight": 3 },
@@ -47,7 +47,53 @@ DEFAULT_DB = {
     "venueInventory": ["雅舍", "活動中心", "4樓會議室"],
     "venueReservations": [],
     "dutyRoster": [],
-    "deliveryRoster": []
+    "deliveryRoster": [],
+    "classes": [f"{g}{r:02d}" for g in range(1, 7) for r in range(1, 11)],
+    "offices": ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"],
+    "periods": ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節"],
+    "acTopups": [],
+    "acCards": [{"classCode": f"{g}{r:02d}", "returned": False, "signature": "", "date": ""} for g in range(1, 7) for r in range(1, 11)],
+    "meetings": [],
+    "staffRoles": [
+        { "name": "陳組長", "role": "組長", "password": "1234" },
+        { "name": "林幹事", "role": "職工", "password": "1234" },
+        { "name": "張助理", "role": "職工", "password": "1234" },
+        { "name": "黃主任", "role": "主任", "password": "1234" },
+        { "name": "李志工", "role": "志工", "password": "1234" }
+    ],
+    "halls": [
+        "齊陽堂", "臨淮堂", "鍾陵堂", "蘭陵堂", "隴西堂", "譙國堂", "濟陽堂", "彭城堂",
+        "陳留堂", "清河堂", "高陽堂", "高平堂", "苑陽堂", "范陽堂", "延陵堂", "始平堂",
+        "京兆堂", "沛國堂", "宏農堂", "下邳堂", "上谷堂", "天水堂", "太原堂", "平原堂",
+        "中山堂", "平陽堂", "安定堂", "汝南堂", "南陽堂", "江夏堂", "魯國堂", "樂安堂",
+        "廣陵堂", "榮陽堂", "百濟堂", "西平堂", "西河堂", "吳興堂", "東海堂", "河東堂",
+        "南昌堂", "上黨堂", "武功堂", "解梁堂", "廣平堂", "東魯堂", "河南堂", "河間堂",
+        "敦煌堂", "渤海堂", "新鄭堂", "鉅鹿堂", "盧江堂", "穎川堂", "豫章堂", "齊郡堂",
+        "榮安堂", "會稽堂", "馮翊堂", "雁門堂", "博陵堂", "晉陽堂"
+    ],
+    "subjectClassrooms": [
+        { "name": "語言教室一", "hall": "齊陽堂" },
+        { "name": "語言教室二", "hall": "臨淮堂" },
+        { "name": "語言教室三", "hall": "鍾陵堂" },
+        { "name": "視聽教室", "hall": "蘭陵堂" },
+        { "name": "自然教室", "hall": "隴西堂" },
+        { "name": "多元社團教室", "hall": "譙國堂" },
+        { "name": "教具室", "hall": "濟陽堂" },
+        { "name": "教師研習室", "hall": "彭城堂" },
+        { "name": "圖書室", "hall": "陳留堂" },
+        { "name": "平陵堂藝廊", "hall": "清河堂" },
+        { "name": "武功堂科任辦公室", "hall": "高陽堂" },
+        { "name": "解梁堂輔導諮商室", "hall": "高平堂" },
+        { "name": "廣平堂輔導處", "hall": "苑陽堂" },
+        { "name": "自然教室一", "hall": "范陽堂" },
+        { "name": "音樂教室一", "hall": "延陵堂" },
+        { "name": "音樂教室二", "hall": "始平堂" },
+        { "name": "音樂教室三", "hall": "京兆堂" },
+        { "name": "資訊教室一", "hall": "沛國堂" },
+        { "name": "資訊教室二", "hall": "宏農堂" },
+        { "name": "自然科教具室", "hall": "下邳堂" }
+    ],
+    "auditLogs": []
 }
 
 def load_db():
@@ -106,9 +152,55 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             config_data = {
                 "assignees": db.get("assignees", []),
                 "labels": db.get("labels", []),
-                "milestones": db.get("milestones", [])
+                "milestones": db.get("milestones", []),
+                "classes": db.get("classes", []),
+                "offices": db.get("offices", []),
+                "periods": db.get("periods", []),
+                "staffRoles": db.get("staffRoles", []),
+                "halls": db.get("halls", []),
+                "subjectClassrooms": db.get("subjectClassrooms", [])
             }
             response = json.dumps(config_data, ensure_ascii=False)
+            self.wfile.write(response.encode('utf-8'))
+            return
+
+        elif path == '/api/ac/topups':
+            db = load_db()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_cors_headers()
+            self.end_headers()
+            response = json.dumps(db.get("acTopups", []), ensure_ascii=False)
+            self.wfile.write(response.encode('utf-8'))
+            return
+
+        elif path == '/api/ac/cards':
+            db = load_db()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_cors_headers()
+            self.end_headers()
+            response = json.dumps(db.get("acCards", []), ensure_ascii=False)
+            self.wfile.write(response.encode('utf-8'))
+            return
+
+        elif path == '/api/meetings':
+            db = load_db()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_cors_headers()
+            self.end_headers()
+            response = json.dumps(db.get("meetings", []), ensure_ascii=False)
+            self.wfile.write(response.encode('utf-8'))
+            return
+
+        elif path == '/api/audit-logs':
+            db = load_db()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_cors_headers()
+            self.end_headers()
+            response = json.dumps(db.get("auditLogs", []), ensure_ascii=False)
             self.wfile.write(response.encode('utf-8'))
             return
 
@@ -244,6 +336,27 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             db["assignees"] = req_data.get("assignees", db.get("assignees", []))
             db["labels"] = req_data.get("labels", db.get("labels", []))
             db["milestones"] = req_data.get("milestones", db.get("milestones", []))
+            db["classes"] = req_data.get("classes", db.get("classes", []))
+            db["offices"] = req_data.get("offices", db.get("offices", []))
+            db["periods"] = req_data.get("periods", db.get("periods", []))
+            db["staffRoles"] = req_data.get("staffRoles", db.get("staffRoles", []))
+            db["halls"] = req_data.get("halls", db.get("halls", []))
+            db["subjectClassrooms"] = req_data.get("subjectClassrooms", db.get("subjectClassrooms", []))
+            
+            # 確保冷氣卡狀態與班級列表一致
+            ac_cards = db.setdefault("acCards", [])
+            existing_codes = {item["classCode"] for item in ac_cards}
+            classes_set = set(db["classes"])
+            ac_cards = [item for item in ac_cards if item["classCode"] in classes_set]
+            for c in db["classes"]:
+                if c not in existing_codes:
+                    ac_cards.append({
+                        "classCode": c,
+                        "returned": False,
+                        "signature": "",
+                        "date": ""
+                    })
+            db["acCards"] = ac_cards
             
             if save_db(db):
                 self.send_response(200)
@@ -255,6 +368,131 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(500)
                 self.send_cors_headers()
                 self.end_headers()
+
+        elif path == '/api/ac/topups':
+            topup_id = f"act-{int(time.time()*1000)}-{random.randint(100, 999)}"
+            req_data["id"] = topup_id
+            if "date" not in req_data or not req_data["date"]:
+                req_data["date"] = datetime.datetime.now().strftime("%Y-%m-%d")
+            
+            db.setdefault("acTopups", []).append(req_data)
+            if save_db(db):
+                self.send_response(201)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/ac/cards/sign':
+            class_code = req_data.get("classCode")
+            signature = req_data.get("signature", "")
+            if not class_code:
+                self.send_response(400)
+                self.send_cors_headers()
+                self.end_headers()
+                return
+            
+            ac_cards = db.setdefault("acCards", [])
+            found = False
+            now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+            for item in ac_cards:
+                if item.get("classCode") == class_code:
+                    item["returned"] = True
+                    item["signature"] = signature
+                    item["date"] = now_str
+                    found = True
+                    req_data = item
+                    break
+            
+            if not found:
+                new_item = {
+                    "classCode": class_code,
+                    "returned": True,
+                    "signature": signature,
+                    "date": now_str
+                }
+                ac_cards.append(new_item)
+                req_data = new_item
+                
+            db["acCards"] = ac_cards
+            if save_db(db):
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/ac/cards/reset':
+            class_code = req_data.get("classCode")
+            if not class_code:
+                self.send_response(400)
+                self.send_cors_headers()
+                self.end_headers()
+                return
+            
+            ac_cards = db.setdefault("acCards", [])
+            found = False
+            for item in ac_cards:
+                if item.get("classCode") == class_code:
+                    item["returned"] = False
+                    item["signature"] = ""
+                    item["date"] = ""
+                    found = True
+                    req_data = item
+                    break
+            
+            db["acCards"] = ac_cards
+            if save_db(db):
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/meetings':
+            meet_id = f"meet-{int(time.time()*1000)}-{random.randint(100, 999)}"
+            req_data["id"] = meet_id
+            
+            db.setdefault("meetings", []).append(req_data)
+            if save_db(db):
+                self.send_response(201)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/audit-logs':
+            log_id = f"alog-{int(time.time()*1000)}-{random.randint(100, 999)}"
+            req_data["id"] = log_id
+            if "timestamp" not in req_data or not req_data["timestamp"]:
+                req_data["timestamp"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            db.setdefault("auditLogs", []).append(req_data)
+            if save_db(db):
+                self.send_response(201)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
+            self.send_cors_headers()
+            self.end_headers()
 
         elif path == '/api/keys/inventory':
             inventory = db.setdefault("keyInventory", [])
@@ -524,11 +762,43 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
                     self.send_cors_headers()
                     self.end_headers()
                     return
-            
             self.send_response(404)
             self.send_cors_headers()
             self.end_headers()
             self.wfile.write("找不到指定的任務".encode('utf-8'))
+            return
+
+        elif path == '/api/ac/topups' and task_id:
+            topups = db.get("acTopups", [])
+            new_topups = [t for t in topups if t.get("id") != task_id]
+            if len(new_topups) < len(topups):
+                db["acTopups"] = new_topups
+                if save_db(db):
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_cors_headers()
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "success", "deleted": task_id}, ensure_ascii=False).encode('utf-8'))
+                    return
+            self.send_response(404)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/meetings' and task_id:
+            meetings = db.get("meetings", [])
+            new_meetings = [m for m in meetings if m.get("id") != task_id]
+            if len(new_meetings) < len(meetings):
+                db["meetings"] = new_meetings
+                if save_db(db):
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_cors_headers()
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "success", "deleted": task_id}, ensure_ascii=False).encode('utf-8'))
+                    return
+            self.send_response(404)
+            self.send_cors_headers()
+            self.end_headers()
 
         elif path == '/api/keys/inventory' and task_id:
             inventory = db.get("keyInventory", [])
@@ -622,6 +892,19 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
                         self.wfile.write(json.dumps({"status": "success", "deleted": id_param}, ensure_ascii=False).encode('utf-8'))
                         return
             self.send_response(400)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/audit-logs':
+            db["auditLogs"] = []
+            if save_db(db):
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "message": "已清空所有日誌"}, ensure_ascii=False).encode('utf-8'))
+                return
+            self.send_response(500)
             self.send_cors_headers()
             self.end_headers()
 
