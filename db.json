@@ -1,10 +1,10 @@
 {
   "assignees": [
     "陳組長",
+    "林幹事",
+    "張助理",
     "黃主任",
-    "陳雅儀",
-    "12345",
-    "444"
+    "CONC-14"
   ],
   "labels": [
     {
@@ -63,6 +63,17 @@
       "label": "行政",
       "weight": 3,
       "milestone": "退休同仁感恩餐會"
+    },
+    {
+      "title": "測試測試新增任務",
+      "assignee": "陳組長",
+      "status": "To Do",
+      "startDate": "2026-07-12",
+      "dueDate": "2026-07-19",
+      "label": "行政",
+      "weight": 1,
+      "milestone": "",
+      "id": "task-1783828432716-3987"
     }
   ],
   "keyInventory": [
@@ -185,66 +196,10 @@
     }
   ],
   "classes": [
-    "101",
-    "102",
-    "103",
-    "104",
-    "105",
-    "106",
-    "107",
-    "108",
-    "109",
-    "110",
-    "201",
-    "202",
-    "203",
-    "204",
-    "205",
-    "206",
-    "207",
-    "208",
-    "209",
-    "210",
-    "301",
-    "302",
-    "303",
-    "304",
-    "305",
-    "306",
-    "307",
-    "308",
-    "309",
-    "310",
-    "401",
-    "402",
-    "403",
-    "404",
-    "405",
-    "406",
-    "407",
-    "408",
-    "409",
-    "410",
-    "501",
-    "502",
-    "503",
-    "504",
-    "505",
-    "506",
-    "507",
-    "508",
-    "509",
-    "510",
-    "601",
-    "602",
-    "603",
-    "604",
-    "605",
-    "606",
-    "607",
-    "608",
-    "609",
-    "610"
+    "901",
+    "902",
+    "903",
+    "C14"
   ],
   "offices": [
     "教務處",
@@ -269,361 +224,25 @@
   "acTopups": [],
   "acCards": [
     {
-      "classCode": "101",
+      "classCode": "901",
       "returned": false,
       "signature": "",
       "date": ""
     },
     {
-      "classCode": "102",
+      "classCode": "902",
       "returned": false,
       "signature": "",
       "date": ""
     },
     {
-      "classCode": "103",
+      "classCode": "903",
       "returned": false,
       "signature": "",
       "date": ""
     },
     {
-      "classCode": "104",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "105",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "106",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "107",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "108",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "109",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "110",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "201",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "202",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "203",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "204",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "205",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "206",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "207",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "208",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "209",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "210",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "301",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "302",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "303",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "304",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "305",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "306",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "307",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "308",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "309",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "310",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "401",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "402",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "403",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "404",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "405",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "406",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "407",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "408",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "409",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "410",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "501",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "502",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "503",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "504",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "505",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "506",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "507",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "508",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "509",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "510",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "601",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "602",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "603",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "604",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "605",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "606",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "607",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "608",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "609",
-      "returned": false,
-      "signature": "",
-      "date": ""
-    },
-    {
-      "classCode": "610",
+      "classCode": "C14",
       "returned": false,
       "signature": "",
       "date": ""

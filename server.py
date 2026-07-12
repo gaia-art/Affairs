@@ -96,23 +96,61 @@ DEFAULT_DB = {
     "auditLogs": []
 }
 
+LAST_GOOD_DB = None
+
 def load_db():
+    global LAST_GOOD_DB
     if not os.path.exists(DB_FILE):
         save_db(DEFAULT_DB)
+        LAST_GOOD_DB = DEFAULT_DB
         return DEFAULT_DB
+        
+    # 重試機制：針對併發讀寫鎖定進行最多 5 次讀取重試
+    for i in range(5):
+        try:
+            with open(DB_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if data and isinstance(data, dict):
+                    LAST_GOOD_DB = data
+                    return data
+        except (json.JSONDecodeError, IOError, PermissionError):
+            time.sleep(0.05)
+            
+    # 如果重試均失敗，且已有快取，傳回快取避免回退預設值
+    if LAST_GOOD_DB is not None:
+        print("警告：讀取資料庫失敗，傳回記憶體備份快取。")
+        return LAST_GOOD_DB
+        
+    # 最壞情況下且無快取，嘗試直接讀取或回退到預設
     try:
-        with open(DB_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception:
-        return DEFAULT_DB
+        if os.path.exists(DB_FILE) and os.path.getsize(DB_FILE) > 0:
+            with open(DB_FILE, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                LAST_GOOD_DB = data
+                return data
+    except Exception as e:
+        print(f"讀取資料庫失敗且無記憶體快取: {e}")
+    
+    LAST_GOOD_DB = DEFAULT_DB
+    return DEFAULT_DB
 
 def save_db(data):
+    global LAST_GOOD_DB
+    tmp_file = DB_FILE + '.tmp'
     try:
-        with open(DB_FILE, 'w', encoding='utf-8') as f:
+        # 原子化寫入：先寫入臨時文件，再替換原始文件
+        with open(tmp_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_file, DB_FILE)
+        LAST_GOOD_DB = data
         return True
     except Exception as e:
         print(f"寫入資料庫錯誤: {e}")
+        if os.path.exists(tmp_file):
+            try:
+                os.remove(tmp_file)
+            except Exception:
+                pass
         return False
 
 class GARequestHandler(http.server.BaseHTTPRequestHandler):
@@ -260,6 +298,8 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
                     self.send_header('Content-Type', 'text/css; charset=utf-8')
                 elif file_path.endswith('.js'):
                     self.send_header('Content-Type', 'application/javascript; charset=utf-8')
+                elif file_path.endswith('.ico'):
+                    self.send_header('Content-Type', 'image/x-icon')
                 else:
                     self.send_header('Content-Type', 'application/octet-stream')
                 self.end_headers()
@@ -795,6 +835,44 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
                     self.send_cors_headers()
                     self.end_headers()
                     self.wfile.write(json.dumps({"status": "success", "deleted": task_id}, ensure_ascii=False).encode('utf-8'))
+                    return
+            self.send_response(404)
+            self.send_cors_headers()
+            self.end_headers()
+
+        elif path == '/api/keys/logs' and task_id:
+            logs = db.get("keyLogs", [])
+            inventory = db.get("keyInventory", [])
+            
+            found_log = None
+            for log in logs:
+                if log.get("id") == task_id:
+                    found_log = log
+                    break
+                    
+            if found_log:
+                if found_log.get("status") == "Borrowed":
+                    target_item_id = found_log.get("itemId")
+                    if target_item_id:
+                        for item in inventory:
+                            if item.get("id") == target_item_id:
+                                item["status"] = "Available"
+                                break
+                                
+                new_logs = [log for log in logs if log.get("id") != task_id]
+                db["keyLogs"] = new_logs
+                db["keyInventory"] = inventory
+                if save_db(db):
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_cors_headers()
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "success", "deleted": task_id}, ensure_ascii=False).encode('utf-8'))
+                    return
+                else:
+                    self.send_response(500)
+                    self.send_cors_headers()
+                    self.end_headers()
                     return
             self.send_response(404)
             self.send_cors_headers()
