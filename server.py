@@ -242,6 +242,16 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             self.wfile.write(response.encode('utf-8'))
             return
 
+        elif path == '/api/etags':
+            db = load_db()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_cors_headers()
+            self.end_headers()
+            response = json.dumps(db.get("etags", []), ensure_ascii=False)
+            self.wfile.write(response.encode('utf-8'))
+            return
+
         elif path == '/api/keys':
             db = load_db()
             self.send_response(200)
@@ -341,6 +351,20 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             req_data["id"] = f"task-{int(time.time()*1000)}-{random.randint(1000, 9999)}"
             
             db.setdefault("tasks", []).append(req_data)
+            if save_db(db):
+                self.send_response(201)
+                self.send_header('Content-Type', 'application/json; charset=utf-8')
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+            else:
+                self.send_response(500)
+                self.send_cors_headers()
+                self.end_headers()
+
+        elif path == '/api/etags':
+            req_data["id"] = f"etag-{int(time.time()*1000)}-{random.randint(100, 999)}"
+            db.setdefault("etags", []).append(req_data)
             if save_db(db):
                 self.send_response(201)
                 self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -777,6 +801,38 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write("找不到指定的任務 ID".encode('utf-8'))
 
+        elif path == '/api/etags':
+            etag_id = req_data.get("id")
+            if not etag_id:
+                self.send_response(400)
+                self.send_cors_headers()
+                self.end_headers()
+                self.wfile.write("缺少 eTag ID".encode('utf-8'))
+                return
+
+            etags_list = db.get("etags", [])
+            for idx, item in enumerate(etags_list):
+                if item.get("id") == etag_id:
+                    etags_list[idx] = req_data
+                    db["etags"] = etags_list
+                    if save_db(db):
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'application/json; charset=utf-8')
+                        self.send_cors_headers()
+                        self.end_headers()
+                        self.wfile.write(json.dumps(req_data, ensure_ascii=False).encode('utf-8'))
+                        return
+                    else:
+                        self.send_response(500)
+                        self.send_cors_headers()
+                        self.end_headers()
+                        return
+            
+            self.send_response(404)
+            self.send_cors_headers()
+            self.end_headers()
+            self.wfile.write("找不到指定的 eTag ID".encode('utf-8'))
+
     def do_DELETE(self):
         parsed_url = urllib.parse.urlparse(self.path)
         path = parsed_url.path
@@ -806,6 +862,29 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_cors_headers()
             self.end_headers()
             self.wfile.write("找不到指定的任務".encode('utf-8'))
+            return
+
+        elif path == '/api/etags' and task_id:
+            etags_list = db.get("etags", [])
+            new_etags = [e for e in etags_list if e.get("id") != task_id]
+            if len(new_etags) < len(etags_list):
+                db["etags"] = new_etags
+                if save_db(db):
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json; charset=utf-8')
+                    self.send_cors_headers()
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "success", "deleted": task_id}, ensure_ascii=False).encode('utf-8'))
+                    return
+                else:
+                    self.send_response(500)
+                    self.send_cors_headers()
+                    self.end_headers()
+                    return
+            self.send_response(404)
+            self.send_cors_headers()
+            self.end_headers()
+            self.wfile.write("找不到指定的 eTag 登記資料".encode('utf-8'))
             return
 
         elif path == '/api/ac/topups' and task_id:
