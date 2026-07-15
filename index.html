@@ -1712,6 +1712,47 @@
         padding: 20px !important;
       }
     }
+
+    /* ===== Toast 通知 ===== */
+    #toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #1e1b4b;
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      pointer-events: auto;
+      animation: toast-in 0.3s cubic-bezier(.22,1,.36,1);
+      min-width: 200px;
+      max-width: 320px;
+    }
+    .toast.success { border-left: 4px solid #10b981; }
+    .toast.error   { border-left: 4px solid #ef4444; }
+    .toast.info    { border-left: 4px solid #6366f1; }
+    .toast-icon { font-size: 18px; }
+    .toast-fade-out { animation: toast-out 0.3s forwards; }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(60px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toast-out {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(60px); }
+    }
   </style>
 </head>
 <body>
@@ -3158,7 +3199,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeTaskModal()">取消</button>
-        <button class="btn btn-primary" onclick="saveTask()">確認儲存</button>
+        <button class="btn btn-primary" id="btn-save-task" onclick="saveTask()">確認儲存</button>
       </div>
     </div>
   </div>
@@ -5242,10 +5283,14 @@
         }
       });
 
-      document.getElementById('stats-total-tasks').innerText = total;
-      document.getElementById('stats-done-tasks').innerText = done;
-      document.getElementById('stats-completion-rate').innerText = `${rate}%`;
-      document.getElementById('stats-total-points').innerText = `${totalPoints} 點`;
+      const elTotal = document.getElementById('stats-total-tasks');
+      const elDone = document.getElementById('stats-done-tasks');
+      const elRate = document.getElementById('stats-completion-rate');
+      const elPoints = document.getElementById('stats-total-points');
+      if (elTotal) elTotal.innerText = total;
+      if (elDone) elDone.innerText = done;
+      if (elRate) elRate.innerText = `${rate}%`;
+      if (elPoints) elPoints.innerText = `${totalPoints} 點`;
     }
 
     // -------------------------------------------------------------
@@ -7233,15 +7278,41 @@
       document.getElementById('task-modal').classList.remove('active');
     }
 
+    // ---- Toast 通知系統 ----
+    function showToast(message, type = 'success', duration = 3000) {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+      }
+      const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<span class="toast-icon">${icons[type] || '📢'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+
     async function saveTask() {
       if (currentUserRole !== '主任' && currentUserRole !== '組長') {
-        alert("權限不足：只有組長與主任可以新增或修改任務！");
+        showToast('權限不足：只有組長與主任可以新增或修改任務！', 'error');
         return;
       }
       const form = document.getElementById('task-form');
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
+      }
+
+      // 防止重複點擊：停用按鈕並顯示 Loading
+      const saveBtn = document.getElementById('btn-save-task');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerText = '⏳ 儲存中...';
       }
 
       const id = document.getElementById('task-id').value;
@@ -7255,6 +7326,14 @@
 
       const matchedLabelObj = labels.find(l => l.name === label);
       const weight = matchedLabelObj ? matchedLabelObj.weight : 1;
+
+      // 還原按鈕的輔助函數
+      function restoreBtn(isEdit) {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerText = '確認儲存';
+        }
+      }
 
       if (id) {
         const taskIndex = tasks.findIndex(t => t.id === id);
@@ -7277,11 +7356,13 @@
               if (res.ok) {
                 tasks[taskIndex] = updatedTask;
               } else {
-                alert("後端更新任務失敗！");
+                restoreBtn();
+                showToast('後端更新任務失敗！', 'error');
                 return;
               }
             } catch (e) {
-              alert("後端連線異常，無法更新！");
+              restoreBtn();
+              showToast('後端連線異常，無法更新！', 'error');
               return;
             }
           } else {
@@ -7290,6 +7371,7 @@
           }
 
           logSystemAction(`編輯任務：修改了任務 [${title}] (負責人：${assignee})`);
+          showToast(`✏️ 任務「${title}」已更新！`, 'info');
 
           if (status === 'Done' && oldStatus !== 'Done') {
             triggerConfetti(50);
@@ -7315,11 +7397,13 @@
               const createdTask = await res.json();
               tasks.push(createdTask);
             } else {
-              alert("後端建立任務失敗！");
+              restoreBtn();
+              showToast('後端建立任務失敗！', 'error');
               return;
             }
           } catch (e) {
-            alert("後端連線異常，無法儲存！");
+            restoreBtn();
+            showToast('後端連線異常，無法儲存！', 'error');
             return;
           }
         } else {
@@ -7329,6 +7413,7 @@
         }
 
         logSystemAction(`新增任務：建立了新任務 [${title}] (負責人：${assignee})`);
+        showToast(`🎉 任務「${title}」新增成功！`, 'success');
 
         if (status === 'Done') {
           triggerConfetti(50);
