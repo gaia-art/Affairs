@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
-    window.onerror = function(message, source, lineno, colno, error) {
+    window.onerror = function (message, source, lineno, colno, error) {
       alert("⚠️ 系統 JavaScript 發生錯誤：\n訊息: " + message + "\n檔案: " + source + "\n行號: " + lineno + ":" + colno);
       return false;
     };
@@ -15,8 +16,10 @@
   <!-- Google Fonts: Inter and Noto Sans TC -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+    rel="stylesheet">
+
   <!-- SheetJS 導入以支援 Excel 的匯出與匯入功能 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -34,7 +37,7 @@
       --warning-light: #fffbeb;
       --danger: #ef4444;
       --danger-light: #fef2f2;
-      
+
       --bg-gradient: linear-gradient(135deg, #f5f3ff 0%, #fdf2f8 100%);
       --sidebar-bg: rgba(255, 255, 255, 0.85);
       --card-bg: rgba(255, 255, 255, 0.95);
@@ -44,7 +47,7 @@
       --shadow-sm: 0 2px 8px rgba(216, 79, 139, 0.05);
       --shadow-md: 0 10px 25px rgba(121, 45, 83, 0.08);
       --shadow-lg: 0 20px 40px rgba(121, 45, 83, 0.12);
-      
+
       --font-main: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --radius-sm: 8px;
       --radius-md: 14px;
@@ -72,13 +75,16 @@
       width: 8px;
       height: 8px;
     }
+
     ::-webkit-scrollbar-track {
       background: transparent;
     }
+
     ::-webkit-scrollbar-thumb {
       background: rgba(216, 79, 139, 0.2);
       border-radius: 4px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: rgba(216, 79, 139, 0.4);
     }
@@ -386,8 +392,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ------------------------------------------------------------- */
@@ -408,7 +421,8 @@
       font-size: 14px;
     }
 
-    .data-table th, .data-table td {
+    .data-table th,
+    .data-table td {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);
     }
@@ -453,9 +467,23 @@
       line-height: 1;
     }
 
-    .badge-todo { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
-    .badge-progress { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .badge-done { background: var(--success-light); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-todo {
+      background: var(--warning-light);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-progress {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-done {
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
 
     .badge-label {
       background: rgba(18, 166, 168, 0.1);
@@ -755,9 +783,21 @@
       z-index: 5;
     }
 
-    .timeline-bar.todo { background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); box-shadow: 0 3px 6px rgba(245, 158, 11, 0.2); }
-    .timeline-bar.progress { background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); box-shadow: 0 3px 6px rgba(59, 130, 246, 0.2); }
-    .timeline-bar.done { background: linear-gradient(90deg, #34d399 0%, #10b981 100%); box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2); opacity: 0.85; }
+    .timeline-bar.todo {
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+      box-shadow: 0 3px 6px rgba(245, 158, 11, 0.2);
+    }
+
+    .timeline-bar.progress {
+      background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+      box-shadow: 0 3px 6px rgba(59, 130, 246, 0.2);
+    }
+
+    .timeline-bar.done {
+      background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+      box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
+      opacity: 0.85;
+    }
 
     /* ------------------------------------------------------------- */
     /* 4. 里程碑視圖 (Milestone View) */
@@ -851,9 +891,19 @@
       border-left: 3px solid var(--border);
     }
 
-    .milestone-task-item.todo { border-left-color: var(--warning); }
-    .milestone-task-item.progress { border-left-color: #3b82f6; }
-    .milestone-task-item.done { border-left-color: var(--success); text-decoration: line-through; opacity: 0.7; }
+    .milestone-task-item.todo {
+      border-left-color: var(--warning);
+    }
+
+    .milestone-task-item.progress {
+      border-left-color: #3b82f6;
+    }
+
+    .milestone-task-item.done {
+      border-left-color: var(--success);
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
 
     .milestone-task-title {
       font-weight: 500;
@@ -1079,7 +1129,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       transition: var(--transition);
       width: 100%;
       box-sizing: border-box;
@@ -1091,9 +1141,19 @@
       filter: brightness(1.05);
     }
 
-    .calendar-task-strip.todo { background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%); }
-    .calendar-task-strip.progress { background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%); }
-    .calendar-task-strip.done { background: linear-gradient(90deg, #34d399 0%, #10b981 100%); opacity: 0.8; text-decoration: line-through; }
+    .calendar-task-strip.todo {
+      background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%);
+    }
+
+    .calendar-task-strip.progress {
+      background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+    }
+
+    .calendar-task-strip.done {
+      background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+      opacity: 0.8;
+      text-decoration: line-through;
+    }
 
     .calendar-week-container {
       display: grid;
@@ -1399,22 +1459,26 @@
       color: var(--danger);
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
-    
+
     @keyframes pulse {
       0% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
       }
+
       70% {
         box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
       }
+
       100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
       }
     }
-    
+
     .row-overdue {
-      background-color: #fef2f2 !important; /* var(--danger-light) */
+      background-color: #fef2f2 !important;
+      /* var(--danger-light) */
     }
+
     .row-overdue:hover {
       background-color: #fee2e2 !important;
     }
@@ -1425,8 +1489,9 @@
       transform: translateY(-2px);
       border-color: rgba(255, 255, 255, 0.25) !important;
     }
-    
-    #login-overlay input:focus, #login-overlay select:focus {
+
+    #login-overlay input:focus,
+    #login-overlay select:focus {
       border-color: var(--primary) !important;
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
       background: rgba(0, 0, 0, 0.6) !important;
@@ -1442,27 +1507,30 @@
       flex: 1;
       padding-right: 4px;
     }
-    
+
     .sidebar-nav::-webkit-scrollbar {
       width: 4px;
     }
+
     .sidebar-nav::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .sidebar-nav::-webkit-scrollbar-thumb {
       background: rgba(216, 79, 139, 0.1);
       border-radius: 2px;
     }
+
     .sidebar-nav::-webkit-scrollbar-thumb:hover {
       background: rgba(216, 79, 139, 0.3);
     }
-    
+
     .sidebar-nav-group {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-    
+
     .sidebar-nav-header {
       font-size: 11px;
       font-weight: 800;
@@ -1474,7 +1542,7 @@
       border-bottom: 1px solid rgba(216, 79, 139, 0.1);
       margin-bottom: 4px;
     }
-    
+
     .sidebar .nav-btn {
       display: flex;
       align-items: center;
@@ -1492,19 +1560,19 @@
       width: 100%;
       box-sizing: border-box;
     }
-    
+
     .sidebar .nav-btn svg {
       width: 16px;
       height: 16px;
       fill: currentColor;
       flex-shrink: 0;
     }
-    
+
     .sidebar .nav-btn:hover {
       background: rgba(216, 79, 139, 0.05);
       color: var(--primary);
     }
-    
+
     .sidebar .nav-btn.active {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
@@ -1522,7 +1590,8 @@
     .bottom-nav-bar {
       position: fixed;
       bottom: 0;
-      left: 300px; /* 電腦版避開左側側欄 */
+      left: 300px;
+      /* 電腦版避開左側側欄 */
       right: 0;
       height: 60px;
       background: var(--sidebar-bg);
@@ -1534,11 +1603,13 @@
       overflow-x: auto;
       z-index: 999;
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-      scrollbar-width: none; /* 隱藏 Firefox 捲軸 */
+      scrollbar-width: none;
+      /* 隱藏 Firefox 捲軸 */
     }
-    
+
     .bottom-nav-bar::-webkit-scrollbar {
-      display: none; /* 隱藏 Chrome/Safari 捲軸 */
+      display: none;
+      /* 隱藏 Chrome/Safari 捲軸 */
     }
 
     .bottom-nav-bar .nav-btn {
@@ -1648,7 +1719,7 @@
       }
 
       /* Excel 按鈕改為堆疊 */
-      .filter-bar > div {
+      .filter-bar>div {
         flex-wrap: wrap;
         border-right: none !important;
         padding-right: 0 !important;
@@ -1656,13 +1727,14 @@
         gap: 8px;
       }
 
-      .filter-bar > div > button, 
-      .filter-bar > div > label {
+      .filter-bar>div>button,
+      .filter-bar>div>label {
         flex: 1;
         min-width: 100px;
       }
 
-      .filter-select, .search-input {
+      .filter-select,
+      .search-input {
         width: 100% !important;
       }
 
@@ -1700,13 +1772,14 @@
       .view-container {
         overflow: auto;
       }
-      
+
       .table-card {
         overflow-x: auto;
       }
 
       /* 彈窗對話框寬度適應 */
-      .modal-content, .login-card {
+      .modal-content,
+      .login-card {
         width: 90% !important;
         max-width: 450px;
         padding: 20px !important;
@@ -1724,6 +1797,7 @@
       gap: 10px;
       pointer-events: none;
     }
+
     .toast {
       display: flex;
       align-items: center;
@@ -1734,80 +1808,132 @@
       border-radius: 10px;
       font-size: 14px;
       font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
       pointer-events: auto;
-      animation: toast-in 0.3s cubic-bezier(.22,1,.36,1);
+      animation: toast-in 0.3s cubic-bezier(.22, 1, .36, 1);
       min-width: 200px;
       max-width: 320px;
     }
-    .toast.success { border-left: 4px solid #10b981; }
-    .toast.error   { border-left: 4px solid #ef4444; }
-    .toast.info    { border-left: 4px solid #6366f1; }
-    .toast-icon { font-size: 18px; }
-    .toast-fade-out { animation: toast-out 0.3s forwards; }
-    @keyframes toast-in {
-      from { opacity: 0; transform: translateX(60px); }
-      to   { opacity: 1; transform: translateX(0); }
+
+    .toast.success {
+      border-left: 4px solid #10b981;
     }
+
+    .toast.error {
+      border-left: 4px solid #ef4444;
+    }
+
+    .toast.info {
+      border-left: 4px solid #6366f1;
+    }
+
+    .toast-icon {
+      font-size: 18px;
+    }
+
+    .toast-fade-out {
+      animation: toast-out 0.3s forwards;
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
     @keyframes toast-out {
-      from { opacity: 1; transform: translateX(0); }
-      to   { opacity: 0; transform: translateX(60px); }
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(60px);
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- 🛡️ 登入畫面 (Login Overlay) -->
-  <div id="login-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #0f172a 100%); z-index: 99999; align-items: center; justify-content: center; font-family: var(--font-main);">
+  <div id="login-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #1e1b4b 0%, #311042 50%, #0f172a 100%); z-index: 99999; align-items: center; justify-content: center; font-family: var(--font-main);">
     <!-- 光影背景裝飾 -->
-    <div style="position: absolute; width: 300px; height: 300px; background: rgba(139, 92, 246, 0.15); filter: blur(80px); border-radius: 50%; top: 20%; left: 30%; pointer-events: none;"></div>
-    <div style="position: absolute; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.1); filter: blur(80px); border-radius: 50%; bottom: 20%; right: 30%; pointer-events: none;"></div>
-    
-    <div class="login-card" style="width: 400px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 32px; color: #fff; text-align: center; transform: translateY(0); transition: all 0.3s ease;">
-      
+    <div
+      style="position: absolute; width: 300px; height: 300px; background: rgba(139, 92, 246, 0.15); filter: blur(80px); border-radius: 50%; top: 20%; left: 30%; pointer-events: none;">
+    </div>
+    <div
+      style="position: absolute; width: 300px; height: 300px; background: rgba(236, 72, 153, 0.1); filter: blur(80px); border-radius: 50%; bottom: 20%; right: 30%; pointer-events: none;">
+    </div>
+
+    <div class="login-card"
+      style="width: 400px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 32px; color: #fff; text-align: center; transform: translateY(0); transition: all 0.3s ease;">
+
       <!-- 系統 Logo & 標題 -->
       <div style="margin-bottom: 24px;">
-        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 28px; font-weight: 900; line-height: 64px; border-radius: 16px; margin: 0 auto 16px auto; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center;">
+        <div
+          style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 28px; font-weight: 900; line-height: 64px; border-radius: 16px; margin: 0 auto 16px auto; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3); display: flex; align-items: center; justify-content: center;">
           樹
         </div>
-        <h2 style="font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 4px;">《樹義》總務處行政管理</h2>
+        <h2 style="font-size: 20px; font-weight: 900; letter-spacing: 1px; color: #fff; margin-bottom: 4px;">《樹義》總務處行政管理
+        </h2>
         <p style="font-size: 12px; color: rgba(255, 255, 255, 0.5); margin: 0;">請選擇您的同仁帳號並輸入密碼登入</p>
       </div>
 
       <!-- 登入表單 -->
       <div style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
-        
+
         <!-- 選擇同仁 -->
         <div>
-          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">👤 選擇同仁帳號</label>
-          <select id="login-user-select" style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; font-weight: 700; padding: 0 12px; outline: none; transition: border-color 0.2s; cursor: pointer;">
+          <label
+            style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">👤
+            選擇同仁帳號</label>
+          <select id="login-user-select"
+            style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; font-weight: 700; padding: 0 12px; outline: none; transition: border-color 0.2s; cursor: pointer;">
             <!-- 動態加載 -->
           </select>
         </div>
 
         <!-- 輸入密碼 -->
         <div>
-          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">🔑 輸入密碼 (預設: 1234)</label>
+          <label
+            style="display: block; font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 6px;">🔑
+            輸入密碼 (預設: 1234)</label>
           <div style="position: relative;">
-            <input type="password" id="login-password-input" placeholder="請輸入登入密碼" style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; padding: 0 42px 0 12px; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key === 'Enter') handleLoginSubmit()">
-            <button type="button" onclick="toggleLoginPasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255, 255, 255, 0.5); cursor: pointer; padding: 4px; outline: none;" id="btn-toggle-login-pass">
+            <input type="password" id="login-password-input" placeholder="請輸入登入密碼"
+              style="width: 100%; height: 42px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-size: 14px; padding: 0 42px 0 12px; outline: none; transition: border-color 0.2s;"
+              onkeydown="if(event.key === 'Enter') handleLoginSubmit()">
+            <button type="button" onclick="toggleLoginPasswordVisibility()"
+              style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255, 255, 255, 0.5); cursor: pointer; padding: 4px; outline: none;"
+              id="btn-toggle-login-pass">
               👁️
             </button>
           </div>
         </div>
 
         <!-- 錯誤提示 -->
-        <div id="login-error-msg" style="color: var(--danger); font-size: 12px; font-weight: 600; display: none; text-align: center; background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; margin-top: 4px;">
+        <div id="login-error-msg"
+          style="color: var(--danger); font-size: 12px; font-weight: 600; display: none; text-align: center; background: rgba(239, 68, 68, 0.1); border: 1px dashed rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; margin-top: 4px;">
           ❌ 密碼輸入錯誤，請重新輸入！
         </div>
 
         <!-- 登入按鈕 -->
-        <button class="btn btn-primary" onclick="handleLoginSubmit()" style="width: 100%; height: 44px; font-size: 14px; font-weight: 700; border-radius: 8px; margin-top: 12px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
+        <button class="btn btn-primary" onclick="handleLoginSubmit()"
+          style="width: 100%; height: 44px; font-size: 14px; font-weight: 700; border-radius: 8px; margin-top: 12px; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
           🚀 登入系統
         </button>
 
         <!-- 暫不登入按鈕 -->
-        <button class="btn btn-secondary" onclick="hideLoginOverlay()" style="width: 100%; height: 44px; font-size: 14px; font-weight: 700; border-radius: 8px; margin-top: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; box-shadow: none;">
+        <button class="btn btn-secondary" onclick="hideLoginOverlay()"
+          style="width: 100%; height: 44px; font-size: 14px; font-weight: 700; border-radius: 8px; margin-top: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; box-shadow: none;">
           👀 暫不登入，直接瀏覽
         </button>
 
@@ -1825,19 +1951,22 @@
   <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
 
   <div class="app-container">
-    
+
     <!-- 側邊導覽列 -->
     <aside class="sidebar">
       <!-- 手機版側欄關閉按鈕 -->
-      <button class="sidebar-close-btn" style="display: none; position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); z-index: 10;" onclick="closeMobileSidebar()">✕</button>
+      <button class="sidebar-close-btn"
+        style="display: none; position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); z-index: 10;"
+        onclick="closeMobileSidebar()">✕</button>
 
       <div class="sidebar-top">
-        
+
         <!-- 品牌標誌 -->
         <div class="brand-section" style="margin-bottom: 12px; position: relative;">
           <div class="brand-title-wrap">
             <div class="brand-icon" style="background: transparent; box-shadow: none;">
-              <img src="icon.ico" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;" alt="icon">
+              <img src="icon.ico" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;"
+                alt="icon">
             </div>
             <h1 class="brand-title">樹義總務處行政管理</h1>
           </div>
@@ -1845,15 +1974,21 @@
         </div>
 
         <!-- 目前登入身分標籤 -->
-        <div style="margin: 0 0 24px 0; padding: 16px; background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-md); border: 1px solid var(--border);">
-          <div style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+        <div
+          style="margin: 0 0 24px 0; padding: 16px; background: rgba(255, 255, 255, 0.6); border-radius: var(--radius-md); border: 1px solid var(--border);">
+          <div
+            style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
             <span>👤 目前登入同仁</span>
           </div>
-          <div id="sidebar-user-display" style="color: var(--text-main); font-size: 14px; font-weight: 700; padding: 8px 12px; background: rgba(216, 79, 139, 0.05); border-radius: var(--radius-sm); border: 1px solid rgba(216, 79, 139, 0.15); display: flex; align-items: center; gap: 8px;">
-            <div id="sidebar-avatar-display" style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; flex-shrink: 0;">-</div>
+          <div id="sidebar-user-display"
+            style="color: var(--text-main); font-size: 14px; font-weight: 700; padding: 8px 12px; background: rgba(216, 79, 139, 0.05); border-radius: var(--radius-sm); border: 1px solid rgba(216, 79, 139, 0.15); display: flex; align-items: center; gap: 8px;">
+            <div id="sidebar-avatar-display"
+              style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; overflow: hidden; background-size: cover; background-position: center; flex-shrink: 0;">
+              -</div>
             <div style="flex: 1; display: flex; align-items: center; justify-content: space-between;">
               <span id="current-user-name" style="color: var(--text-main);">-</span>
-              <span id="current-user-role" class="badge" style="font-size: 10px; padding: 2px 8px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700;">-</span>
+              <span id="current-user-role" class="badge"
+                style="font-size: 10px; padding: 2px 8px; background: var(--primary); color: #fff; border-radius: var(--radius-sm); font-weight: 700;">-</span>
             </div>
           </div>
         </div>
@@ -1864,23 +1999,35 @@
           <div class="sidebar-nav-group">
             <span class="sidebar-nav-header">任務區</span>
             <button class="nav-btn active" data-view="home">
-              <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+              </svg>
               系統首頁
             </button>
             <button class="nav-btn" data-view="table">
-              <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+              </svg>
               所有任務 (表格)
             </button>
             <button class="nav-btn" data-view="board">
-              <svg viewBox="0 0 24 24"><path d="M4 4h4v16H4zm7 0h4v16h-4zm7 0h4v16h-4z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M4 4h4v16H4zm7 0h4v16h-4zm7 0h4v16h-4z" />
+              </svg>
               看板視圖 (狀態)
             </button>
             <button class="nav-btn" data-view="timeline">
-              <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
+              </svg>
               時間軸視圖 (人員)
             </button>
             <button class="nav-btn" data-view="calendar">
-              <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z" />
+              </svg>
               任務行事曆 (日程)
             </button>
           </div>
@@ -1889,19 +2036,30 @@
           <div class="sidebar-nav-group">
             <span class="sidebar-nav-header">業務管理區</span>
             <button class="nav-btn" data-view="ac">
-              <svg viewBox="0 0 24 24"><path d="M12 2v20M17 5H7M19 9H5M21 13H3M19 17H5M17 21H7"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M12 2v20M17 5H7M19 9H5M21 13H3M19 17H5M17 21H7" />
+              </svg>
               冷氣卡與儲值
             </button>
             <button class="nav-btn" data-view="key-log">
-              <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+              </svg>
               鑰匙與磁扣借還
             </button>
             <button class="nav-btn" data-view="venue-reserve">
-              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+              </svg>
               場地預約管理
             </button>
             <button class="nav-btn" data-view="etag">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42.99L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.27-3.82c.14-.4.52-.68.96-.68h9.54c.44 0 .82.28.96.68L19 11H5z"/></svg>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path
+                  d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42.99L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.27-3.82c.14-.4.52-.68.96-.68h9.54c.44 0 .82.28.96.68L19 11H5z" />
+              </svg>
               車道 eTag 管理
             </button>
           </div>
@@ -1910,11 +2068,17 @@
           <div class="sidebar-nav-group">
             <span class="sidebar-nav-header">會議與排班區</span>
             <button class="nav-btn" data-view="meetings">
-              <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V10h14v8z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V10h14v8z" />
+              </svg>
               工作會議排程
             </button>
             <button class="nav-btn" data-view="staff-roster">
-              <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7zm0 0"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7zm0 0" />
+              </svg>
               人員排班管理
             </button>
           </div>
@@ -1923,11 +2087,15 @@
           <div class="sidebar-nav-group">
             <span class="sidebar-nav-header">績效與統計區</span>
             <button class="nav-btn" data-view="milestone">
-              <svg viewBox="0 0 24 24"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z" />
+              </svg>
               里程碑視圖 (計畫)
             </button>
             <button class="nav-btn" data-view="insights">
-              <svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z" />
+              </svg>
               績效統計 (Insights)
             </button>
           </div>
@@ -1936,11 +2104,17 @@
           <div class="sidebar-nav-group">
             <span class="sidebar-nav-header">帳號與密碼</span>
             <button class="nav-btn" data-view="profile">
-              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+              </svg>
               個人設定與密碼
             </button>
             <button class="nav-btn" data-view="admin" id="nav-btn-admin" style="display: none;">
-              <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5S13.4 12 12 12s-2.5-1.1-2.5-2.5S10.6 7 12 7zm0 13.9c-2.7 0-5.2-1.6-6.2-4.1.1-.9.7-1.7 1.7-2.3 1.2-.7 2.8-1.1 4.5-1.1s3.3.4 4.5 1.1c1 .6 1.6 1.4 1.7 2.3-1 2.5-3.5 4.1-6.2 4.1z"/></svg>
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5S13.4 12 12 12s-2.5-1.1-2.5-2.5S10.6 7 12 7zm0 13.9c-2.7 0-5.2-1.6-6.2-4.1.1-.9.7-1.7 1.7-2.3 1.2-.7 2.8-1.1 4.5-1.1s3.3.4 4.5 1.1c1 .6 1.6 1.4 1.7 2.3-1 2.5-3.5 4.1-6.2 4.1z" />
+              </svg>
               管理員專區
             </button>
           </div>
@@ -1951,54 +2125,77 @@
       <!-- 側欄底部按鈕 -->
       <div class="sidebar-footer">
         <!-- 新增任務 & 系統配置 -->
-        <button class="btn btn-primary" id="btn-add-task" style="font-weight: 700; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">➕ 新增任務</button>
-        <button class="btn btn-secondary" id="btn-open-settings" style="font-weight: 700; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">⚙️ 系統配置設定</button>
-        <button class="btn btn-danger-outline" id="btn-reset-data" style="margin-bottom: 8px; width:100%;">重設預設資料</button>
-        <button class="btn btn-primary" id="btn-sidebar-login" style="margin-top: 4px; font-weight: 700; width: 100%; display: none; align-items: center; justify-content: center; gap: 4px;" onclick="showLoginOverlay()">🔑 登入系統</button>
+        <button class="btn btn-primary" id="btn-add-task"
+          style="font-weight: 700; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">➕
+          新增任務</button>
+        <button class="btn btn-secondary" id="btn-open-settings"
+          style="font-weight: 700; width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px;">⚙️
+          系統配置設定</button>
+        <button class="btn btn-danger-outline" id="btn-reset-data"
+          style="margin-bottom: 8px; width:100%;">重設預設資料</button>
+        <button class="btn btn-primary" id="btn-sidebar-login"
+          style="margin-top: 4px; font-weight: 700; width: 100%; display: none; align-items: center; justify-content: center; gap: 4px;"
+          onclick="showLoginOverlay()">🔑 登入系統</button>
       </div>
     </aside>
 
     <!-- 右側主內容區 -->
     <main class="main-content">
-      
+
       <!-- 頂部標頭 -->
       <header class="top-header">
         <div class="view-title-area" style="display:flex; align-items:center; gap: 12px; flex-shrink: 0; width: 100%;">
-          <button id="mobile-menu-btn" style="display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-main); margin-right: 4px;" onclick="toggleMobileSidebar()">☰</button>
+          <button id="mobile-menu-btn"
+            style="display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-main); margin-right: 4px;"
+            onclick="toggleMobileSidebar()">☰</button>
           <h2 id="current-view-title" style="margin: 0; font-size: 16px; font-weight: 800;">所有任務 (表格)</h2>
           <span id="api-status-badge" class="badge">讀取狀態中...</span>
           <div style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
             <!-- 目前登入同仁狀態（右上角）-->
-            <div id="header-user-chip" style="display:flex; align-items:center; gap:8px; background:rgba(216,79,139,0.07); border:1px solid rgba(216,79,139,0.18); border-radius:20px; padding:4px 12px 4px 6px; height:32px;">
-              <div id="header-avatar" style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;">-</div>
+            <div id="header-user-chip"
+              style="display:flex; align-items:center; gap:8px; background:rgba(216,79,139,0.07); border:1px solid rgba(216,79,139,0.18); border-radius:20px; padding:4px 12px 4px 6px; height:32px;">
+              <div id="header-avatar"
+                style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:hidden;background-size:cover;background-position:center;flex-shrink:0;">
+                -</div>
               <span id="header-user-name" style="font-size:13px;font-weight:700;color:var(--text-main);">未登入</span>
-              <span id="header-user-role" class="badge" style="font-size:10px;padding:2px 7px;background:var(--primary);color:#fff;border-radius:10px;font-weight:700;">-</span>
+              <span id="header-user-role" class="badge"
+                style="font-size:10px;padding:2px 7px;background:var(--primary);color:#fff;border-radius:10px;font-weight:700;">-</span>
             </div>
             <!-- 登出按鈕（右上角）-->
-            <button id="btn-logout" class="btn btn-secondary" style="border-color:var(--danger);color:var(--danger);font-weight:700;font-size:12px;padding:6px 12px;height:32px;display:flex;align-items:center;gap:4px;" onclick="handleLogout()">🚪 登出</button>
-            <button id="mobile-filter-btn" class="btn btn-secondary" style="display: none; padding: 6px 12px; font-size: 12px; font-weight: 700; height: 32px; align-items: center;" onclick="toggleMobileFilters()">🔍 篩選</button>
+            <button id="btn-logout" class="btn btn-secondary"
+              style="border-color:var(--danger);color:var(--danger);font-weight:700;font-size:12px;padding:6px 12px;height:32px;display:flex;align-items:center;gap:4px;"
+              onclick="handleLogout()">🚪 登出</button>
+            <button id="mobile-filter-btn" class="btn btn-secondary"
+              style="display: none; padding: 6px 12px; font-size: 12px; font-weight: 700; height: 32px; align-items: center;"
+              onclick="toggleMobileFilters()">🔍 篩選</button>
           </div>
         </div>
-        
+
         <!-- Excel 及過濾工具列 -->
         <div class="filter-bar">
-          
+
           <!-- Excel 操作區 -->
-          <div style="display: flex; gap: 6px; margin-right: 12px; border-right: 1px solid var(--border); padding-right: 12px;">
-            <button class="btn btn-secondary" onclick="exportToExcel()" style="padding: 6px 12px; font-size:12px;" title="匯出目前篩選任務至 Excel">📤 匯出 Excel</button>
-            <button class="btn btn-secondary" onclick="downloadExcelTemplate()" style="padding: 6px 12px; font-size:12px;" title="下載可用於批次編輯與匯入的範本">📋 下載匯入範本</button>
-            <label class="btn btn-secondary" style="padding: 6px 12px; font-size:12px; cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 4px;" title="上傳 Excel 檔案批次匯入任務">
-              📥 匯入 Excel 
-              <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display:none;" onchange="importFromExcel(event)">
+          <div
+            style="display: flex; gap: 6px; margin-right: 12px; border-right: 1px solid var(--border); padding-right: 12px;">
+            <button class="btn btn-secondary" onclick="exportToExcel()" style="padding: 6px 12px; font-size:12px;"
+              title="匯出目前篩選任務至 Excel">📤 匯出 Excel</button>
+            <button class="btn btn-secondary" onclick="downloadExcelTemplate()"
+              style="padding: 6px 12px; font-size:12px;" title="下載可用於批次編輯與匯入的範本">📋 下載匯入範本</button>
+            <label class="btn btn-secondary"
+              style="padding: 6px 12px; font-size:12px; cursor: pointer; margin: 0; display: inline-flex; align-items: center; gap: 4px;"
+              title="上傳 Excel 檔案批次匯入任務">
+              📥 匯入 Excel
+              <input type="file" id="excel-file-input" accept=".xlsx, .xls" style="display:none;"
+                onchange="importFromExcel(event)">
             </label>
           </div>
 
           <input type="text" class="search-input" id="search-keyword" placeholder="搜尋任務名稱...">
-          
+
           <select class="filter-select" id="filter-assignee">
             <option value="">所有負責人</option>
           </select>
-          
+
           <select class="filter-select" id="filter-label">
             <option value="">所有標籤</option>
           </select>
@@ -2011,56 +2208,74 @@
 
       <!-- 視圖內容區 -->
       <div class="view-container">
-        
+
         <!-- 👤 個人設定頁面 (Profile View) -->
         <section class="view-pane" id="pane-profile">
-          <div style="background: linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(139,92,246,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px;">
-            <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">👤 個人設定與密碼變更</h3>
+          <div
+            style="background: linear-gradient(135deg, rgba(236,72,153,0.1) 0%, rgba(139,92,246,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px;">
+            <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">👤 個人設定與密碼變更
+            </h3>
             <p style="color: var(--text-muted); font-size: 13px;">在此您可以設定個人頭像、檢視帳號基本資訊，以及變更您的登入密碼。</p>
           </div>
 
           <!-- 訪客提示 (未登入時顯示) -->
-          <div id="profile-guest-prompt" style="display: none; text-align: center; padding: 60px 20px; background: rgba(255, 255, 255, 0.4); border: 1px dashed var(--border); border-radius: var(--radius-lg); backdrop-filter: blur(10px);">
+          <div id="profile-guest-prompt"
+            style="display: none; text-align: center; padding: 60px 20px; background: rgba(255, 255, 255, 0.4); border: 1px dashed var(--border); border-radius: var(--radius-lg); backdrop-filter: blur(10px);">
             <div style="font-size: 64px; margin-bottom: 16px;">🔒</div>
             <h4 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">訪客模式 (未登入)</h4>
-            <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto 24px auto;">您目前尚未登入系統，個人設定頁面需要登入同仁帳號後方能進行操作與檢視。</p>
-            <button class="btn btn-primary" onclick="showLoginOverlay()" style="font-weight: 700; padding: 10px 24px;">🔑 登入同仁帳號</button>
+            <p style="color: var(--text-muted); font-size: 14px; max-width: 400px; margin: 0 auto 24px auto;">
+              您目前尚未登入系統，個人設定頁面需要登入同仁帳號後方能進行操作與檢視。</p>
+            <button class="btn btn-primary" onclick="showLoginOverlay()"
+              style="font-weight: 700; padding: 10px 24px;">🔑 登入同仁帳號</button>
           </div>
 
           <!-- 個人頁面內容 (已登入時顯示) -->
           <div id="profile-logged-in-content" class="key-log-layout">
             <!-- 左側：個人頭像卡 -->
-            <div class="table-card" style="padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
-              <h4 style="color: var(--primary-dark); font-size: 16px; align-self: flex-start; margin-bottom: 8px; font-weight:800; border-bottom: 2px solid var(--border); width: 100%; padding-bottom: 6px;">🖼️ 個人頭像</h4>
-              
+            <div class="table-card"
+              style="padding: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+              <h4
+                style="color: var(--primary-dark); font-size: 16px; align-self: flex-start; margin-bottom: 8px; font-weight:800; border-bottom: 2px solid var(--border); width: 100%; padding-bottom: 6px;">
+                🖼️ 個人頭像</h4>
+
               <!-- 頭像顯示區 -->
-              <div id="profile-avatar-display" style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 48px; font-weight: 900; line-height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.25); border: 4px solid #fff; overflow: hidden; background-size: cover; background-position: center;">
+              <div id="profile-avatar-display"
+                style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; font-size: 48px; font-weight: 900; line-height: 120px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.25); border: 4px solid #fff; overflow: hidden; background-size: cover; background-position: center;">
                 -
               </div>
 
               <div style="display: flex; gap: 10px; margin-top: 8px; width: 100%;">
-                <label class="btn btn-secondary" style="flex: 1; margin: 0; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                <label class="btn btn-secondary"
+                  style="flex: 1; margin: 0; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
                   📷 上傳相片
-                  <input type="file" id="profile-avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                  <input type="file" id="profile-avatar-input" accept="image/*" style="display: none;"
+                    onchange="handleAvatarUpload(event)">
                 </label>
-                <button class="btn btn-danger-outline" onclick="removeProfileAvatar()" style="flex: 1; font-size: 12px; font-weight: 700;">✕ 移除相片</button>
+                <button class="btn btn-danger-outline" onclick="removeProfileAvatar()"
+                  style="flex: 1; font-size: 12px; font-weight: 700;">✕ 移除相片</button>
               </div>
-              <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; text-align: left; margin: 0;">大頭貼將壓縮儲存於您的本機設備中（支援 JPG、PNG 檔，建議小於 200KB）。</p>
+              <p style="font-size: 11px; color: var(--text-muted); line-height: 1.4; text-align: left; margin: 0;">
+                大頭貼將壓縮儲存於您的本機設備中（支援 JPG、PNG 檔，建議小於 200KB）。</p>
             </div>
 
             <!-- 右側：基本資料與變更密碼 -->
             <div style="display: flex; flex-direction: column; gap: 24px; flex: 1.5;">
-              
+
               <!-- 卡片：基本資料 -->
               <div class="table-card" style="padding: 24px;">
-                <h4 style="color: var(--primary-dark); font-size: 16px; margin-bottom: 16px; font-weight:800; border-bottom: 2px solid var(--border); padding-bottom: 6px;">📋 帳號基本資料</h4>
-                <div style="display: grid; grid-template-columns: 100px 1fr; row-gap: 12px; font-size: 14px; align-items: center;">
+                <h4
+                  style="color: var(--primary-dark); font-size: 16px; margin-bottom: 16px; font-weight:800; border-bottom: 2px solid var(--border); padding-bottom: 6px;">
+                  📋 帳號基本資料</h4>
+                <div
+                  style="display: grid; grid-template-columns: 100px 1fr; row-gap: 12px; font-size: 14px; align-items: center;">
                   <div style="color: var(--text-muted); font-weight: 700;">同仁姓名：</div>
-                  <div id="profile-info-name" style="font-weight: 800; color: var(--text-main); font-size: 15px;">-</div>
-                  
+                  <div id="profile-info-name" style="font-weight: 800; color: var(--text-main); font-size: 15px;">-
+                  </div>
+
                   <div style="color: var(--text-muted); font-weight: 700;">系統角色：</div>
                   <div>
-                    <span id="profile-info-role" class="badge" style="font-size: 12px; font-weight: 700; padding: 4px 10px; color: #fff;">-</span>
+                    <span id="profile-info-role" class="badge"
+                      style="font-size: 12px; font-weight: 700; padding: 4px 10px; color: #fff;">-</span>
                   </div>
 
                   <div style="color: var(--text-muted); font-weight: 700;">連線模式：</div>
@@ -2070,23 +2285,32 @@
 
               <!-- 卡片：變更密碼 -->
               <div class="table-card" style="padding: 24px;">
-                <h4 style="color: var(--primary-dark); font-size: 16px; margin-bottom: 16px; font-weight:800; border-bottom: 2px solid var(--border); padding-bottom: 6px;">🔑 變更個人登入密碼</h4>
+                <h4
+                  style="color: var(--primary-dark); font-size: 16px; margin-bottom: 16px; font-weight:800; border-bottom: 2px solid var(--border); padding-bottom: 6px;">
+                  🔑 變更個人登入密碼</h4>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                   <div>
-                    <label style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">請輸入目前密碼</label>
-                    <input type="password" id="profile-pass-current" placeholder="目前登入密碼" style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
+                    <label
+                      style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">請輸入目前密碼</label>
+                    <input type="password" id="profile-pass-current" placeholder="目前登入密碼"
+                      style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
                   </div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div>
-                      <label style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">請輸入新密碼</label>
-                      <input type="password" id="profile-pass-new" placeholder="新密碼 (請勿留空)" style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
+                      <label
+                        style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">請輸入新密碼</label>
+                      <input type="password" id="profile-pass-new" placeholder="新密碼 (請勿留空)"
+                        style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
                     </div>
                     <div>
-                      <label style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">確認新密碼</label>
-                      <input type="password" id="profile-pass-confirm" placeholder="再次輸入新密碼" style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
+                      <label
+                        style="display:block; font-size:12px; font-weight:700; color:var(--text-main); margin-bottom:6px;">確認新密碼</label>
+                      <input type="password" id="profile-pass-confirm" placeholder="再次輸入新密碼"
+                        style="width: 100%; height: 38px; border: 1px solid var(--border); border-radius: 6px; padding: 0 10px; font-size: 13px;">
                     </div>
                   </div>
-                  <button class="btn btn-primary" onclick="changePersonalPassword()" style="height: 40px; font-weight: 700; margin-top: 8px;">💾 儲存並更新密碼</button>
+                  <button class="btn btn-primary" onclick="changePersonalPassword()"
+                    style="height: 40px; font-weight: 700; margin-top: 8px;">💾 儲存並更新密碼</button>
                 </div>
               </div>
 
@@ -2097,21 +2321,27 @@
         <!-- 🛡️ 管理員專區 (Admin Panel) -->
         <section class="view-pane" id="pane-admin">
           <!-- 上方標題與快速卡 -->
-          <div style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px;">
-            <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">🛡️ 樹義總務處系統管理員專區</h3>
+          <div
+            style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(139,92,246,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px;">
+            <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">🛡️
+              樹義總務處系統管理員專區</h3>
             <p style="color: var(--text-muted); font-size: 13px;">本專區限主任身分存取，可用於指派職工角色權限、檢視操作稽核軌跡，以及執行資料庫維護。</p>
           </div>
 
           <div class="key-log-layout" style="margin-bottom: 24px;">
             <!-- 左欄：人員權限分配 -->
             <div class="table-card" style="padding:20px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+              <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
                 <h4 style="color:var(--primary-dark); font-size:15px; margin:0;">👥 職工權限類別指派</h4>
               </div>
-              
+
               <!-- 新增人員表單 -->
-              <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:16px;">
-                <h5 style="font-size:12px; font-weight:700; margin-top:0; margin-bottom:8px; color:var(--primary-dark);">+ 新增人員並指派身分</h5>
+              <div
+                style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:16px;">
+                <h5
+                  style="font-size:12px; font-weight:700; margin-top:0; margin-bottom:8px; color:var(--primary-dark);">+
+                  新增人員並指派身分</h5>
                 <div style="display:flex; gap:8px;">
                   <input type="text" class="form-control" id="admin-new-staff-name" placeholder="輸入姓名 (如：蔡組長)">
                   <select class="form-control" id="admin-new-staff-role" style="width: 110px;">
@@ -2121,7 +2351,8 @@
                     <option value="職工">職工</option>
                     <option value="志工">志工</option>
                   </select>
-                  <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addStaffRoleSetting()">新增人員</button>
+                  <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                    onclick="addStaffRoleSetting()">新增人員</button>
                 </div>
               </div>
 
@@ -2145,12 +2376,15 @@
 
             <!-- 右欄：操作審計日誌與系統維護 -->
             <div style="display:flex; flex-direction:column; gap:24px;">
-              
+
               <!-- 操作稽核軌跡 -->
               <div class="table-card" style="padding:20px; flex:1; display:flex; flex-direction:column;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                <div
+                  style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">
                   <h4 style="color:var(--primary-dark); font-size:15px; margin:0;">📋 系統操作審計日誌 (Audit Trail)</h4>
-                  <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);" onclick="clearAuditLogs()">清空日誌</button>
+                  <button class="btn btn-secondary"
+                    style="padding:4px 8px; font-size:11px; border-color:var(--danger); color:var(--danger);"
+                    onclick="clearAuditLogs()">清空日誌</button>
                 </div>
                 <div style="flex:1; max-height:220px; overflow-y:auto;">
                   <table class="data-table" style="font-size:12px;">
@@ -2170,14 +2404,20 @@
 
               <!-- 資料庫維護工具 -->
               <div class="table-card" style="padding:20px;">
-                <h4 style="color:var(--primary-dark); font-size:15px; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">💾 資料庫維護工具</h4>
+                <h4
+                  style="color:var(--primary-dark); font-size:15px; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  💾 資料庫維護工具</h4>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; align-items: center;">
-                  <button class="btn btn-secondary" style="height:32px; font-size:13px;" onclick="exportDatabaseBackup()">📥 匯出備份資料 (JSON)</button>
-                  <label class="btn btn-secondary" style="margin:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; height:32px; font-size:13px; font-weight:600; border-radius:6px; padding:0 12px; border:1px solid var(--border); color:var(--text-main); background:#fff;">
+                  <button class="btn btn-secondary" style="height:32px; font-size:13px;"
+                    onclick="exportDatabaseBackup()">📥 匯出備份資料 (JSON)</button>
+                  <label class="btn btn-secondary"
+                    style="margin:0; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; height:32px; font-size:13px; font-weight:600; border-radius:6px; padding:0 12px; border:1px solid var(--border); color:var(--text-main); background:#fff;">
                     📤 匯入備份還原 (JSON)
-                    <input type="file" id="admin-import-file" style="display:none;" onchange="importDatabaseBackup(this)">
+                    <input type="file" id="admin-import-file" style="display:none;"
+                      onchange="importDatabaseBackup(this)">
                   </label>
-                  <button class="btn btn-danger-outline" style="height:32px; font-size:13px;" onclick="resetToDefault()">⚠️ 一鍵重置資料庫</button>
+                  <button class="btn btn-danger-outline" style="height:32px; font-size:13px;"
+                    onclick="resetToDefault()">⚠️ 一鍵重置資料庫</button>
                 </div>
                 <div style="font-size:11px; color:var(--text-muted); margin-top:8px;">
                   重置或匯入資料庫會覆蓋目前所有任務、鑰匙、冷氣儲值紀錄與設定。請謹慎操作！
@@ -2191,48 +2431,68 @@
         <!-- 0. 首頁儀表板 (Dashboard) -->
         <section class="view-pane active" id="pane-home">
           <!-- 歡迎與卡片摘要 -->
-          <div style="background: linear-gradient(135deg, rgba(216,79,139,0.1) 0%, rgba(18,166,168,0.1) 100%); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div
+            style="background: linear-gradient(135deg, rgba(216,79,139,0.1) 0%, rgba(18,166,168,0.1) 100%); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <div>
-              <h3 style="color: var(--primary-dark); font-size: 22px; font-weight: 900; margin-bottom: 6px;">歡迎使用 樹義總務處全能管理系統</h3>
+              <h3 style="color: var(--primary-dark); font-size: 22px; font-weight: 900; margin-bottom: 6px;">歡迎使用
+                樹義總務處全能管理系統</h3>
               <p style="color: var(--text-muted); font-size: 13px;" id="dashboard-date-str">請開始您的工作！</p>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
               <button class="btn btn-primary" onclick="switchView('table')" style="font-weight:700;">📋 所有任務清單</button>
               <button class="btn btn-secondary" onclick="switchView('board')" style="font-weight:700;">📊 看板視圖</button>
-              <button class="btn btn-secondary" onclick="switchView('timeline')" style="font-weight:700;">📅 時間軸視圖</button>
-              <button class="btn btn-secondary" onclick="switchView('calendar')" style="font-weight:700;">📆 任務行事曆</button>
-              <button class="btn btn-primary" onclick="openTaskModal()" style="font-weight: 700; background: var(--accent); border-color: var(--accent);">➕ 新增工作任務</button>
+              <button class="btn btn-secondary" onclick="switchView('timeline')" style="font-weight:700;">📅
+                時間軸視圖</button>
+              <button class="btn btn-secondary" onclick="switchView('calendar')" style="font-weight:700;">📆
+                任務行事曆</button>
+              <button class="btn btn-primary" onclick="openTaskModal()"
+                style="font-weight: 700; background: var(--accent); border-color: var(--accent);">➕ 新增工作任務</button>
             </div>
           </div>
 
           <!-- 四個快捷狀態卡 -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
-            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 22px;">📋</div>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            <div class="table-card"
+              style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                📋</div>
               <div>
                 <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">任務完成率</div>
                 <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-task-rate">0%</div>
               </div>
             </div>
-            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px;">🔑</div>
+            <div class="table-card"
+              style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                🔑</div>
               <div>
                 <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">今日借出鑰匙</div>
                 <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-key-lent">0 支</div>
               </div>
             </div>
-            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 22px;">❄️</div>
+            <div class="table-card"
+              style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                ❄️</div>
               <div>
                 <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">冷氣卡已收回</div>
-                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-ac-rate">0 / 60 班</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-ac-rate">0 / 60 班
+                </div>
               </div>
             </div>
-            <div class="table-card" style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background: #f3e8ff; color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 22px;">📅</div>
+            <div class="table-card"
+              style="padding: 20px; display: flex; align-items: center; gap: 16px; background: white;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 50%; background: #f3e8ff; color: #8b5cf6; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+                📅</div>
               <div>
                 <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">已排定會議數</div>
-                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-meetings-count">0 場</div>
+                <div style="font-size: 20px; font-weight: 800; color: var(--text-main);" id="dash-meetings-count">0 場
+                </div>
               </div>
             </div>
           </div>
@@ -2243,9 +2503,13 @@
             <div style="display: flex; flex-direction: column; gap: 24px;">
               <!-- 近期會議日程 -->
               <div class="table-card" style="padding: 20px; min-height: 250px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
-                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">📅 近期會議日程</h4>
-                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('meetings')">會議管理</button>
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4
+                    style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                    📅 近期會議日程</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;"
+                    onclick="switchView('meetings')">會議管理</button>
                 </div>
                 <div id="dash-meetings-list" style="display: flex; flex-direction: column; gap: 12px;">
                   <!-- 動態載入近期會議 -->
@@ -2254,9 +2518,13 @@
 
               <!-- 冷氣卡回收進度 -->
               <div class="table-card" style="padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
-                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">❄️ 冷氣卡回收進度</h4>
-                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('ac')">辦理回收</button>
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4
+                    style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                    ❄️ 冷氣卡回收進度</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;"
+                    onclick="switchView('ac')">辦理回收</button>
                 </div>
                 <div class="progress-section" style="gap: 10px;">
                   <div class="progress-label-wrap">
@@ -2264,7 +2532,9 @@
                     <span class="progress-percentage" id="dash-ac-counts">0 / 60 班</span>
                   </div>
                   <div class="progress-track" style="height: 12px; border-radius: 6px; background: rgba(0,0,0,0.04);">
-                    <div class="progress-bar-fill" id="dash-ac-progress-bar" style="width: 0%; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);"></div>
+                    <div class="progress-bar-fill" id="dash-ac-progress-bar"
+                      style="width: 0%; height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);">
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2274,15 +2544,21 @@
             <div style="display: flex; flex-direction: column; gap: 24px;">
               <!-- 今日值勤動態 -->
               <div class="table-card" style="padding: 20px; min-height: 180px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
-                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">🏢 今日總務值勤與外勤</h4>
-                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('staff-roster')">人員排班</button>
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4
+                    style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                    🏢 今日總務值勤與外勤</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;"
+                    onclick="switchView('staff-roster')">人員排班</button>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <div id="dash-today-duty" style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--primary);">
+                  <div id="dash-today-duty"
+                    style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--primary);">
                     <!-- 今日值班同仁 -->
                   </div>
-                  <div id="dash-today-delivery" style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--accent);">
+                  <div id="dash-today-delivery"
+                    style="padding: 10px 12px; background: #faf8fc; border-radius: 8px; font-size: 13px; border-left: 4px solid var(--accent);">
                     <!-- 今日外勤外送 -->
                   </div>
                 </div>
@@ -2290,9 +2566,13 @@
 
               <!-- 逾期鑰匙/磁扣借用警示 -->
               <div class="table-card" style="padding: 20px; min-height: 140px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
-                  <h4 style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">🔑 逾期未還鑰匙警告</h4>
-                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;" onclick="switchView('key-log')">借還登記</button>
+                <div
+                  style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                  <h4
+                    style="color: var(--primary-dark); font-size: 15px; display: flex; align-items: center; gap: 6px;">
+                    🔑 逾期未還鑰匙警告</h4>
+                  <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px;"
+                    onclick="switchView('key-log')">借還登記</button>
                 </div>
                 <div id="dash-overdue-container" style="font-size: 12px; color: var(--text-muted);">
                   <!-- 逾期列表 -->
@@ -2303,48 +2583,67 @@
 
           <!-- 系統功能說明指引 (Help Guide) -->
           <div class="table-card" style="margin-top: 24px; padding: 24px; background: white;">
-            <div style="border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-              <h3 style="color: var(--primary-dark); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin:0;">
+            <div
+              style="border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+              <h3
+                style="color: var(--primary-dark); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin:0;">
                 💡 樹義總務系統快速操作與功能說明指引
               </h3>
               <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">點擊各區標題展開說明</span>
             </div>
-            
+
             <div style="display: flex; flex-direction: column; gap: 12px;">
               <!-- 1. 任務區 -->
-              <details style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
-                <summary style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+              <details
+                style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
+                <summary
+                  style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
                   <span>📋 任務管理區（清單、看板、時間軸、行事曆）</span>
                   <span style="font-size:12px; opacity:0.7;">▼</span>
                 </summary>
-                <div style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid var(--primary); cursor: default;" onclick="event.stopPropagation()">
-                  <p>• <strong>所有任務(表格)</strong>：系統的核心看板，列出全部總務修繕或採購任務。您可以依負責人、標籤、里程碑進行多重過濾篩選。右上方支援 <strong>匯出/匯入 Excel</strong> 以及 <strong>下載匯入範本</strong>，供大量新增任務使用。</p>
-                  <p>• <strong>看板視圖</strong>：分為「預定 To Do」、「工作中 In Progress」、「完成 Done」三欄。同仁能一目了然各項工作進展。未登入訪客或一般同仁可直接在面板點擊 ✍️ 圖示，手寫簽名完成任務，而無需強制登入。</p>
+                <div
+                  style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid var(--primary); cursor: default;"
+                  onclick="event.stopPropagation()">
+                  <p>• <strong>所有任務(表格)</strong>：系統的核心看板，列出全部總務修繕或採購任務。您可以依負責人、標籤、里程碑進行多重過濾篩選。右上方支援 <strong>匯出/匯入
+                      Excel</strong> 以及 <strong>下載匯入範本</strong>，供大量新增任務使用。</p>
+                  <p>• <strong>看板視圖</strong>：分為「預定 To Do」、「工作中 In Progress」、「完成 Done」三欄。同仁能一目了然各項工作進展。未登入訪客或一般同仁可直接在面板點擊
+                    ✍️ 圖示，手寫簽名完成任務，而無需強制登入。</p>
                   <p>• <strong>時間軸視圖與行事曆</strong>：以甘特圖與日曆形式呈現排程，防止工作重疊，方便主任監督同仁的日程與截止時效。</p>
                 </div>
               </details>
 
               <!-- 2. 業務管理區 -->
-              <details style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
-                <summary style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+              <details
+                style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
+                <summary
+                  style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
                   <span>❄️ 業務管理區（冷氣儲值、鑰匙借還、場地預約、車道eTag）</span>
                   <span style="font-size:12px; opacity:0.7;">▼</span>
                 </summary>
-                <div style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid var(--accent); cursor: default;" onclick="event.stopPropagation()">
-                  <p>• <strong>冷氣儲值與回收</strong>：為維護系統安全，冷氣卡「儲值登記」與「回收保管清單」僅限<strong>主任、組長或幹事</strong>登入狀態下可管理，其他訪客/志工無法瀏覽。</p>
-                  <p>• <strong>鑰匙與磁扣借還</strong>：登載學校各教室、行政辦公室的鑰匙庫存。借用時須輸入借用人與手寫簽名，歸還時系統自動結算。若逾期未歸還，系統首頁的「警告看板」會顯示紅色醒目提醒。</p>
+                <div
+                  style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid var(--accent); cursor: default;"
+                  onclick="event.stopPropagation()">
+                  <p>•
+                    <strong>冷氣儲值與回收</strong>：為維護系統安全，冷氣卡「儲值登記」與「回收保管清單」僅限<strong>主任、組長或幹事</strong>登入狀態下可管理，其他訪客/志工無法瀏覽。
+                  </p>
+                  <p>• <strong>鑰匙與磁扣借還</strong>：登載學校各教室、行政辦公室的鑰匙庫存。借用時須輸入借用人與手寫簽名，歸還時系統自動結算。若逾期未歸還，系統首頁的「警告看板」會顯示紅色醒目提醒。
+                  </p>
                   <p>• <strong>場地預約管理</strong>：登記活動中心、雅舍等校園公共場地。若預約時段衝突，系統將自動阻擋以防止重複預約。</p>
                   <p>• <strong>車道 eTag 管理</strong>：維護校內同仁、志工與家長汽機車車牌的車道門禁權利。支援 Excel 相容的 CSV 檔案批次匯入及下載範例檔功能。</p>
                 </div>
               </details>
 
               <!-- 3. 會議與排班區 -->
-              <details style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
-                <summary style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+              <details
+                style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
+                <summary
+                  style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
                   <span>💼 會議排程與值班排班區</span>
                   <span style="font-size:12px; opacity:0.7;">▼</span>
                 </summary>
-                <div style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid #0284c7; cursor: default;" onclick="event.stopPropagation()">
+                <div
+                  style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid #0284c7; cursor: default;"
+                  onclick="event.stopPropagation()">
                   <p>• <strong>工作會議排程</strong>：記錄總務處內部工作會議時間、地點與出列席人員。支援線上簽到（點擊簽到並手寫簽章）、撰寫會議記錄以及上傳會議現況照片存檔。</p>
                   <p>• <strong>人員排班管理</strong>：分為「月值班排班」與「外送外勤安排」：
                     <br>&nbsp;&nbsp;- <strong>值班排班</strong>：登記當月每日值日同仁，可按月切換及匯出。
@@ -2354,14 +2653,20 @@
               </details>
 
               <!-- 4. 設定與統計專區 -->
-              <details style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
-                <summary style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+              <details
+                style="background:#faf8fc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer;">
+                <summary
+                  style="font-weight: 700; color: var(--primary-dark); font-size: 14px; outline: none; list-style: none; display: flex; align-items: center; justify-content: space-between;">
                   <span>⚙️ 系統設定與績效統計說明</span>
                   <span style="font-size:12px; opacity:0.7;">▼</span>
                 </summary>
-                <div style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid #8b5cf6; cursor: default;" onclick="event.stopPropagation()">
-                  <p>• <strong>績效統計 (Insights)</strong>：累積各負責同仁的「工作量貢獻點數」，點數基於工作標籤權重（輕便任務 = 1點、中型 = 3點、大型 = 5點）。已完成與待辦點數會以長條圖以及下方的明細表即時結算呈現，作為客觀考評標準。</p>
-                  <p>• <strong>基本資料設定</strong>：管理員（主任）登入後可於右上角進入設定，管理「同仁名單與對應權限密碼」、「學期班級清單」、「各處室代號」以及「Google Sheet 雲端同步連結 API」。</p>
+                <div
+                  style="margin-top: 10px; font-size: 13px; color: var(--text-main); line-height: 1.6; padding-left: 10px; border-left: 2px solid #8b5cf6; cursor: default;"
+                  onclick="event.stopPropagation()">
+                  <p>• <strong>績效統計 (Insights)</strong>：累積各負責同仁的「工作量貢獻點數」，點數基於工作標籤權重（輕便任務 = 1點、中型 = 3點、大型 =
+                    5點）。已完成與待辦點數會以長條圖以及下方的明細表即時結算呈現，作為客觀考評標準。</p>
+                  <p>• <strong>基本資料設定</strong>：管理員（主任）登入後可於右上角進入設定，管理「同仁名單與對應權限密碼」、「學期班級清單」、「各處室代號」以及「Google Sheet
+                    雲端同步連結 API」。</p>
                 </div>
               </details>
             </div>
@@ -2371,9 +2676,12 @@
         <!-- 8. 冷氣卡與儲值管理 -->
         <section class="view-pane" id="pane-ac">
           <!-- 子頁籤 -->
-          <div class="settings-tabs" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
-            <button class="settings-tab-btn active" id="ac-tab-btn-topup" onclick="switchAcTab('topup')" style="padding: 10px 16px; font-weight:700;">❄️ 冷氣卡儲值登記</button>
-            <button class="settings-tab-btn" id="ac-tab-btn-checklist" onclick="switchAcTab('checklist')" style="padding: 10px 16px; font-weight:700;">📋 冷氣卡回收保管清單</button>
+          <div class="settings-tabs"
+            style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
+            <button class="settings-tab-btn active" id="ac-tab-btn-topup" onclick="switchAcTab('topup')"
+              style="padding: 10px 16px; font-weight:700;">❄️ 冷氣卡儲值登記</button>
+            <button class="settings-tab-btn" id="ac-tab-btn-checklist" onclick="switchAcTab('checklist')"
+              style="padding: 10px 16px; font-weight:700;">📋 冷氣卡回收保管清單</button>
           </div>
 
           <!-- 子頁籤一：冷氣儲值登記 -->
@@ -2381,16 +2689,21 @@
             <div class="key-log-layout">
               <!-- 左側儲值表單 -->
               <div class="table-card" style="padding:20px;">
-                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">❄️ 快速儲值登記</h3>
+                <h3
+                  style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  ❄️ 快速儲值登記</h3>
                 <form id="ac-topup-form" onsubmit="event.preventDefault();">
-                  
+
                   <div class="form-group">
                     <label class="form-label">使用對象類別 *</label>
                     <div style="display: flex; gap: 20px; margin-top: 6px; margin-bottom: 10px;">
-                      <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-                        <input type="radio" name="ac-target-type" value="class" checked onchange="toggleAcTargetType()"> 班級
+                      <label
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+                        <input type="radio" name="ac-target-type" value="class" checked onchange="toggleAcTargetType()">
+                        班級
                       </label>
-                      <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
+                      <label
+                        style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
                         <input type="radio" name="ac-target-type" value="office" onchange="toggleAcTargetType()"> 行政處室
                       </label>
                     </div>
@@ -2430,18 +2743,22 @@
                       <canvas id="ac-signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
                       <div class="signature-actions">
                         <span style="font-size:11px; color:var(--text-muted);">請在灰色區域手寫簽名</span>
-                        <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearAcSignature()">清除重簽</button>
+                        <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;"
+                          onclick="clearAcSignature()">清除重簽</button>
                       </div>
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="submitAcTopup()">儲值登記提交</button>
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;"
+                    onclick="submitAcTopup()">儲值登記提交</button>
                 </form>
               </div>
 
               <!-- 右側儲值歷史清單 -->
               <div class="table-card" style="padding:20px;">
-                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 儲值登記簿 (歷史紀錄)</h3>
+                <h3
+                  style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  📋 儲值登記簿 (歷史紀錄)</h3>
                 <div style="overflow-x:auto;">
                   <table class="data-table" style="font-size:13px;" id="ac-topup-table">
                     <thead>
@@ -2466,7 +2783,8 @@
           <!-- 子頁籤二：冷氣卡回收保管清單 -->
           <div class="roster-tab-content" id="ac-content-checklist" style="display:none;">
             <div class="table-card" style="padding:20px; margin-bottom: 20px;">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 12px;">
+              <div
+                style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom: 12px;">
                 <h3 style="color:var(--primary-dark); font-size:16px;">📋 全校冷氣卡回收狀況 (共 60 班)</h3>
                 <div class="progress-section" style="width: 300px; gap: 4px; margin: 0;">
                   <div class="progress-label-wrap">
@@ -2492,9 +2810,11 @@
           <div class="key-log-layout">
             <!-- 左側排程表單 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">💼 安排新會議</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                💼 安排新會議</h3>
               <form id="meeting-schedule-form" onsubmit="event.preventDefault();">
-                
+
                 <div class="form-group">
                   <label class="form-label" for="meet-name-select">會議名稱 *</label>
                   <select class="form-control" id="meet-name-select" required>
@@ -2525,13 +2845,16 @@
                   <input type="text" class="form-control" id="meet-location" placeholder="例如：二樓校史室" value="總務處辦公室">
                 </div>
 
-                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitMeetingSchedule()">新增預定日程</button>
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;"
+                  onclick="submitMeetingSchedule()">新增預定日程</button>
               </form>
             </div>
 
             <!-- 右側會議列表 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 已預定會議清單</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                📋 已預定會議清單</h3>
               <div style="overflow-x:auto;">
                 <table class="data-table" style="font-size:13px;" id="meetings-list-table">
                   <thead>
@@ -2580,9 +2903,10 @@
         <!-- 2. 看板視圖 (Board) -->
         <section class="view-pane" id="pane-board">
           <div class="board-grid">
-            
+
             <!-- 待辦事項 -->
-            <div class="board-column" id="col-todo" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'To Do')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="board-column" id="col-todo" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'To Do')"
+              ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
               <div class="board-column-header">
                 <span class="board-column-title">
                   <span style="color:var(--warning)">●</span> 預定 To Do
@@ -2595,7 +2919,8 @@
             </div>
 
             <!-- 進行中 -->
-            <div class="board-column" id="col-progress" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'In Progress')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="board-column" id="col-progress" ondragover="allowDrop(event)"
+              ondrop="handleDrop(event, 'In Progress')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
               <div class="board-column-header">
                 <span class="board-column-title">
                   <span style="color:#3b82f6">●</span> 工作中 In Progress
@@ -2608,7 +2933,8 @@
             </div>
 
             <!-- 已完成 -->
-            <div class="board-column" id="col-done" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'Done')" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            <div class="board-column" id="col-done" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'Done')"
+              ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
               <div class="board-column-header">
                 <span class="board-column-title">
                   <span style="color:var(--success)">●</span> 完成 Done
@@ -2629,8 +2955,10 @@
             <div class="timeline-header-info">
               <span id="timeline-current-month" style="font-weight: 700; font-size: 16px;">2026 年 7 月</span>
               <div class="timeline-nav">
-                <button class="btn btn-secondary" onclick="changeTimelineMonth(-1)" style="padding: 6px 12px; font-size:12px;">◀ 上個月</button>
-                <button class="btn btn-secondary" onclick="changeTimelineMonth(1)" style="padding: 6px 12px; font-size:12px;">下個月 ▶</button>
+                <button class="btn btn-secondary" onclick="changeTimelineMonth(-1)"
+                  style="padding: 6px 12px; font-size:12px;">◀ 上個月</button>
+                <button class="btn btn-secondary" onclick="changeTimelineMonth(1)"
+                  style="padding: 6px 12px; font-size:12px;">下個月 ▶</button>
               </div>
             </div>
             <div class="timeline-wrapper">
@@ -2644,31 +2972,40 @@
         <!-- 4. 任務行事曆 (Calendar) -->
         <section class="view-pane" id="pane-calendar">
           <div class="calendar-card">
-            
+
             <div class="calendar-header-controls">
               <div style="display:flex; align-items:center; gap:16px;">
-                <span id="calendar-view-indicator" style="font-weight: 700; font-size: 18px; color: #652b48;">2026 年 7 月</span>
-                
+                <span id="calendar-view-indicator" style="font-weight: 700; font-size: 18px; color: #652b48;">2026 年 7
+                  月</span>
+
                 <div class="timeline-nav" style="margin:0;">
-                  <button class="btn btn-secondary" onclick="navigateCalendar(-1)" style="padding: 6px 12px; font-size:12px;">◀ 上一個</button>
-                  <button class="btn btn-secondary" onclick="navigateCalendar(0)" style="padding: 6px 12px; font-size:12px;">今天</button>
-                  <button class="btn btn-secondary" onclick="navigateCalendar(1)" style="padding: 6px 12px; font-size:12px;">下一個 ▶</button>
+                  <button class="btn btn-secondary" onclick="navigateCalendar(-1)"
+                    style="padding: 6px 12px; font-size:12px;">◀ 上一個</button>
+                  <button class="btn btn-secondary" onclick="navigateCalendar(0)"
+                    style="padding: 6px 12px; font-size:12px;">今天</button>
+                  <button class="btn btn-secondary" onclick="navigateCalendar(1)"
+                    style="padding: 6px 12px; font-size:12px;">下一個 ▶</button>
                 </div>
               </div>
 
               <div style="display:flex; align-items:center; gap:12px;">
-                <select class="filter-select" id="calendar-filter-assignee" style="border-color:var(--primary); font-weight:500; height: 34px;">
+                <select class="filter-select" id="calendar-filter-assignee"
+                  style="border-color:var(--primary); font-weight:500; height: 34px;">
                   <option value="">所有負責人</option>
                 </select>
-                
-                <select class="filter-select" id="calendar-filter-label" style="border-color:var(--primary); font-weight:500; height: 34px;">
+
+                <select class="filter-select" id="calendar-filter-label"
+                  style="border-color:var(--primary); font-weight:500; height: 34px;">
                   <option value="">所有種類</option>
                 </select>
 
                 <div class="chart-controls" style="margin:0; height: 34px; align-items: center; display: flex;">
-                  <button class="chart-control-btn active" id="cal-mode-month" onclick="changeCalendarViewMode('month')" style="height: 26px; line-height: 1;">月檢視</button>
-                  <button class="chart-control-btn" id="cal-mode-week" onclick="changeCalendarViewMode('week')" style="height: 26px; line-height: 1;">週檢視</button>
-                  <button class="chart-control-btn" id="cal-mode-day" onclick="changeCalendarViewMode('day')" style="height: 26px; line-height: 1;">日檢視</button>
+                  <button class="chart-control-btn active" id="cal-mode-month" onclick="changeCalendarViewMode('month')"
+                    style="height: 26px; line-height: 1;">月檢視</button>
+                  <button class="chart-control-btn" id="cal-mode-week" onclick="changeCalendarViewMode('week')"
+                    style="height: 26px; line-height: 1;">週檢視</button>
+                  <button class="chart-control-btn" id="cal-mode-day" onclick="changeCalendarViewMode('day')"
+                    style="height: 26px; line-height: 1;">日檢視</button>
                 </div>
               </div>
             </div>
@@ -2682,18 +3019,22 @@
         <!-- 5. 鑰匙與磁扣借還登記 (Key Log View) -->
         <section class="view-pane" id="pane-key-log">
           <!-- 逾期未歸還警告橫幅 -->
-          <div id="key-overdue-banner" style="display:none; background: var(--danger-light); border: 1px solid var(--danger); border-radius: var(--radius-sm); padding: 12px 20px; margin-bottom: 20px; color: var(--danger); font-weight: 700; align-items: center; gap: 12px;">
+          <div id="key-overdue-banner"
+            style="display:none; background: var(--danger-light); border: 1px solid var(--danger); border-radius: var(--radius-sm); padding: 12px 20px; margin-bottom: 20px; color: var(--danger); font-weight: 700; align-items: center; gap: 12px;">
             <span style="font-size: 18px;">⚠️</span>
-            <span>注意：目前有 <span id="overdue-count-text" style="font-size:18px; text-decoration:underline;">0</span> 筆鑰匙/磁扣借用已【逾期跨日未歸還】，請同仁儘速聯絡借用人辦理歸還！</span>
+            <span>注意：目前有 <span id="overdue-count-text" style="font-size:18px; text-decoration:underline;">0</span>
+              筆鑰匙/磁扣借用已【逾期跨日未歸還】，請同仁儘速聯絡借用人辦理歸還！</span>
           </div>
-          
+
           <div class="key-log-layout">
-            
+
             <!-- 左側登記表單 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🔑 快速借出登記</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                🔑 快速借出登記</h3>
               <form id="key-borrow-form" onsubmit="event.preventDefault();">
-                
+
                 <div class="form-group">
                   <label class="form-label" for="key-borrower">使用人姓名 *</label>
                   <input type="text" class="form-control" id="key-borrower" placeholder="請填寫您的姓名 (自簽)" required>
@@ -2719,18 +3060,22 @@
                     <canvas id="signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
                     <div class="signature-actions">
                       <span style="font-size:11px; color:var(--text-muted);">請在灰色區域書寫簽名</span>
-                      <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearSignature()">清除重簽</button>
+                      <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;"
+                        onclick="clearSignature()">清除重簽</button>
                     </div>
                   </div>
                 </div>
 
-                <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="submitKeyBorrow()">登記借出</button>
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:10px;"
+                  onclick="submitKeyBorrow()">登記借出</button>
               </form>
             </div>
 
             <!-- 右側歷史紀錄列表 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 簽收登記簿 (借還歷史紀錄)</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                📋 簽收登記簿 (借還歷史紀錄)</h3>
               <div style="overflow-x:auto;">
                 <table class="data-table" style="font-size:13px;" id="key-logs-table">
                   <thead>
@@ -2757,15 +3102,20 @@
 
         <!-- 車道 eTag 管理 (Lane eTag View) -->
         <section class="view-pane" id="pane-etag">
-          <div style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+          <div
+            style="background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--border); margin-bottom: 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
             <div>
-              <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">🚗 車道 eTag 管理</h3>
+              <h3 style="color: var(--primary-dark); font-size: 20px; font-weight: 900; margin-bottom: 6px;">🚗 車道 eTag
+                管理</h3>
               <p style="color: var(--text-muted); font-size: 13px;">管理同仁、家長與志工的汽機車車牌 eTag 車道通行權限及申報資料。</p>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <input type="file" id="etag-csv-file-input" accept=".csv" style="display:none;" onchange="importEtagCSV(this)">
-              <button class="btn btn-secondary" onclick="downloadEtagCSVSample()" style="font-weight:700;">📄 下載範例檔</button>
-              <button class="btn btn-secondary" onclick="document.getElementById('etag-csv-file-input').click()" style="font-weight:700;">📥 匯入 CSV</button>
+              <input type="file" id="etag-csv-file-input" accept=".csv" style="display:none;"
+                onchange="importEtagCSV(this)">
+              <button class="btn btn-secondary" onclick="downloadEtagCSVSample()" style="font-weight:700;">📄
+                下載範例檔</button>
+              <button class="btn btn-secondary" onclick="document.getElementById('etag-csv-file-input').click()"
+                style="font-weight:700;">📥 匯入 CSV</button>
               <button class="btn btn-primary" onclick="openEtagModal()" style="font-weight:700;">+ 新增 eTag 登記</button>
             </div>
           </div>
@@ -2773,8 +3123,9 @@
           <!-- 篩選列 -->
           <div class="card" style="margin-bottom:20px; padding:16px;">
             <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-              <input type="text" class="search-input" id="etag-search-keyword" placeholder="搜尋姓名/車牌..." style="width:200px;" oninput="renderEtagView()">
-              
+              <input type="text" class="search-input" id="etag-search-keyword" placeholder="搜尋姓名/車牌..."
+                style="width:200px;" oninput="renderEtagView()">
+
               <select class="filter-select" id="etag-filter-role" style="height:34px;" onchange="renderEtagView()">
                 <option value="">所有職稱</option>
                 <option value="教師">教師</option>
@@ -2816,12 +3167,14 @@
         <!-- 8. 場地預約 (Venue Reservation View) -->
         <section class="view-pane" id="pane-venue-reserve">
           <div class="key-log-layout">
-            
+
             <!-- 左側預約表單 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🏫 新增場地預約</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                🏫 新增場地預約</h3>
               <form id="venue-reserve-form" onsubmit="event.preventDefault();">
-                
+
                 <div class="form-group">
                   <label class="form-label" for="reserve-venue-select">選擇場地 *</label>
                   <select class="form-control" id="reserve-venue-select" required>
@@ -2870,9 +3223,11 @@
                   </div>
                 </div>
 
-                <div class="form-group" style="margin-top:14px; background:#faf8fc; padding:12px; border-radius:8px; border:1px solid var(--border);">
-                  <label class="form-label" style="color:var(--primary-dark); font-weight:700; margin-bottom:10px;">🛠️ 附屬設備與需求勾選</label>
-                  
+                <div class="form-group"
+                  style="margin-top:14px; background:#faf8fc; padding:12px; border-radius:8px; border:1px solid var(--border);">
+                  <label class="form-label" style="color:var(--primary-dark); font-weight:700; margin-bottom:10px;">🛠️
+                    附屬設備與需求勾選</label>
+
                   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <label style="display:inline-flex; align-items:center; gap:6px; font-size:13px; cursor:pointer;">
                       <input type="checkbox" id="reserve-useAV"> 使用視聽設備
@@ -2889,13 +3244,16 @@
                   </div>
                 </div>
 
-                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitVenueReservation()">送出預約登記</button>
+                <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;"
+                  onclick="submitVenueReservation()">送出預約登記</button>
               </form>
             </div>
 
             <!-- 右側預約紀錄列表 -->
             <div class="table-card" style="padding:20px;">
-              <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 場地預約登記簿</h3>
+              <h3
+                style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                📋 場地預約登記簿</h3>
               <div style="overflow-x:auto;">
                 <table class="data-table" style="font-size:13px;" id="venue-reservations-table">
                   <thead>
@@ -2924,9 +3282,12 @@
         <!-- 9. 人員排班 (Staff Roster View) -->
         <section class="view-pane" id="pane-staff-roster">
           <!-- 子頁籤切換按鈕 -->
-          <div class="settings-tabs" style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
-            <button class="settings-tab-btn active" id="roster-tab-btn-duty" onclick="switchRosterTab('duty')" style="padding: 10px 16px; font-weight:700;">🏢 事務值班排班表</button>
-            <button class="settings-tab-btn" id="roster-tab-btn-delivery" onclick="switchRosterTab('delivery')" style="padding: 10px 16px; font-weight:700;">🛵 外送外勤排班表</button>
+          <div class="settings-tabs"
+            style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0;">
+            <button class="settings-tab-btn active" id="roster-tab-btn-duty" onclick="switchRosterTab('duty')"
+              style="padding: 10px 16px; font-weight:700;">🏢 事務值班排班表</button>
+            <button class="settings-tab-btn" id="roster-tab-btn-delivery" onclick="switchRosterTab('delivery')"
+              style="padding: 10px 16px; font-weight:700;">🛵 外送外勤排班表</button>
           </div>
 
           <!-- 子頁籤一：事務值班排班 -->
@@ -2934,7 +3295,9 @@
             <div class="key-log-layout">
               <!-- 左側排班表單 -->
               <div class="table-card" style="padding:20px;">
-                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🏢 新增事務值班</h3>
+                <h3
+                  style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  🏢 新增事務值班</h3>
                 <form id="duty-roster-form" onsubmit="event.preventDefault();">
                   <div class="form-group">
                     <label class="form-label" for="duty-date">值班日期 *</label>
@@ -2954,7 +3317,8 @@
                       <option value="下午值班">下午值班</option>
                     </select>
                   </div>
-                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitDutyRoster()">安排值班</button>
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;"
+                    onclick="submitDutyRoster()">安排值班</button>
                 </form>
               </div>
 
@@ -2962,11 +3326,13 @@
               <div style="display:flex; flex-direction:column; gap:20px;">
                 <!-- 月份篩選與統計卡片 -->
                 <div class="table-card" style="padding:20px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
                     <h4 style="color:var(--primary-dark); font-size:14px; margin:0;">📊 值班日數統計</h4>
                     <div style="display:flex; align-items:center; gap:6px;">
                       <label for="duty-filter-month" style="font-size:12px; font-weight:700;">統計月份:</label>
-                      <input type="month" id="duty-filter-month" class="form-control" style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDutyRoster()">
+                      <input type="month" id="duty-filter-month" class="form-control"
+                        style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDutyRoster()">
                     </div>
                   </div>
                   <div id="duty-stats-container" style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -2976,7 +3342,9 @@
 
                 <!-- 歷史值班表 -->
                 <div class="table-card" style="padding:20px; flex-grow:1;">
-                  <h3 style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 月值班人員表</h3>
+                  <h3
+                    style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                    📋 月值班人員表</h3>
                   <div style="overflow-x:auto;">
                     <table class="data-table" style="font-size:13px;" id="duty-roster-table">
                       <thead>
@@ -3002,7 +3370,9 @@
             <div class="key-log-layout">
               <!-- 左側外送表單 -->
               <div class="table-card" style="padding:20px;">
-                <h3 style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">🛵 新增外送外勤安排</h3>
+                <h3
+                  style="color:var(--primary-dark); margin-bottom:16px; font-size:16px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                  🛵 新增外送外勤安排</h3>
                 <form id="delivery-roster-form" onsubmit="event.preventDefault();">
                   <div class="form-group">
                     <label class="form-label" for="delivery-date">外送日期 *</label>
@@ -3018,7 +3388,8 @@
                     <label class="form-label" for="delivery-purpose">外送事由/地點 *</label>
                     <input type="text" class="form-control" id="delivery-purpose" placeholder="例如：送公文至教育局" required>
                   </div>
-                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;" onclick="submitDeliveryRoster()">安排外送</button>
+                  <button type="button" class="btn btn-primary" style="width:100%; margin-top:14px;"
+                    onclick="submitDeliveryRoster()">安排外送</button>
                 </form>
               </div>
 
@@ -3026,11 +3397,13 @@
               <div style="display:flex; flex-direction:column; gap:20px;">
                 <!-- 月份篩選與統計卡片 -->
                 <div class="table-card" style="padding:20px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
+                  <div
+                    style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
                     <h4 style="color:var(--primary-dark); font-size:14px; margin:0;">📊 外送日數統計</h4>
                     <div style="display:flex; align-items:center; gap:6px;">
                       <label for="delivery-filter-month" style="font-size:12px; font-weight:700;">統計月份:</label>
-                      <input type="month" id="delivery-filter-month" class="form-control" style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDeliveryRoster()">
+                      <input type="month" id="delivery-filter-month" class="form-control"
+                        style="width:140px; padding:4px 8px; font-size:12px;" onchange="renderDeliveryRoster()">
                     </div>
                   </div>
                   <div id="delivery-stats-container" style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -3040,7 +3413,9 @@
 
                 <!-- 歷史外送表 -->
                 <div class="table-card" style="padding:20px; flex-grow:1;">
-                  <h3 style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">📋 外送外出人員表</h3>
+                  <h3
+                    style="color:var(--primary-dark); margin-bottom:12px; font-size:15px; border-bottom:2px solid var(--border); padding-bottom:8px;">
+                    📋 外送外出人員表</h3>
                   <div style="overflow-x:auto;">
                     <table class="data-table" style="font-size:13px;" id="delivery-roster-table">
                       <thead>
@@ -3075,11 +3450,13 @@
             <div class="insights-header">
               <h3 style="color:#652b48">累積工作量貢獻統計</h3>
               <div class="chart-controls">
-                <button class="chart-control-btn active" id="chart-mode-done" onclick="toggleChartMode('done')">已完成貢獻點數 (Done Only)</button>
-                <button class="chart-control-btn" id="chart-mode-all" onclick="toggleChartMode('all')">總分配點數 (All Tasks)</button>
+                <button class="chart-control-btn active" id="chart-mode-done" onclick="toggleChartMode('done')">已完成貢獻點數
+                  (Done Only)</button>
+                <button class="chart-control-btn" id="chart-mode-all" onclick="toggleChartMode('all')">總分配點數 (All
+                  Tasks)</button>
               </div>
             </div>
-            
+
             <div class="chart-container" id="insights-chart-container">
               <!-- 動態生成長條圖 -->
             </div>
@@ -3121,23 +3498,34 @@
     <!-- 底部導覽列 (Bottom Navigation Bar) -->
     <nav class="bottom-nav-bar">
       <button class="nav-btn active" data-view="home">
-        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </svg>
         系統首頁
       </button>
       <button class="nav-btn" data-view="table">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+        </svg>
         所有任務
       </button>
       <button class="nav-btn" data-view="board">
-        <svg viewBox="0 0 24 24"><path d="M4 4h4v16H4zm7 0h4v16h-4zm7 0h4v16h-4z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M4 4h4v16H4zm7 0h4v16h-4zm7 0h4v16h-4z" />
+        </svg>
         看板視圖
       </button>
       <button class="nav-btn" data-view="staff-roster">
-        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7zm0 0"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7zm0 0" />
+        </svg>
         同仁排班
       </button>
       <button class="nav-btn" onclick="toggleMobileSidebar()" style="color: var(--primary); font-weight:700;">
-        <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" />
+        </svg>
         更多功能
       </button>
     </nav>
@@ -3155,7 +3543,7 @@
       <div class="modal-body">
         <form id="task-form">
           <input type="hidden" id="task-id">
-          
+
           <div class="form-group">
             <label class="form-label" for="form-title">任務名稱 *</label>
             <input type="text" class="form-control" id="form-title" placeholder="請輸入任務名稱..." required>
@@ -3229,21 +3617,26 @@
 
           <div class="form-group" style="margin-bottom: 16px;">
             <label class="form-label" style="font-weight:700;">完成現場照片 (最多 3 張，選填)</label>
-            <input type="file" id="task-completed-photos-input" accept="image/*" multiple style="display:none;" onchange="handleTaskPhotosSelect(event)">
+            <input type="file" id="task-completed-photos-input" accept="image/*" multiple style="display:none;"
+              onchange="handleTaskPhotosSelect(event)">
             <div style="display:flex; gap:10px; align-items:center; margin-top:6px;">
-              <button type="button" class="btn btn-secondary" style="padding:6px 12px; font-size:12px;" onclick="document.getElementById('task-completed-photos-input').click()">選擇照片...</button>
+              <button type="button" class="btn btn-secondary" style="padding:6px 12px; font-size:12px;"
+                onclick="document.getElementById('task-completed-photos-input').click()">選擇照片...</button>
               <span id="task-photos-count-label" style="font-size:12px; color:var(--text-muted);">尚未選擇照片</span>
             </div>
-            <div id="task-photos-preview-container" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;"></div>
+            <div id="task-photos-preview-container" style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            </div>
           </div>
 
           <div class="form-group">
             <label class="form-label" style="font-weight:700;">執行人/完成人簽名 (必填) *</label>
             <div class="signature-pad-wrapper">
-              <canvas id="task-signature-canvas" class="signature-canvas" width="380" height="130" style="background:#fafafc; border: 1px solid var(--border); border-radius: 6px; cursor: crosshair; display:block;"></canvas>
+              <canvas id="task-signature-canvas" class="signature-canvas" width="380" height="130"
+                style="background:#fafafc; border: 1px solid var(--border); border-radius: 6px; cursor: crosshair; display:block;"></canvas>
               <div class="signature-actions">
                 <span style="font-size:11px; color:var(--text-muted);">請在上方灰色區域書寫簽名</span>
-                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearTaskSignature()">清除重簽</button>
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;"
+                  onclick="clearTaskSignature()">清除重簽</button>
               </div>
             </div>
           </div>
@@ -3271,7 +3664,7 @@
       <div class="modal-body">
         <form id="etag-form" onsubmit="event.preventDefault();">
           <input type="hidden" id="etag-id">
-          
+
           <div class="form-group" style="margin-bottom: 12px;">
             <label class="form-label" for="etag-name">姓名 *</label>
             <input type="text" class="form-control" id="etag-name" required placeholder="例如：林組員">
@@ -3320,10 +3713,11 @@
         <button class="modal-close" onclick="closeSettingsModal()">×</button>
       </div>
       <div class="modal-body">
-        
+
         <!-- 分頁頁籤 -->
         <div class="settings-tabs" style="flex-wrap: wrap; gap: 6px;">
-          <button class="settings-tab-btn active" id="tab-btn-staff" onclick="switchSettingsTab('staff')">👥 事務人員</button>
+          <button class="settings-tab-btn active" id="tab-btn-staff" onclick="switchSettingsTab('staff')">👥
+            事務人員</button>
           <button class="settings-tab-btn" id="tab-btn-classes" onclick="switchSettingsTab('classes')">🏫 班級與處室</button>
           <button class="settings-tab-btn" id="tab-btn-venues" onclick="switchSettingsTab('venues')">📍 場地與堂號</button>
           <button class="settings-tab-btn" id="tab-btn-keys" onclick="switchSettingsTab('keys')">🔑 鑰匙與磁扣</button>
@@ -3335,7 +3729,9 @@
         <div class="settings-tab-content active" id="tab-content-staff">
           <div style="margin-bottom: 20px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">👥 總務處事務同仁名單</h4>
-            <div id="settings-assignees-list" style="max-height:160px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div id="settings-assignees-list"
+              style="max-height:160px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-assignee-name" placeholder="例如：林組員" style="flex:1;">
               <select class="form-control" id="new-assignee-role" style="width: 100px;">
@@ -3345,7 +3741,8 @@
                 <option value="職工">職工</option>
                 <option value="志工">志工</option>
               </select>
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addAssigneeSetting()">新增同仁</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addAssigneeSetting()">新增同仁</button>
             </div>
           </div>
         </div>
@@ -3356,33 +3753,44 @@
           <div style="margin-bottom: 20px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <h4 style="color:var(--primary-dark); font-size:13px; margin:0;">🏫 班級清單</h4>
-              <button class="btn btn-secondary" style="padding:4px 10px; font-size:11px; border-color:var(--primary); color:var(--primary-dark);" onclick="generateDefaultClassesSetting()">一鍵產生 60 班 (1-6年級各10班)</button>
+              <button class="btn btn-secondary"
+                style="padding:4px 10px; font-size:11px; border-color:var(--primary); color:var(--primary-dark);"
+                onclick="generateDefaultClassesSetting()">一鍵產生 60 班 (1-6年級各10班)</button>
             </div>
-            <div id="settings-classes-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+            <div id="settings-classes-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-class-code" placeholder="手動輸入班級代碼 (例如：111)">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addClassSetting()">新增班級</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addClassSetting()">新增班級</button>
             </div>
           </div>
           <!-- 處室 -->
           <div style="margin-bottom: 20px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏢 行政處室清單</h4>
-            <div id="settings-offices-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div id="settings-offices-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-office-name" placeholder="例如：校長室">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addOfficeSetting()">新增處室</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addOfficeSetting()">新增處室</button>
             </div>
           </div>
           <!-- 科任教室與堂號對應 -->
           <div>
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏫 科任教室名稱與堂號對應</h4>
-            <div id="settings-subject-classrooms-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div id="settings-subject-classrooms-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-subject-classroom-name" placeholder="例如：語言教室一">
               <select class="form-control" id="new-subject-classroom-hall" style="width: 130px;">
                 <!-- 動態載入堂號 -->
               </select>
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addSubjectClassroomSetting()">新增教室</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addSubjectClassroomSetting()">新增教室</button>
             </div>
           </div>
         </div>
@@ -3392,28 +3800,37 @@
           <!-- 場地 -->
           <div style="margin-bottom: 20px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📍 可預約場地清單</h4>
-            <div id="settings-venues-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div id="settings-venues-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-venue-name" placeholder="例如：創客教室">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addVenueInventorySetting()">新增場地</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addVenueInventorySetting()">新增場地</button>
             </div>
           </div>
           <!-- 堂號 (節次) -->
           <div style="margin-bottom: 20px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">⏰ 預約時段/堂號設定</h4>
-            <div id="settings-periods-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;"></div>
+            <div id="settings-periods-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; display:flex; flex-direction:column; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-period-name" placeholder="例如：第八節">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addPeriodSetting()">新增堂號</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addPeriodSetting()">新增堂號</button>
             </div>
           </div>
           <!-- 教室堂號 (62古風堂號) -->
           <div>
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏛️ 教室古風堂號清單 (62個堂號)</h4>
-            <div id="settings-halls-list" style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;"></div>
+            <div id="settings-halls-list"
+              style="max-height:120px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff; font-size:12px; display:flex; flex-wrap:wrap; gap:6px;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-hall-name" placeholder="例如：解梁堂">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addHallSetting()">新增堂號</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addHallSetting()">新增堂號</button>
             </div>
           </div>
         </div>
@@ -3422,17 +3839,21 @@
         <div class="settings-tab-content" id="tab-content-keys">
           <div style="margin-bottom: 16px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🔑 目前庫存清單</h4>
-            <div id="settings-keys-list" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;"></div>
+            <div id="settings-keys-list"
+              style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; border-radius: 6px; background: #fff;">
+            </div>
           </div>
           <div style="background:#faf8fc; border:1px solid var(--border); padding:12px; border-radius:8px;">
-            <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增鑰匙 / 磁扣項目</h5>
+            <h5 style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--primary-dark);">+ 新增鑰匙 / 磁扣項目
+            </h5>
             <div style="display:flex; gap:8px;">
               <input type="text" class="form-control" id="new-key-name" placeholder="名稱 (例如：校史室鑰匙)">
               <select class="form-control" id="new-key-type" style="width: 100px;">
                 <option value="鑰匙">鑰匙</option>
                 <option value="磁扣">磁扣</option>
               </select>
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addKeyInventorySetting()">新增</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addKeyInventorySetting()">新增</button>
             </div>
           </div>
         </div>
@@ -3442,7 +3863,9 @@
           <!-- 標籤與權重 -->
           <div style="margin-bottom: 20px;">
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🏷️ 任務分類與權重設定</h4>
-            <div id="settings-labels-list" style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;"></div>
+            <div id="settings-labels-list"
+              style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-label-name" placeholder="例如：綠化">
               <select class="form-control" id="new-label-weight" style="width: 100px;">
@@ -3450,16 +3873,20 @@
                 <option value="3">權重: 3</option>
                 <option value="5">權重: 5</option>
               </select>
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addLabelSetting()">新增</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addLabelSetting()">新增</button>
             </div>
           </div>
           <!-- 里程碑 -->
           <div>
             <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">🎯 里程碑 (年度專案)</h4>
-            <div id="settings-milestones-list" style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;"></div>
+            <div id="settings-milestones-list"
+              style="max-height:110px; overflow-y:auto; border:1px solid var(--border); padding:8px; border-radius:6px; background:#fff;">
+            </div>
             <div style="display:flex; gap:8px; margin-top:8px;">
               <input type="text" class="form-control" id="new-milestone-name" placeholder="例如：校慶籌備">
-              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="addMilestoneSetting()">新增</button>
+              <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+                onclick="addMilestoneSetting()">新增</button>
             </div>
           </div>
         </div>
@@ -3468,8 +3895,10 @@
         <div class="settings-tab-content" id="tab-content-cloud">
           <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📊 Google Sheet 雲端試算表 API 網址</h4>
           <div style="display:flex; gap:8px;">
-            <input type="text" class="form-control" id="settings-gsheet-url" placeholder="貼上您的 Google Apps Script 網頁應用程式網址">
-            <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
+            <input type="text" class="form-control" id="settings-gsheet-url"
+              placeholder="貼上您的 Google Apps Script 網頁應用程式網址">
+            <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;"
+              onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
           </div>
           <div style="font-size:11px; color:var(--text-muted); margin-top:6px; line-height: 1.4;">
             儲存後系統將以此雲端試算表作為資料同步來源。清空則切換回本地資料庫。
@@ -3491,14 +3920,16 @@
         <button class="modal-close" onclick="closeAcCardModal()">×</button>
       </div>
       <div class="modal-body">
-        <div style="margin-bottom:12px; font-weight:700; font-size: 16px; color: var(--primary-dark);" id="ac-card-class-display">班級：101</div>
+        <div style="margin-bottom:12px; font-weight:700; font-size: 16px; color: var(--primary-dark);"
+          id="ac-card-class-display">班級：101</div>
         <div class="form-group">
           <label class="form-label">收回簽收手寫簽章 *</label>
           <div class="signature-pad-wrapper">
             <canvas id="ac-card-signature-canvas" class="signature-canvas" width="320" height="130"></canvas>
             <div class="signature-actions">
               <span style="font-size:11px; color:var(--text-muted);">請在灰色區域手寫簽章</span>
-              <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="clearAcCardSignature()">清除重簽</button>
+              <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;"
+                onclick="clearAcCardSignature()">清除重簽</button>
             </div>
           </div>
         </div>
@@ -3514,7 +3945,9 @@
   <div class="modal-overlay" id="signature-preview-modal" onclick="closeSignaturePreview()">
     <div class="modal-box" style="width: 440px; text-align: center; padding: 24px;" onclick="event.stopPropagation();">
       <h3 style="color:var(--primary-dark); margin-bottom:14px;">電子簽章檢視</h3>
-      <img id="signature-big-image" style="max-width: 100%; border: 1px solid var(--border); border-radius:8px; background:#fff; padding:10px;" src="">
+      <img id="signature-big-image"
+        style="max-width: 100%; border: 1px solid var(--border); border-radius:8px; background:#fff; padding:10px;"
+        src="">
       <div style="margin-top: 14px;">
         <button class="btn btn-primary" onclick="closeSignaturePreview()">關閉</button>
       </div>
@@ -3530,12 +3963,12 @@
   <script>
     // 預設單機模式下備用的初始資料集
     const DEFAULT_ASSIGNEES = ["陳組長", "林幹事", "張助理", "黃主任", "李志工"];
-    
+
     const DEFAULT_STAFF_ROLES = [
       { name: "陳組長", role: "組長", password: "1234" },
       { name: "林幹事", role: "職工", password: "1234" },
       { name: "張助理", role: "職工", password: "1234" },
-      { name: "黃主任", "role": "主任", password: "1234" },
+      { name: "黃主任", role: "主任", password: "1234" },
       { name: "李志工", role: "志工", password: "1234" }
     ];
 
@@ -3581,14 +4014,14 @@
       { id: "etag-1", name: "王教師", motorPlate: "ABC-123", carPlate: "AA-1234", role: "教師", semester: "115學年度" },
       { id: "etag-2", name: "林工友", motorPlate: "DEF-456", carPlate: "BB-5678", role: "職工", semester: "115學年度" }
     ];
-    
+
     const DEFAULT_LABELS = [
       { name: "修繕", weight: 5 },
       { name: "採購", weight: 3 },
       { name: "行政", weight: 1 },
       { name: "安全", weight: 3 }
     ];
-    
+
     const DEFAULT_MILESTONES = [
       "115學年度暑期校園修繕",
       "辦公設備汰舊換新",
@@ -3637,7 +4070,7 @@
     let labels = [];
     let milestones = [];
     let tasks = [];
-    
+
     // 鑰匙與磁扣相關變數
     let keyInventory = [];
     let keyLogs = [];
@@ -3659,7 +4092,7 @@
     let currentSortField = 'dueDate';
     let currentSortOrder = 'asc';
     let currentChartMode = 'done';
-    
+
     // 時間軸當前渲染年月
     let timelineYear = 2026;
     let timelineMonth = 7;
@@ -3677,7 +4110,7 @@
     let meetings = [];
     let activeAcTab = 'topup';
     let currentSigningClass = '';
-    
+
     // 新增角色與科任堂號對應變數
     let staffRoles = [];
     let halls = [];
@@ -3755,7 +4188,7 @@
       const filtered = getFilteredTasks();
 
       // 根據不同視圖進行渲染
-      switch(activeView) {
+      switch (activeView) {
         case 'home':
           renderHomeView();
           break;
@@ -3876,7 +4309,7 @@
           } else {
             const savedClasses = localStorage.getItem('ga_classes');
             if (savedClasses) {
-              try { classes = JSON.parse(savedClasses); } catch(e) { classes = []; }
+              try { classes = JSON.parse(savedClasses); } catch (e) { classes = []; }
             }
             if (!Array.isArray(classes) || classes.length === 0) {
               classes = [];
@@ -3893,7 +4326,7 @@
             offices = gOffices;
           } else {
             const savedOffices = localStorage.getItem('ga_offices');
-            try { offices = savedOffices ? JSON.parse(savedOffices) : ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"]; } catch(e) { offices = ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"]; }
+            try { offices = savedOffices ? JSON.parse(savedOffices) : ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"]; } catch (e) { offices = ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"]; }
           }
 
           const gPeriods = results[12];
@@ -3901,7 +4334,7 @@
             periods = gPeriods;
           } else {
             const savedPeriods = localStorage.getItem('ga_periods');
-            try { periods = savedPeriods ? JSON.parse(savedPeriods) : ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節", "第八節"]; } catch(e) { periods = ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節", "第八節"]; }
+            try { periods = savedPeriods ? JSON.parse(savedPeriods) : ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節", "第八節"]; } catch (e) { periods = ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節", "第八節"]; }
           }
 
           acTopups = Array.isArray(results[13]) ? results[13] : [];
@@ -4018,7 +4451,7 @@
         try {
           const tasksRes = await fetch('/api/tasks');
           tasks = await tasksRes.json();
-          
+
           const keysRes = await fetch('/api/keys');
           const keysData = await keysRes.json();
           keyInventory = keysData.inventory;
@@ -4041,7 +4474,7 @@
           acCards = await acCardsRes.json();
           const meetingsRes = await fetch('/api/meetings');
           meetings = await meetingsRes.json();
-           const auditRes = await fetch('/api/audit-logs');
+          const auditRes = await fetch('/api/audit-logs');
           auditLogs = await auditRes.json();
           const etagsRes = await fetch('/api/etags');
           etags = await etagsRes.json();
@@ -4292,8 +4725,8 @@
 
     async function logSystemAction(actionStr) {
       const now = new Date();
-      const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-      
+      const nowStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+
       const payload = {
         user: currentUser || "系統",
         action: actionStr,
@@ -4339,11 +4772,11 @@
             await fetch('/api/config', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json; charset=utf-8' },
-              body: JSON.stringify({ 
-                assignees: DEFAULT_ASSIGNEES, 
-                labels: DEFAULT_LABELS, 
+              body: JSON.stringify({
+                assignees: DEFAULT_ASSIGNEES,
+                labels: DEFAULT_LABELS,
                 milestones: DEFAULT_MILESTONES,
-                classes: Array.from({length: 6}, (_, g) => Array.from({length: 10}, (_, r) => `${g+1}${(r+1).toString().padStart(2, '0')}`)).flat(),
+                classes: Array.from({ length: 6 }, (_, g) => Array.from({ length: 10 }, (_, r) => `${g + 1}${(r + 1).toString().padStart(2, '0')}`)).flat(),
                 offices: ["教務處", "學務處", "總務處", "輔導室", "人事室", "會計室", "校長室"],
                 periods: ["早修", "第一節", "第二節", "第三節", "第四節", "午休", "第五節", "第六節", "第七節"],
                 staffRoles: DEFAULT_STAFF_ROLES,
@@ -4358,7 +4791,7 @@
             alert("後端重設資料失敗！");
           }
         }
-        
+
         localStorage.removeItem('ga_tasks');
         localStorage.removeItem('ga_assignees');
         localStorage.removeItem('ga_labels');
@@ -4396,17 +4829,17 @@
           const targetBtn = e.currentTarget;
           const view = targetBtn.dataset.view;
           if (!view) return;
-          
+
           document.querySelectorAll('.nav-btn').forEach(b => {
             b.classList.toggle('active', b.dataset.view === view);
           });
-          
+
           closeMobileSidebar();
-          
+
           activeView = targetBtn.dataset.view;
-          
+
           let viewTitle = "";
-          switch(activeView) {
+          switch (activeView) {
             case 'home': viewTitle = "🏠 樹義總務處系統首頁"; break;
             case 'table': viewTitle = "所有任務 (表格)"; break;
             case 'board': viewTitle = "看板視圖 (狀態)"; break;
@@ -4424,7 +4857,7 @@
             case 'admin': viewTitle = "🛡️ 樹義總務處系統管理員專區"; break;
           }
           document.getElementById('current-view-title').innerText = viewTitle;
-          
+
           renderActiveView();
         });
       });
@@ -4527,6 +4960,7 @@
     function showLoginOverlay() {
       const loginOverlay = document.getElementById('login-overlay');
       if (loginOverlay) loginOverlay.style.display = 'flex';
+      populateLoginUserSelect(); // 每次開啟登入畫面都重新填充帳號清單
       const passInput = document.getElementById('login-password-input');
       if (passInput) {
         passInput.value = '';
@@ -4552,7 +4986,7 @@
 
     function populateGlobalUserSelect() {
       populateLoginUserSelect();
-      
+
       const uName = document.getElementById('current-user-name');
       const uRole = document.getElementById('current-user-role');
       if (uName) uName.innerText = currentUser || '訪客 (未登入)';
@@ -4598,7 +5032,7 @@
       const btnLogout = document.getElementById('btn-logout');
 
       // 右上角用戶狀態元素
-      const headerAvatar   = document.getElementById('header-avatar');
+      const headerAvatar = document.getElementById('header-avatar');
       const headerUserName = document.getElementById('header-user-name');
       const headerUserRole = document.getElementById('header-user-role');
 
@@ -4612,7 +5046,7 @@
         if (btnLogout) btnLogout.style.display = 'none';
 
         // 右上角：顯示訪客
-        if (headerAvatar)   { headerAvatar.innerText = '訪'; headerAvatar.style.backgroundImage = 'none'; }
+        if (headerAvatar) { headerAvatar.innerText = '訪'; headerAvatar.style.backgroundImage = 'none'; }
         if (headerUserName) headerUserName.innerText = '訪客 (未登入)';
         if (headerUserRole) { headerUserRole.innerText = '未登入'; headerUserRole.style.background = '#6b7280'; }
 
@@ -4656,15 +5090,15 @@
       const userSelect = document.getElementById('login-user-select');
       const passInput = document.getElementById('login-password-input');
       const errorMsg = document.getElementById('login-error-msg');
-      
+
       if (!userSelect || !passInput) return;
-      
+
       const username = userSelect.value;
       const enteredPass = passInput.value;
-      
+
       const matchedStaff = staffRoles.find(r => r.name === username);
       const correctPass = matchedStaff ? (matchedStaff.password || "1234") : "1234";
-      
+
       if (enteredPass === correctPass) {
         // 驗證成功
         localStorage.setItem('ga_isLoggedIn', 'true');
@@ -4672,15 +5106,15 @@
         currentUser = username;
         currentUserRole = matchedStaff ? matchedStaff.role : '職工';
         localStorage.setItem('ga_currentUserRole', currentUserRole);
-        
+
         if (errorMsg) errorMsg.style.display = 'none';
         passInput.value = '';
-        
+
         // 進入系統
         checkLoginState();
         renderActiveView();
         updateGlobalStats();
-        
+
         // 紀錄日誌
         logSystemAction(`同仁登入：登入了系統 (身分：${currentUserRole})`);
       } else {
@@ -4696,19 +5130,19 @@
 
     async function handleLogout() {
       if (!confirm("確定要登出《樹義》總務處管理系統嗎？")) return;
-      
+
       await logSystemAction(`同仁登出：安全登出了系統`);
-      
+
       localStorage.removeItem('ga_isLoggedIn');
       localStorage.removeItem('ga_currentUser');
       localStorage.removeItem('ga_currentUserRole');
-      
+
       // 重置登入密碼輸入框
       const passInput = document.getElementById('login-password-input');
       if (passInput) passInput.value = '';
       const errorMsg = document.getElementById('login-error-msg');
       if (errorMsg) errorMsg.style.display = 'none';
-      
+
       // 切換回首頁
       activeView = 'home';
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -4724,7 +5158,7 @@
       const passInput = document.getElementById('login-password-input');
       const btn = document.getElementById('btn-toggle-login-pass');
       if (!passInput || !btn) return;
-      
+
       if (passInput.type === 'password') {
         passInput.type = 'text';
         btn.innerText = '🔒';
@@ -4795,7 +5229,7 @@
             const canvas = document.createElement('canvas');
             let width = img.width;
             let height = img.height;
-            
+
             // 下修最大解析度
             const maxDimension = 1600;
             if (width > maxDimension || height > maxDimension) {
@@ -4807,15 +5241,15 @@
                 height = maxDimension;
               }
             }
-            
+
             canvas.width = width;
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            
+
             let quality = 0.85;
             let dataUrl = canvas.toDataURL('image/jpeg', quality);
-            
+
             // 逐步壓縮直至符合 1.5MB 限額
             while (dataUrl.length * 0.75 > maxBytes && quality > 0.15) {
               quality -= 0.1;
@@ -4954,12 +5388,12 @@
       const rect = taskSigCanvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       if (!hasTaskCanvasBeenDrawnOn) {
         taskSigCtx.clearRect(0, 0, taskSigCanvas.width, taskSigCanvas.height);
         hasTaskCanvasBeenDrawnOn = true;
       }
-      
+
       taskSigCtx.beginPath();
       taskSigCtx.moveTo(x, y);
     }
@@ -4999,7 +5433,7 @@
       }
 
       document.getElementById('task-signature-modal').classList.add('active');
-      
+
       setTimeout(() => {
         initTaskSignatureCanvas();
         renderTaskPhotosPreview();
@@ -5138,13 +5572,13 @@
       const rect = sigCanvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       // 如果第一次下筆，清除灰色底字
       if (!hasCanvasBeenDrawnOn) {
         sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
         hasCanvasBeenDrawnOn = true;
       }
-      
+
       sigCtx.beginPath();
       sigCtx.moveTo(x, y);
     }
@@ -5311,7 +5745,7 @@
       const total = tasks.length;
       const done = tasks.filter(t => t.status === 'Done').length;
       const rate = total > 0 ? Math.round((done / total) * 100) : 0;
-      
+
       let totalPoints = 0;
       tasks.forEach(t => {
         if (t.status === 'Done') {
@@ -5336,10 +5770,10 @@
       filteredTasks.sort((a, b) => {
         let valA = a[currentSortField] || "";
         let valB = b[currentSortField] || "";
-        
+
         if (typeof valA === 'string') {
-          return currentSortOrder === 'asc' 
-            ? valA.localeCompare(valB, 'zh-TW') 
+          return currentSortOrder === 'asc'
+            ? valA.localeCompare(valB, 'zh-TW')
             : valB.localeCompare(valA, 'zh-TW');
         }
         return currentSortOrder === 'asc' ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
@@ -5450,7 +5884,7 @@
 
       filteredTasks.forEach(task => {
         const isDone = task.status === 'Done';
-        
+
         let sigThumbHTML = '';
         if (isDone && task.signature) {
           sigThumbHTML = `
@@ -5531,7 +5965,7 @@
       container.style.gridTemplateColumns = `130px repeat(${daysInMonth}, 50px)`;
 
       container.innerHTML += `<div class="timeline-cell header" style="position:sticky; left:0; z-index:3; border-right:2px solid var(--border);">人員 / 日期</div>`;
-      
+
       const today = new Date();
       const isCurrentMonthYear = today.getFullYear() === timelineYear && (today.getMonth() + 1) === timelineMonth;
 
@@ -5546,7 +5980,7 @@
       }
 
       const renderAssignees = assignees.length > 0 ? assignees : ["未分派"];
-      
+
       renderAssignees.forEach(assignee => {
         container.innerHTML += `
           <div class="timeline-cell timeline-row-label">
@@ -5563,13 +5997,13 @@
         const assigneeTasks = filteredTasks.filter(t => (t.assignee || "未分派") === assignee);
         const rowContainer = document.getElementById(rowId);
         const tracks = [];
-        
+
         assigneeTasks.forEach(task => {
           if (!task.startDate || !task.dueDate) return;
 
           const taskStart = new Date(task.startDate);
           const taskDue = new Date(task.dueDate);
-          
+
           const startLimit = new Date(timelineYear, timelineMonth - 1, 1);
           const endLimit = new Date(timelineYear, timelineMonth, 0);
 
@@ -5621,7 +6055,7 @@
       bar.style.top = `${topOffset}px`;
       bar.title = `${task.title} (${task.startDate} ~ ${task.dueDate})`;
       bar.innerHTML = `<span style="overflow:hidden; text-overflow:ellipsis;">${escapeHTML(task.title)}</span>`;
-      
+
       bar.addEventListener('click', () => openTaskModal(task.id));
       parent.appendChild(bar);
     }
@@ -5698,7 +6132,7 @@
 
         const cell = document.createElement('div');
         cell.className = `calendar-day-cell ${isToday ? 'today-cell' : ''}`;
-        
+
         cell.addEventListener('click', () => {
           openTaskModalWithDates(dateStr, dateStr);
         });
@@ -5801,7 +6235,7 @@
             card.style.padding = '10px';
             card.style.fontSize = '12px';
             card.style.cursor = 'pointer';
-            
+
             card.innerHTML = `
               <div style="font-weight:700; margin-bottom:6px; line-height:1.3;">${escapeHTML(task.title)}</div>
               <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted);">
@@ -5809,7 +6243,7 @@
                 <span class="badge ${stBadge}" style="font-size:9px; padding:1px 6px;">${translateStatus(task.status)}</span>
               </div>
             `;
-            
+
             card.addEventListener('click', () => openTaskModal(task.id));
             col.appendChild(card);
           });
@@ -5922,7 +6356,7 @@
       // 1. 填入可借用的鑰匙下拉選單
       const itemSelect = document.getElementById('key-item-select');
       itemSelect.innerHTML = '<option value="">請選擇鑰匙或磁扣...</option>';
-      
+
       // 僅篩選 Available 的鑰匙
       const availableItems = keyInventory.filter(item => item.status === 'Available');
       availableItems.forEach(item => {
@@ -5942,7 +6376,7 @@
       const m = (today.getMonth() + 1).toString().padStart(2, '0');
       const d = today.getDate().toString().padStart(2, '0');
       const todayStr = `${y}-${m}-${d}`;
-      
+
       let overdueCount = 0;
       keyLogs.forEach(log => {
         if (log.status === 'Borrowed' && log.borrowDate) {
@@ -5975,7 +6409,7 @@
 
       sortedLogs.forEach(log => {
         const isBorrowed = log.status === 'Borrowed';
-        
+
         let isOverdue = false;
         if (isBorrowed && log.borrowDate) {
           const borrowDatePart = log.borrowDate.substring(0, 10);
@@ -5997,7 +6431,7 @@
         } else {
           statusBadge = '<span class="badge badge-done">已歸還</span>';
         }
-        
+
         // 簽章圖檔預覽
         const sigHTML = log.signature ? `<img src="${log.signature}" class="signature-thumbnail" onclick="previewSignature('${log.signature}')" title="點擊放大檢視">` : '<span style="color:var(--text-muted);">無</span>';
 
@@ -6052,7 +6486,7 @@
 
       if (isGoogleSheetMode) {
         const now = new Date();
-        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        const nowStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         const item = keyInventory.find(i => i.id === itemId);
         if (item) item.status = 'Lent';
 
@@ -6080,7 +6514,7 @@
           });
           if (res.ok) {
             const newLog = await res.json();
-            
+
             // 同步本機狀態
             const item = keyInventory.find(i => i.id === itemId);
             if (item) item.status = 'Lent';
@@ -6096,7 +6530,7 @@
       } else {
         // 單機 LocalStorage 備用
         const now = new Date();
-        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        const nowStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         const item = keyInventory.find(i => i.id === itemId);
         if (item) item.status = 'Lent';
 
@@ -6112,7 +6546,7 @@
           status: "Borrowed"
         };
         keyLogs.push(newLog);
-        
+
         localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
         localStorage.setItem('ga_keyLogs', JSON.stringify(keyLogs));
       }
@@ -6136,8 +6570,8 @@
       }
       if (isGoogleSheetMode) {
         const now = new Date();
-        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        
+        const nowStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
         const log = keyLogs.find(l => l.id === logId);
         if (log) {
           log.returnDate = nowStr;
@@ -6172,8 +6606,8 @@
       } else {
         // 單機備用
         const now = new Date();
-        const nowStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        
+        const nowStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
         const log = keyLogs.find(l => l.id === logId);
         if (log) {
           log.returnDate = nowStr;
@@ -6291,7 +6725,7 @@
         return;
       }
 
-      const sortedReservations = [...venueReservations].sort((a,b) => b.date.localeCompare(a.date));
+      const sortedReservations = [...venueReservations].sort((a, b) => b.date.localeCompare(a.date));
 
       sortedReservations.forEach(res => {
         const avBadge = res.useAV ? '<span class="badge badge-progress" style="font-size:10px; padding:2px 6px;">影音</span>' : '<span style="color:#ccc;">-</span>';
@@ -6445,7 +6879,7 @@
               alert("後端取消預約失敗！");
               return;
             }
-          } catch(e) {
+          } catch (e) {
             alert("網路連線失敗，無法取消預約！");
             return;
           }
@@ -6496,13 +6930,13 @@
 
       // 2. 設定篩選月份預設值 (若尚未設定，設為當前月 YYYY-MM)
       const now = new Date();
-      const currentMonthStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}`;
-      
+      const currentMonthStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}`;
+
       const dutyMonthInput = document.getElementById('duty-filter-month');
       if (!dutyMonthInput.value) {
         dutyMonthInput.value = currentMonthStr;
       }
-      
+
       const deliveryMonthInput = document.getElementById('delivery-filter-month');
       if (!deliveryMonthInput.value) {
         deliveryMonthInput.value = currentMonthStr;
@@ -6535,7 +6969,7 @@
       const monthlyDuty = dutyRoster.filter(r => r.date.substring(0, 7) === selectedMonth);
 
       // 依日期排序 (正序)
-      monthlyDuty.sort((a,b) => a.date.localeCompare(b.date));
+      monthlyDuty.sort((a, b) => a.date.localeCompare(b.date));
 
       // 2. 統計各人值班日數
       const stats = {};
@@ -6635,7 +7069,7 @@
             alert("後端登記值班失敗！");
             return;
           }
-        } catch(e) {
+        } catch (e) {
           alert("無法連線後端伺服器登記值班！");
           return;
         }
@@ -6674,7 +7108,7 @@
               alert("後端刪除排班失敗！");
               return;
             }
-          } catch(e) {
+          } catch (e) {
             alert("無法連線後端刪除！");
             return;
           }
@@ -6697,7 +7131,7 @@
       const monthlyDelivery = deliveryRoster.filter(r => r.date.substring(0, 7) === selectedMonth);
 
       // 依日期排序 (正序)
-      monthlyDelivery.sort((a,b) => a.date.localeCompare(b.date));
+      monthlyDelivery.sort((a, b) => a.date.localeCompare(b.date));
 
       // 2. 統計各人外送日數
       const stats = {};
@@ -6786,7 +7220,7 @@
             alert("後端登記外送失敗！");
             return;
           }
-        } catch(e) {
+        } catch (e) {
           alert("無法連線後端伺服器登記外送！");
           return;
         }
@@ -6828,7 +7262,7 @@
               alert("後端刪除外送紀錄失敗！");
               return;
             }
-          } catch(e) {
+          } catch (e) {
             alert("無法連線後端刪除！");
             return;
           }
@@ -6869,7 +7303,7 @@
 
       keyInventory.forEach(item => {
         const typeBadge = item.type === '磁扣' ? '<span class="badge badge-progress" style="font-size:9px; padding:2px 6px;">磁扣</span>' : '<span class="badge badge-label" style="font-size:9px; padding:2px 6px;">鑰匙</span>';
-        
+
         let statusBadge = '';
         if (item.status === 'Available') {
           statusBadge = '<span style="color:var(--success); font-weight:700; font-size:11px;">● 可借用</span>';
@@ -7073,7 +7507,7 @@
 
       activeMilestones.forEach(ms => {
         const msTasks = tasks.filter(t => (t.milestone || "無里程碑") === ms);
-        
+
         if (msTasks.length === 0) {
           container.innerHTML += `
             <div class="milestone-card">
@@ -7218,7 +7652,7 @@
       const tbody = document.getElementById('insights-points-table-body');
       if (tbody) {
         tbody.innerHTML = '';
-        
+
         const stats = {};
         assignees.forEach(a => {
           stats[a] = { doneCount: 0, donePoints: 0, pendingCount: 0, pendingPoints: 0, totalPoints: 0 };
@@ -7297,7 +7731,7 @@
       } else {
         document.getElementById('modal-title').innerText = "新增總務任務";
         document.getElementById('task-id').value = "";
-        
+
         const todayStr = new Date().toISOString().substring(0, 10);
         const nextWeek = new Date();
         nextWeek.setDate(nextWeek.getDate() + 7);
@@ -7610,7 +8044,7 @@
         alert("目前沒有符合篩選條件的任務可供匯出。");
         return;
       }
-      
+
       const data = filtered.map(t => ({
         "任務名稱": t.title,
         "狀態": translateStatus(t.status),
@@ -7621,13 +8055,13 @@
         "權重": t.weight || 1,
         "里程碑": t.milestone || ""
       }));
-      
+
       const ws = XLSX.utils.json_to_sheet(data);
-      
+
       ws['!cols'] = [
         { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 8 }, { wch: 25 }
       ];
-      
+
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "總務處行政任務");
       XLSX.writeFile(wb, "總務處行政任務列表.xlsx");
@@ -7637,19 +8071,19 @@
       const headers = [
         ["任務名稱", "狀態", "負責人", "開始日期", "截止日期", "標籤", "權重", "里程碑"]
       ];
-      
+
       const sampleRows = [
         ["例行活動中心空調清洗保養", "To Do", "陳組長", "2026-07-15", "2026-07-18", "修繕", 3, "115學年度暑期校園修繕"],
         ["採購總務處影印用 A4 影印紙 10 箱", "Done", "林幹事", "2026-07-01", "2026-07-02", "採購", 1, "例行行政庶務"]
       ];
-      
+
       const allData = headers.concat(sampleRows);
       const ws = XLSX.utils.aoa_to_sheet(allData);
-      
+
       ws['!cols'] = [
         { wch: 30 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 8 }, { wch: 25 }
       ];
-      
+
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "任務匯入範本");
       XLSX.writeFile(wb, "總務處任務匯入範本.xlsx");
@@ -7660,7 +8094,7 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async function(e) {
+      reader.onload = async function (e) {
         try {
           const data = new Uint8Array(e.target.result);
           const workbook = XLSX.read(data, { type: 'array' });
@@ -7763,13 +8197,13 @@
     function triggerConfetti(count = 30) {
       const box = document.getElementById('confetti-box');
       box.style.display = 'block';
-      
+
       const colors = ['#f43f5e', '#ec4899', '#d946ef', '#a855f7', '#3b82f6', '#10b981', '#fbbf24'];
 
       for (let i = 0; i < count; i++) {
         const piece = document.createElement('div');
         piece.className = 'confetti-piece';
-        
+
         const left = Math.random() * 100;
         const color = colors[Math.floor(Math.random() * colors.length)];
         const delay = Math.random() * 0.5;
@@ -7798,7 +8232,7 @@
     // -------------------------------------------------------------
     function escapeHTML(str) {
       if (!str) return '';
-      return String(str).replace(/[&<>'"]/g, 
+      return String(str).replace(/[&<>'"]/g,
         tag => ({
           '&': '&amp;',
           '<': '&lt;',
@@ -7830,7 +8264,7 @@
 
       // 載入基本資料
       document.getElementById('profile-info-name').innerText = currentUser;
-      
+
       const roleBadge = document.getElementById('profile-info-role');
       if (roleBadge) {
         roleBadge.innerText = currentUserRole;
@@ -7845,8 +8279,8 @@
         }
       }
 
-      document.getElementById('profile-info-mode').innerText = isGoogleSheetMode 
-        ? "☁️ Google Sheet 雲端同步模式" 
+      document.getElementById('profile-info-mode').innerText = isGoogleSheetMode
+        ? "☁️ Google Sheet 雲端同步模式"
         : (isApiMode ? "💻 本地 API 伺服器模式" : "📱 瀏覽器 LocalStorage 離線模式");
 
       // 載入個人頭像
@@ -7873,10 +8307,10 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const img = new Image();
         img.src = e.target.result;
-        img.onload = function() {
+        img.onload = function () {
           // 使用 Canvas 壓縮圖片，以符合 LocalStorage 容量限制
           const canvas = document.createElement('canvas');
           const max_size = 160; // 頭像 160x160 即可
@@ -7955,7 +8389,7 @@
 
       // 存檔
       await saveConfigToBackend();
-      
+
       logSystemAction(`同仁變更密碼：[${currentUser}] 成功變更了個人登入密碼`);
 
       alert("✅ 密碼變更成功！");
@@ -8016,7 +8450,7 @@
       // 冷氣卡收回統計
       const acReturnedCount = acCards.filter(item => item.returned === true).length;
       document.getElementById('dash-ac-rate').innerText = `${acReturnedCount} / ${acCards.length} 班`;
-      
+
       // 冷氣卡回收進度條
       const acRate = acCards.length > 0 ? Math.round((acReturnedCount / acCards.length) * 100) : 0;
       document.getElementById('dash-ac-percent-text').innerText = `已完成收回 ${acRate}%`;
@@ -8029,7 +8463,7 @@
       // 渲染近期會議
       const meetList = document.getElementById('dash-meetings-list');
       meetList.innerHTML = '';
-      
+
       // 依日期排序，只列出未來的會議或近期的會議
       const sortedMeetings = [...meetings].sort((a, b) => a.date.localeCompare(b.date));
       const todayStr = today.toISOString().substring(0, 10);
@@ -8081,7 +8515,7 @@
       // 逾期鑰匙警告
       const overdueContainer = document.getElementById('dash-overdue-container');
       overdueContainer.innerHTML = '';
-      
+
       let overdueLogs = [];
       keyLogs.forEach(log => {
         if (log.status === 'Borrowed' && log.borrowDate) {
@@ -8148,7 +8582,7 @@
 
       sortedTopups.forEach(topup => {
         const sigHTML = topup.signature ? `<img src="${topup.signature}" class="signature-thumbnail" onclick="previewSignature('${topup.signature}')" title="點擊放大檢視">` : '<span style="color:var(--text-muted);">無</span>';
-        
+
         const deleteBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長')
           ? `<button class="action-btn delete" onclick="deleteAcTopup('${topup.id}')" title="刪除儲值紀錄">✕</button>`
           : '<span style="color:var(--text-muted); font-size:11px;">唯讀</span>';
@@ -8176,10 +8610,10 @@
         return;
       }
       const type = document.querySelector('input[name="ac-target-type"]:checked').value;
-      const target = type === 'class' 
-        ? document.getElementById('ac-class-select').value 
+      const target = type === 'class'
+        ? document.getElementById('ac-class-select').value
         : document.getElementById('ac-office-select').value;
-      
+
       const amount = document.getElementById('ac-amount').value.trim();
       const staff = document.getElementById('ac-staff-select').value;
 
@@ -8283,7 +8717,7 @@
     function renderAcChecklist() {
       const returnedCount = acCards.filter(item => item.returned === true).length;
       const rate = acCards.length > 0 ? Math.round((returnedCount / acCards.length) * 100) : 0;
-      
+
       document.getElementById('ac-checklist-percent-text').innerText = `已收回 ${rate}%`;
       document.getElementById('ac-checklist-counts').innerText = `${returnedCount} / ${acCards.length} 班`;
       document.getElementById('ac-checklist-progress-bar').style.width = `${rate}%`;
@@ -8294,7 +8728,7 @@
       // 按年級分組 (1~6年級)
       for (let g = 1; g <= 6; g++) {
         const gradeClasses = acCards.filter(item => item.classCode.startsWith(String(g)));
-        
+
         if (gradeClasses.length === 0) continue;
 
         const gradeRow = document.createElement('div');
@@ -8322,9 +8756,9 @@
           classCard.style.justifyContent = 'center';
           classCard.style.gap = '6px';
           classCard.style.textAlign = 'center';
-          
+
           if (item.returned) {
-            const undoBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長') 
+            const undoBtnHTML = (currentUserRole === '主任' || currentUserRole === '組長')
               ? `<button class="btn btn-secondary" style="padding:2px 8px; font-size:10px; height:20px; line-height:1; margin-top:2px; border-color:var(--danger); color:var(--danger);" onclick="resetAcCardReturn('${item.classCode}')">撤銷</button>`
               : '';
             classCard.innerHTML = `
@@ -8334,7 +8768,7 @@
               ${undoBtnHTML}
             `;
           } else {
-            const signBtnHTML = (currentUserRole !== '志工') 
+            const signBtnHTML = (currentUserRole !== '志工')
               ? `<button class="btn btn-primary" style="padding:4px 8px; font-size:11px; height:24px; line-height:1; width:100%;" onclick="openAcCardModal('${item.classCode}')">簽收收回</button>`
               : '<span style="color:var(--text-muted); font-size:10px;">唯讀模式</span>';
             classCard.innerHTML = `
@@ -8693,7 +9127,7 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async function(e) {
+      reader.onload = async function (e) {
         const text = e.target.result;
         const rows = parseCSV(text);
         if (rows.length < 2) {
@@ -8719,7 +9153,7 @@
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
           if (row.length < nameIdx + 1) continue;
-          
+
           const name = row[nameIdx];
           if (!name) continue;
 
@@ -8741,9 +9175,9 @@
             carPlate,
             semester
           };
-          
+
           etags.push(etagObj);
-          
+
           if (isApiMode) {
             try {
               await fetch('/api/etags', {
@@ -8770,17 +9204,17 @@
         input.value = '';
         renderEtagView();
       };
-      
+
       reader.readAsText(file, 'UTF-8');
     }
 
     function downloadEtagCSVSample() {
       const csvContent = "\ufeff姓名,職稱,機車車牌,汽車車牌,學期\n" +
-                         "王教師,教師,ABC-123,AA-1234,115學年度\n" +
-                         "林工友,職工,DEF-456,BB-5678,115學年度\n" +
-                         "李志工,志工,GHI-789,CC-9012,115學年度\n" +
-                         "張家長,家長,,DD-3456,115學年度\n";
-      
+        "王教師,教師,ABC-123,AA-1234,115學年度\n" +
+        "林工友,職工,DEF-456,BB-5678,115學年度\n" +
+        "李志工,志工,GHI-789,CC-9012,115學年度\n" +
+        "張家長,家長,,DD-3456,115學年度\n";
+
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -9023,7 +9457,7 @@
             roleObj = { name: name, role: '職工', password: '1234' };
             staffRoles.push(roleObj);
           }
-          
+
           staffBody.innerHTML += `
             <tr>
               <td style="font-weight:700; color:var(--text-main);">${escapeHTML(name)}</td>
@@ -9233,7 +9667,7 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = async function(e) {
+      reader.onload = async function (e) {
         try {
           const imported = JSON.parse(e.target.result);
           // 簡易驗證欄位是否齊全
@@ -9271,15 +9705,15 @@
 
           // 儲存
           await saveConfigToBackend();
-          
+
           logSystemAction("備份資料庫：匯入並還原了系統資料庫");
           alert("✓ 資料庫匯入還原成功！");
-          
+
           input.value = '';
           renderActiveView();
           populateFilterOptions();
           populateGlobalUserSelect();
-        } catch(err) {
+        } catch (err) {
           alert("解析備份檔案時發生錯誤：" + err.message);
           input.value = '';
         }
@@ -9293,7 +9727,7 @@
     }
 
     // 4. 系統基本資料設定控制台功能 [NEW]
-    
+
     // 設定視窗開關
     function openSettingsModal() {
       if (!requireLogin()) return;
@@ -9316,7 +9750,7 @@
       document.getElementById(`tab-content-${tabName}`).style.display = 'block';
 
       // 填入該頁籤資料清單
-      switch(tabName) {
+      switch (tabName) {
         case 'staff': renderSettingsStaff(); break;
         case 'classes': renderSettingsClasses(); break;
         case 'venues': renderSettingsVenues(); break;
@@ -9426,7 +9860,7 @@
 
     // 覆寫原本的篩選填入並執行冷氣與堂號下拉填入
     const originalPopulateFilterOptions = populateFilterOptions;
-    populateFilterOptions = function() {
+    populateFilterOptions = function () {
       originalPopulateFilterOptions();
       populateAcAndPeriodOptions();
     };
@@ -9487,7 +9921,7 @@
 
     async function generateDefaultClassesSetting() {
       if (!confirm("確定要重新產生 60 個班級代碼嗎 (這將會覆寫目前的班級與冷氣卡保管狀態)？")) return;
-      
+
       const newClasses = [];
       for (let g = 1; g <= 6; g++) {
         for (let r = 1; r <= 10; r++) {
@@ -9519,7 +9953,7 @@
         return;
       }
       classes.push(code);
-      
+
       // 冷氣卡同步新增
       if (!acCards.some(c => c.classCode === code)) {
         acCards.push({ classCode: code, returned: false, signature: "", date: "" });
@@ -9540,7 +9974,7 @@
       if (!confirm(`確定要刪除班級【${code}】嗎？`)) return;
       classes = classes.filter(c => c !== code);
       acCards = acCards.filter(c => c.classCode !== code);
-      
+
       if (!isApiMode && !isGoogleSheetMode) {
         localStorage.setItem('ga_acCards', JSON.stringify(acCards));
       } else if (isGoogleSheetMode) {
@@ -9622,7 +10056,7 @@
 
     async function deleteVenueSetting(name) {
       if (!confirm(`確定要刪除預約場地【${name}】嗎？`)) return;
-      
+
       if (isGoogleSheetMode) {
         venueInventory = venueInventory.filter(v => v !== name);
         await syncGoogleSheet('venueInventory');
@@ -9643,7 +10077,7 @@
         venueInventory = venueInventory.filter(v => v !== name);
         localStorage.setItem('ga_venueInventory', JSON.stringify(venueInventory));
       }
-      
+
       renderSettingsVenues();
       populateFilterOptions();
     }
@@ -9746,7 +10180,7 @@
         keyInventory = keyInventory.filter(i => i.id !== id);
         localStorage.setItem('ga_keyInventory', JSON.stringify(keyInventory));
       }
-      
+
       renderSettingsKeys();
       populateFilterOptions();
     }
@@ -9800,4 +10234,5 @@
     }
   </script>
 </body>
+
 </html>
