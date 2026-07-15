@@ -4950,18 +4950,11 @@
       const loginSelect = document.getElementById('login-user-select');
       if (!loginSelect) return;
       loginSelect.innerHTML = '';
-      // 優先從 staffRoles 取帳號（包含雲端資料），若無則 fallback 至 assignees
-      if (staffRoles && staffRoles.length > 0) {
-        staffRoles.forEach(person => {
-          const name = person.name || '';
-          const role = person.role || '職工';
-          if (name) loginSelect.innerHTML += `<option value="${name}">${name} (${role})</option>`;
-        });
-      } else {
-        assignees.forEach(name => {
-          loginSelect.innerHTML += `<option value="${name}">${name}</option>`;
-        });
-      }
+      assignees.forEach(name => {
+        const roleObj = staffRoles.find(r => r.name === name);
+        const roleName = roleObj ? roleObj.role : '職工';
+        loginSelect.innerHTML += `<option value="${name}">${name} (${roleName})</option>`;
+      });
     }
 
     function showLoginOverlay() {
@@ -5106,7 +5099,7 @@
       const matchedStaff = staffRoles.find(r => r.name === username);
       const correctPass = matchedStaff ? (matchedStaff.password || "1234") : "1234";
 
-      if (enteredPass === correctPass) {
+      if (enteredPassStr === correctPass) {
         // 驗證成功
         localStorage.setItem('ga_isLoggedIn', 'true');
         localStorage.setItem('ga_currentUser', username);
