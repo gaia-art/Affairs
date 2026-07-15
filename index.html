@@ -3467,12 +3467,12 @@
         <!-- 6. 雲端同步 -->
         <div class="settings-tab-content" id="tab-content-cloud">
           <h4 style="color:var(--primary-dark); margin-bottom:6px; font-size:13px;">📊 Google Sheet 雲端試算表 API 網址</h4>
-          <div style="display:flex; gap:8px;">
-            <input type="text" class="form-control" id="settings-gsheet-url" placeholder="貼上您的 Google Apps Script 網頁應用程式網址">
-            <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; flex-shrink:0;" onclick="saveGoogleSheetUrlSetting()">儲存網址</button>
+          <div style="background:var(--primary-light); border:1px solid var(--border); border-radius:8px; padding:10px 14px; word-break:break-all; font-size:12px; color:var(--text-main);">
+            <span style="font-size:11px; color:var(--text-muted); display:block; margin-bottom:4px;">🔒 系統已固定連線來源（使用者無法修改）</span>
+            <input type="text" class="form-control" id="settings-gsheet-url" readonly style="background:#f5f3ff; color:var(--text-muted); cursor:not-allowed; font-size:11px;" value="">
           </div>
           <div style="font-size:11px; color:var(--text-muted); margin-top:6px; line-height: 1.4;">
-            儲存後系統將以此雲端試算表作為資料同步來源。清空則切換回本地資料庫。
+            系統已固定使用上方 Google 試算表作為雲端資料同步來源，如需變更請聯絡系統管理員。
           </div>
         </div>
 
@@ -3651,7 +3651,8 @@
     let deliveryRoster = [];
     let activeRosterTab = 'duty';
     let etags = [];
-    let googleSheetApiUrl = '';
+    // ⚠️ API URL 已固定，使用者無法自行修改
+    const googleSheetApiUrl = 'https://script.google.com/macros/s/AKfycbxhAmbW8GBVBk2eLokr_-kZVDsuLx9qB6mSmAYMlXmCPEC5JrITy7Zf8ZA-MDxLYRWwyQ/exec';
     let isGoogleSheetMode = false;
 
     let isApiMode = false; // 是否連線至後端
@@ -3826,7 +3827,7 @@
     }
 
     async function initDatabase() {
-      googleSheetApiUrl = localStorage.getItem('ga_googleSheetApiUrl') || '';
+      // googleSheetApiUrl 已固定為常數，不從 localStorage 讀取
       if (googleSheetApiUrl) {
         try {
           const pAssignees = fetch(googleSheetApiUrl + '?type=assignees').then(r => r.json());
@@ -4218,10 +4219,8 @@
     }
 
     function saveGoogleSheetUrlSetting() {
-      const url = document.getElementById('settings-gsheet-url').value.trim();
-      localStorage.setItem('ga_googleSheetApiUrl', url);
-      alert("✅ Google Sheet 雲端網址已儲存！系統將自動重新整理以啟用連線。");
-      location.reload();
+      // API URL 已固定，此函式已停用
+      alert("⚠️ 雲端試算表連線網址已由系統管理員固定，無法修改。");
     }
 
     async function saveConfigToBackend() {
@@ -7504,7 +7503,7 @@
       const modal = document.getElementById('settings-modal');
       switchSettingsTab('general'); // 預設顯示一般頁籤
       renderSettingsLists();
-      document.getElementById('settings-gsheet-url').value = localStorage.getItem('ga_googleSheetApiUrl') || '';
+      document.getElementById('settings-gsheet-url').value = googleSheetApiUrl;
       modal.classList.add('active');
     }
 
@@ -9794,9 +9793,10 @@
       populateFilterOptions();
     }
 
-    // 4.6 雲端試算表設定渲染
+    // 4.6 雲端試算表設定渲染（URL 已固定，僅顯示）
     function renderSettingsCloud() {
-      document.getElementById('settings-gsheet-url').value = googleSheetApiUrl;
+      const el = document.getElementById('settings-gsheet-url');
+      if (el) el.value = googleSheetApiUrl;
     }
   </script>
 </body>
