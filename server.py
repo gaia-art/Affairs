@@ -1073,6 +1073,12 @@ class GARequestHandler(http.server.BaseHTTPRequestHandler):
 if __name__ == '__main__':
     load_db()
     handler = GARequestHandler
-    with socketserver.TCPServer(("", PORT), handler) as httpd:
-        print(f"總務處系統後端伺服器已啟動： http://localhost:{PORT}")
+    import socket
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+    with socketserver.TCPServer(("0.0.0.0", PORT), handler) as httpd:
+        print(f"總務處系統後端伺服器已啟動")
+        print(f"  本機存取：http://localhost:{PORT}")
+        print(f"  區域網路（手機/平板用）：http://{local_ip}:{PORT}")
+        print(f"  請確認 Windows 防火牆已開放 {PORT} 埠")
         httpd.serve_forever()
